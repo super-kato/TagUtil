@@ -1,6 +1,6 @@
 {
   "name": "tag-util",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Functional FLAC metadata editor with Svelte 5 TagState",
   "main": "./out/main/index.js",
   "author": "katouyoshiaki",
