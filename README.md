@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>Functional FLAC metadata editor</strong>
+  <strong>Functional FLAC metadata editor for MacOs</strong>
 </p>
 
 <p align="center">
