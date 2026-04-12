@@ -1,7 +1,7 @@
 import { FlacMetadata, Picture } from '@domain/flac/types';
 import { FlacTagMap, FlacTags } from 'flac-tagger';
 import fs from 'fs/promises';
-import { CanonicalTagKey, TAG_DEFINITIONS } from './tag-definitions';
+import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
 import { RawFlacData, RawPicture } from './types';
 
 /**

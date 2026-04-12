@@ -4,7 +4,7 @@ import fs from 'fs/promises';
 import * as readerImpl from 'music-metadata';
 import { toTagResultFailure } from '../../utils/error-handler';
 import { computeMd5 } from '../../utils/hash';
-import { CanonicalTagKey, TAG_DEFINITIONS } from './tag-definitions';
+import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
 import { RawFlacData, RawPicture } from './types';
 
 /**
