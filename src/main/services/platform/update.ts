@@ -5,6 +5,7 @@ import { autoUpdater } from 'electron-updater';
  * アプリ起動時にチェックを行い、更新があれば自動でダウンロードして通知します。
  */
 export const initAutoUpdater = (): void => {
+  autoUpdater.allowPrerelease = true;
   autoUpdater.checkForUpdatesAndNotify();
 };
 
