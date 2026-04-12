@@ -1,0 +1,146 @@
+:root {
+  /* 背景色: 深い順 */
+  --bg-body: #121212;
+  --bg-main: #1e1e1e;
+  --bg-inspector: #1e1e1e;
+  --bg-header: #1e1e1e;
+  --bg-input: #333;
+  --bg-input-focus: #3a3a3a;
+
+  /* 境界線と装飾 */
+  --border-primary: #444;
+  --border-secondary: #555;
+  --scrollbar-thumb: #444;
+  --scrollbar-thumb-hover: #555;
+
+  /* テキスト */
+  --text-primary: #e0e0e0;
+  --text-secondary: #ccc;
+  --text-muted: #888;
+  --text-dim: #666;
+  --text-on-accent: #000000;
+
+  /* アクセントと状態 (より鮮やかなネオンライム) */
+  --accent-primary: #adff2f;
+  --accent-hover: #bfff00;
+  --accent-modified: #ff9500;
+  --accent-error: #ff3b30;
+  --accent-warning: #ff9f0a;
+
+  /* 透過済みカラーのプリセット (HEX Alpha) */
+  --bg-overlay: #1e1e1ee6;
+  --selection-bg: #ffffff08;
+  --hover-bg: #ffffff05;
+  --selection-glow: #adff2fcc;
+  --accent-modified-glow: #ff950066;
+  --accent-primary-dim: #adff2f1a;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-body);
+  color: var(--text-primary);
+  overflow: hidden;
+  font-family:
+    'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Hiragino Kaku Gothic Pro', 'Yu Gothic Medium',
+    'Yu Gothic', 'Meiryo', sans-serif;
+}
+
+/* --- カスタムスクロールバー --- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* --- 汎用アニメーション --- */
+.spin {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- コンポーネント共通のベース UI (Form) --- */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field input {
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  padding: 0.6rem;
+  border-radius: 6px;
+  color: white;
+  font-size: 0.9rem;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--accent-hover);
+  background-color: var(--bg-input-focus);
+}
+
+.field input.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #2a2a2a; /* この特定の色は bg-header と同じだが意図を聞いていないため固定 */
+}
+
+.field-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.field-row .field {
+  flex: 1;
+}

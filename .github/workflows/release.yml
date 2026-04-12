@@ -1,0 +1,56 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
+
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: pnpm のセットアップ
+        uses: pnpm/action-setup@v5
+        with:
+          version: latest
+
+      - name: 依存関係のインストール
+        run: pnpm install
+
+      - name: ビルドおよび公証
+        run: pnpm build:mac
+        env:
+          # コード署名
+          CSC_LINK: ${{ secrets.MACOS_CERTIFICATE }}
+          CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
+          # 公証
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: GitHub リリースの作成
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # タグのメッセージを取得（注釈付きタグの場合）
+          TAG_MSG=$(git tag -l --format='%(contents)' ${{ github.ref_name }})
+          # メッセージが空（軽量タグ）の場合は、最新のコミットメッセージを使用
+          if [ -z "$TAG_MSG" ]; then
+            TAG_MSG=$(git log -1 --pretty=%B)
+          fi
+
+          gh release create ${{ github.ref_name }} \
+            --title "${{ github.ref_name }}" \
+            --notes "$TAG_MSG" \
+            dist/*.dmg

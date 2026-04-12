@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "デバッグ",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/electron",
+      "runtimeArgs": ["--no-sandbox", "--disable-gpu"],
+      "args": ["${workspaceFolder}/out/main/index.js"],
+      "outputCapture": "std",
+      "console": "integratedTerminal",
+      "preLaunchTask": "pnpm: build",
+      "sourceMaps": true,
+      "smartStep": true,
+      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "env": {
+        "DISPLAY": ":1",
+        "ELECTRON_DISABLE_SANDBOX": "1"
+      }
+    }
+  ]
+}
