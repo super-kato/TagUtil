@@ -22,9 +22,11 @@ export const showAboutWindow = (): void => {
   openAboutWindow({
     /* eslint-disable @typescript-eslint/naming-convention */
     icon_path: icon,
+    package_json_dir: app.getAppPath(),
     product_name: 'TagUtil',
-    copyright: 'Copyright (c) 2026 katouyoshiaki',
+    copyright: 'Copyright (c) 2026 y.kato',
     homepage: 'https://github.com/super-kato/TagUtil',
+    bug_report_url: 'https://github.com/super-kato/TagUtil/issues',
     use_version_info: true,
     // @ts-ignore: additional_credits exists in about-window
     additional_credits: credits
