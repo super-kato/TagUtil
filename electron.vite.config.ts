@@ -1,6 +1,6 @@
-import { resolve } from 'path';
-import { defineConfig } from 'electron-vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { defineConfig } from 'electron-vite';
+import { resolve } from 'path';
 
 export default defineConfig({
   main: {

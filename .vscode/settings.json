@@ -41,7 +41,7 @@
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
   "explorer.fileNesting.patterns": {
-    "package.json": "pnpm-lock.yaml, pnpm-workspace.yaml",
+    "package.json": "pnpm-lock.yaml, pnpm-workspace.yaml, .npmrc",
     "tsconfig.json": "tsconfig.*.json, tsconfig.*.tsbuildinfo",
     "eslint.config.*": ".eslint*, .prettierignore, .prettierrc.yaml",
     ".gitignore": ".gitattributes"
