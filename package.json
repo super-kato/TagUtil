@@ -1,6 +1,6 @@
 {
   "name": "tag-util",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "Functional FLAC metadata editor with Svelte 5 TagState",
   "main": "./out/main/index.js",
   "author": "katouyoshiaki",
@@ -22,7 +22,9 @@
     "sign": "dotenv -- pnpm build:mac",
     "test": "vitest"
   },
-  "dependencies": {},
+  "dependencies": {
+    "about-window": "^1.15.2"
+  },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
     "@electron-toolkit/eslint-config-ts": "^3.1.0",
@@ -31,7 +33,6 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.0",
     "@types/node": "^22.19.1",
-    "about-window": "^1.15.2",
     "dotenv-cli": "^11.0.0",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
