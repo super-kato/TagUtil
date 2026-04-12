@@ -1,7 +1,8 @@
 import { success } from '@domain/common/result';
 import { ScanResult, tagErrors, TagResult } from '@domain/flac/types';
 import { readdir } from 'node:fs/promises';
-import { extname, join } from 'node:path';
+import { join } from 'node:path';
+import { isSupportedAudioFile, isHiddenPath } from '../../utils/file-utils';
 import { toTagResultFailure } from '../../utils/error-handler';
 
 /**
@@ -41,7 +42,7 @@ const performScan = async (dirPath: string, accumulator: string[]): Promise<bool
   const items = await readdir(dirPath, { withFileTypes: true });
 
   for (const item of items) {
-    if (item.name.startsWith('.')) {
+    if (isHiddenPath(item.name)) {
       continue;
     }
 
@@ -55,11 +56,7 @@ const performScan = async (dirPath: string, accumulator: string[]): Promise<bool
       continue;
     }
 
-    if (!item.isFile()) {
-      continue;
-    }
-
-    if (extname(item.name).toLowerCase() === '.flac') {
+    if (item.isFile() && isSupportedAudioFile(item.name)) {
       accumulator.push(fullPath);
       // ファイル追加直後に上限チェック
       if (accumulator.length >= MAX_SCAN_FILES) {

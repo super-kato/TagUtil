@@ -1,12 +1,10 @@
 import { ResolvedPath } from '@domain/common/system';
 import { Stats } from 'node:fs';
 import { stat } from 'node:fs/promises';
-import { extname } from 'node:path';
+import { isSupportedAudioFile, isHiddenPath } from '../../utils/file-utils';
 
 /**
  * 指定された複数のパスの種別（ファイル/ディレクトリ）を一括判定します。
- * @param targetPaths 判定対象のパス配列
- * @returns 判定結果（ResolvedPath[]）の配列
  */
 export const resolvePaths = async (targetPaths: string[]): Promise<ResolvedPath[]> => {
   return Promise.all(targetPaths.map(resolveSinglePath));
@@ -24,8 +22,8 @@ const resolveSinglePath = async (targetPath: string): Promise<ResolvedPath> => {
   }
 
   if (pathStat.isFile()) {
-    // 拡張子が .flac の場合のみ 'file' として扱う
-    if (extname(targetPath).toLowerCase() === '.flac') {
+    // 隠しファイルではなく、かつサポートされている形式の場合のみ 'file' として扱う
+    if (!isHiddenPath(targetPath) && isSupportedAudioFile(targetPath)) {
       return { path: targetPath, type: 'file' };
     }
     return { path: targetPath, type: 'unknown' };
