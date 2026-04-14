@@ -3,15 +3,17 @@
   "build": {
     "dockerfile": "Dockerfile"
   },
-  "runArgs": ["--name", "TagUtil"],
+	"runArgs": ["--name", "TagUtil"],
   "features": {
-    "ghcr.io/devcontainers/features/node:1": {},
     "ghcr.io/devcontainers/features/github-cli:1": {},
     "ghcr.io/devcontainers/features/desktop-lite:1": {
       "password": "vscode",
       "screenResolution": "1600x1000"
     }
   },
-  "forwardPorts": [5901, 6080],
+  "forwardPorts": [
+    5901,
+    6080
+  ],
   "postCreateCommand": "pnpm install"
 }

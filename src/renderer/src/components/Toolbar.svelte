@@ -1,7 +1,9 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { Disc3, FolderOpen, RotateCcw, Save } from 'lucide-svelte';
-  import { tagState } from '../stores/tag-state.svelte';
+  import { trackStore } from '../stores/track-store.svelte';
+  import { uiState } from '../stores/ui-state.svelte';
+  import { tagActions } from '../services/tag-actions';
 </script>
 
 <header class="toolbar">
@@ -11,26 +13,26 @@
   <div class="actions">
     <button
       class="btn secondary"
-      onclick={() => tagState.openAndScanDirectory()}
+      onclick={() => tagActions.openAndScanDirectory()}
       title="Open Directory"
     >
       <FolderOpen size={UI_TOKENS.icons.size} />
     </button>
     <button
       class="btn revert"
-      onclick={() => tagState.revertSelected()}
-      disabled={tagState.isLoading || !tagState.selectedTracks.some((t) => t.isModified)}
+      onclick={() => tagActions.revertSelected()}
+      disabled={uiState.isLoading || !trackStore.selectedTracks.some((t) => t.isModified)}
       title="Revert Changes"
     >
       <RotateCcw size={UI_TOKENS.icons.size} />
     </button>
     <button
       class="btn primary"
-      onclick={() => tagState.saveAllModified()}
-      disabled={tagState.isLoading || !tagState.tracks.some((t) => t.isModified)}
+      onclick={() => tagActions.saveAllModified()}
+      disabled={uiState.isLoading || !trackStore.tracks.some((t) => t.isModified)}
       title="Save Changes"
     >
-      {#if tagState.isLoading}
+      {#if uiState.isLoading}
         <Disc3 size={UI_TOKENS.icons.size} class="spin" />
       {:else}
         <Save size={UI_TOKENS.icons.size} />
@@ -64,7 +66,7 @@
 
   .btn {
     padding: 0.5rem;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     border: none;
     cursor: pointer;
     font-size: 0.85rem;

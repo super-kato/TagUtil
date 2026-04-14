@@ -1,4 +1,4 @@
-import type { FlacMetadata } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/types';
 import type { IpcApi } from '@shared/ipc';
 import { IPC_CHANNELS } from '@shared/ipc';
 import { ipcRenderer, webUtils } from 'electron';
@@ -15,11 +15,9 @@ export const api: IpcApi = {
   readMetadata: (path: string) => ipcRenderer.invoke(IPC_CHANNELS.READ_METADATA, path),
   /**
    * FLACファイルのメタデータを書き込みます。
-   * @param path ファイルの絶対パス
-   * @param metadata 書き込むメタデータ
+   * @param track 書き込むトラック情報（パスとメタデータ）
    */
-  writeMetadata: (path: string, metadata: FlacMetadata) =>
-    ipcRenderer.invoke(IPC_CHANNELS.WRITE_METADATA, path, metadata),
+  writeMetadata: (track: FlacTrack) => ipcRenderer.invoke(IPC_CHANNELS.WRITE_METADATA, track),
   /**
    * フォルダ選択ダイアログを表示します。
    */

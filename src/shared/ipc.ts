@@ -1,4 +1,4 @@
-import type { FlacMetadata, Picture, ScanResult, TagResult } from '@domain/flac/types';
+import type { FlacTrack, Picture, ScanResult, TagResult } from '@domain/flac/types';
 import { ResolvedPath } from '@domain/common/system';
 
 /**
@@ -31,9 +31,9 @@ export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
  */
 export interface IpcApi {
   /** 指定されたパスの FLAC メタデータを読み取ります */
-  readMetadata: (filePath: string) => Promise<TagResult<FlacMetadata>>;
+  readMetadata: (filePath: string) => Promise<TagResult<FlacTrack>>;
   /** 指定されたパスの FLAC メタデータを書き込みます */
-  writeMetadata: (filePath: string, metadata: FlacMetadata) => Promise<TagResult<void>>;
+  writeMetadata: (track: FlacTrack) => Promise<TagResult<void>>;
   /** フォルダ選択ダイアログを表示し、選択されたパスを返します */
   selectDirectory: () => Promise<string | null>;
   /** 指定されたディレクトリ内のFLACファイルのパスリストを返します */

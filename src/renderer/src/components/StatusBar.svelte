@@ -1,19 +1,19 @@
 <script lang="ts">
-  import { statusState } from '../stores/status-state.svelte';
+  import { uiState } from '../stores/ui-state.svelte';
   import { CircleAlert, TriangleAlert } from 'lucide-svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
 </script>
 
-{#if statusState.error || statusState.isScanLimited}
+{#if uiState.error || uiState.isScanLimited}
   <footer
     class="status-bar"
-    class:error={!!statusState.error}
-    class:warning={!statusState.error && statusState.isScanLimited}
+    class:error={!!uiState.error}
+    class:warning={!uiState.error && uiState.isScanLimited}
   >
-    {#if statusState.error}
+    {#if uiState.error}
       <CircleAlert size={UI_TOKENS.icons.size} />
-      <span>{statusState.error}</span>
-    {:else if statusState.isScanLimited}
+      <span>{uiState.error}</span>
+    {:else if uiState.isScanLimited}
       <TriangleAlert size={UI_TOKENS.icons.size} />
       <span>Scan limit (500 items) reached. Some files were skipped.</span>
     {/if}

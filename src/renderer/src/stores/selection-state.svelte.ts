@@ -1,5 +1,5 @@
 import { SvelteSet } from 'svelte/reactivity';
-import type { TrackRecord } from './types';
+import { TrackRecord } from './track-record.svelte';
 
 /**
  * 複数ファイルの選択状態を管理する独立したストア。

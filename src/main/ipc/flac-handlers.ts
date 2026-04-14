@@ -1,9 +1,9 @@
-import { FlacMetadata } from '@domain/flac/types';
+import { FlacTrack } from '@domain/flac/types';
 import { pickImage } from '@services/flac/image';
+import { resolvePaths } from '@services/flac/path-resolver';
 import { readMetadata } from '@services/flac/reader';
 import { scanDirectory } from '@services/flac/scanner';
 import { writeMetadata } from '@services/flac/writer';
-import { resolvePaths } from '@services/flac/path-resolver';
 import { IPC_CHANNELS } from '@shared/ipc';
 import { ipcMain } from 'electron';
 
@@ -17,12 +17,9 @@ export const registerFlacHandlers = (): void => {
   });
 
   // メタデータの書き込み
-  ipcMain.handle(
-    IPC_CHANNELS.WRITE_METADATA,
-    async (_event, filePath: string, metadata: FlacMetadata) => {
-      return await writeMetadata(filePath, metadata);
-    }
-  );
+  ipcMain.handle(IPC_CHANNELS.WRITE_METADATA, async (_event, track: FlacTrack) => {
+    return await writeMetadata(track);
+  });
 
   // 指定されたディレクトリ内のFLACファイルを探索
   ipcMain.handle(IPC_CHANNELS.SCAN_DIRECTORY, async (_event, dirPath: string) => {

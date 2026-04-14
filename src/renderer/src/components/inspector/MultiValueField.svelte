@@ -110,7 +110,7 @@
     align-items: center;
     justify-content: center;
     padding: 0.3rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     background: none;
     border: none;
     color: var(--text-muted);
@@ -162,7 +162,7 @@
     color: #666;
     font-style: italic;
     padding: 0.5rem;
-    border: 1px dashed #444;
+    border: 1px dashed var(--border-primary);
     border-radius: var(--radius-md);
     text-align: center;
     pointer-events: none;

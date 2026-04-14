@@ -84,7 +84,7 @@
     justify-content: center;
     border: 3px dashed var(--accent-primary);
     margin: 12px;
-    border-radius: 20px;
+    border-radius: var(--radius-2xl);
     pointer-events: none;
     animation: fadeIn 0.15s ease-out;
   }

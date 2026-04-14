@@ -1,10 +1,10 @@
 import { success } from '@domain/common/result';
-import { FlacMetadata, Picture, tagErrors, TagResult } from '@domain/flac/types';
+import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
+import { FlacMetadata, FlacTrack, Picture, tagErrors, TagResult } from '@domain/flac/types';
 import fs from 'fs/promises';
 import * as readerImpl from 'music-metadata';
 import { toTagResultFailure } from '../../utils/error-handler';
 import { computeMd5 } from '../../utils/hash';
-import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
 import { RawFlacData, RawPicture } from './types';
 
 /**
@@ -17,12 +17,12 @@ const IGNORE_TAG_KEYS = ['METADATA_BLOCK_PICTURE'] as const;
  * メモリ節約のため、画像の存在確認のみを行い、バイナリデータ自体は戻り値に含めません。
  * 画像を実際に表示する場合は、カスタムプロトコル (flac-image://) を使用してください。
  */
-export const readMetadata = async (filePath: string): Promise<TagResult<FlacMetadata>> => {
+export const readMetadata = async (filePath: string): Promise<TagResult<FlacTrack>> => {
   try {
     await ensureFileExists(filePath);
     const rawData = await readRawData(filePath);
     const metadata = mapToFlacMetadata(rawData, filePath);
-    return success(metadata);
+    return success({ path: filePath, metadata });
   } catch (error: unknown) {
     return toTagResultFailure(error, tagErrors.parseFailed, { path: filePath });
   }

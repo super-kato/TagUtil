@@ -75,20 +75,18 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.4rem;
-    background-color: var(--bg-input);
+    background-color: var(--bg-hover);
     border: 1px solid var(--border-primary);
     padding: 0.4rem;
-    border-radius: 6px;
+    border-radius: var(--radius-md);
     min-height: 2.4rem;
     cursor: text;
-    transition:
-      border-color 0.2s,
-      background-color 0.2s;
+    transition: all 0.2s ease;
   }
 
   .badge-container:focus-within {
-    border-color: var(--accent-hover);
-    background-color: var(--bg-input-focus);
+    border-color: var(--accent-primary);
+    background-color: var(--bg-secondary);
   }
 
   .badge-container.divergent {
@@ -108,7 +106,7 @@
     background-color: var(--border-primary);
     color: var(--text-primary);
     padding: 0.2rem 0.5rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     font-size: 0.8rem;
     border: 1px solid var(--border-secondary);
     animation: badge-in 0.2s ease-out;
@@ -135,9 +133,7 @@
     cursor: pointer;
     padding: 0;
     margin-left: 0.1rem;
-    transition:
-      color 0.2s,
-      opacity 0.2s;
+    transition: all 0.2s;
     opacity: 0;
     pointer-events: none;
   }
@@ -152,7 +148,7 @@
     opacity: 1 !important;
   }
 
-  input {
+  .badge-container input {
     flex: 1;
     min-width: 60px;
     background: transparent;
@@ -163,7 +159,7 @@
     outline: none;
   }
 
-  input::placeholder {
+  .badge-container input::placeholder {
     color: var(--text-dim);
   }
 </style>

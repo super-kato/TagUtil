@@ -4,10 +4,10 @@
   import StatusBar from './components/StatusBar.svelte';
   import Toolbar from './components/Toolbar.svelte';
   import TrackGrid from './components/TrackGrid.svelte';
-  import { tagState } from './stores/tag-state.svelte';
+  import { tagActions } from './services/tag-actions';
 </script>
 
-<DropZone onDrop={(paths) => tagState.loadFromPaths(paths)}>
+<DropZone onDrop={(paths) => tagActions.loadFromPaths(paths)}>
   <div class="app-container" role="region" aria-label="Application container">
     <section class="main-content">
       <Toolbar />

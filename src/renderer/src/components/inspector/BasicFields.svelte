@@ -1,12 +1,14 @@
 <script lang="ts">
-  import { tagState } from '../../stores/tag-state.svelte';
+  import { trackStore } from '../../stores/track-store.svelte';
+  import { tagActions } from '../../services/tag-actions';
   import MultiValueField from './MultiValueField.svelte';
   import { getSingleFieldValue, handleSingleInput } from './tag-field-handlers';
 </script>
 
-{#if tagState.commonMetadata}
-  {@const artistState = tagState.commonMetadata.artist}
-  {@const albumArtistState = tagState.commonMetadata.albumArtist}
+{#if trackStore.commonMetadata}
+  {@const common = trackStore.commonMetadata}
+  {@const artistState = common.artist}
+  {@const albumArtistState = common.albumArtist}
 
   <div class="basic-fields">
     <div class="field">
@@ -17,8 +19,8 @@
         value={getSingleFieldValue('title')}
         oninput={(e) => handleSingleInput('title', e)}
         placeholder="Title"
-        disabled={tagState.selectedTracks.length > 1}
-        class:disabled={tagState.selectedTracks.length > 1}
+        disabled={trackStore.selectedTracks.length > 1}
+        class:disabled={trackStore.selectedTracks.length > 1}
       />
     </div>
 
@@ -26,9 +28,9 @@
       label="Artist"
       values={artistState.type === 'uniform' ? (artistState.value ?? []) : []}
       isUniform={artistState.type === 'uniform'}
-      onUpdate={(i, v) => tagState.updateSelectedMultiField('artist', i, v)}
-      onAdd={() => tagState.addSelectedMultiFieldValue('artist')}
-      onRemove={(i) => tagState.removeSelectedMultiFieldValue('artist', i)}
+      onUpdate={(i, v) => tagActions.updateSelectedMultiField('artist', i, v)}
+      onAdd={() => tagActions.addSelectedMultiFieldValue('artist')}
+      onRemove={(i) => tagActions.removeSelectedMultiFieldValue('artist', i)}
     />
 
     <div class="field">
@@ -46,9 +48,9 @@
       label="Album Artist"
       values={albumArtistState.type === 'uniform' ? (albumArtistState.value ?? []) : []}
       isUniform={albumArtistState.type === 'uniform'}
-      onUpdate={(i, v) => tagState.updateSelectedMultiField('albumArtist', i, v)}
-      onAdd={() => tagState.addSelectedMultiFieldValue('albumArtist')}
-      onRemove={(i) => tagState.removeSelectedMultiFieldValue('albumArtist', i)}
+      onUpdate={(i, v) => tagActions.updateSelectedMultiField('albumArtist', i, v)}
+      onAdd={() => tagActions.addSelectedMultiFieldValue('albumArtist')}
+      onRemove={(i) => tagActions.removeSelectedMultiFieldValue('albumArtist', i)}
     />
 
     <div class="field">

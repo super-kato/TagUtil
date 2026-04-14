@@ -1,13 +1,14 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { Music, X } from 'lucide-svelte';
-  import { tagState } from '../../stores/tag-state.svelte';
+  import { trackStore } from '../../stores/track-store.svelte';
+  import { tagActions } from '../../services/tag-actions';
 
   let imageLoadError = $state(false);
 
   const handleRemoveArtwork = (e: MouseEvent): void => {
     e.stopPropagation();
-    tagState.removeArtwork();
+    tagActions.removeArtwork();
   };
 
   /** 表示するプレースホルダーテキストを返します */
@@ -15,7 +16,7 @@
     if (imageLoadError) {
       return 'Load Error';
     }
-    if (tagState.commonMetadata?.picture.type === 'divergent') {
+    if (trackStore.commonMetadata?.picture.type === 'divergent') {
       return 'Mixed Artworks';
     }
     return 'No Artwork';
@@ -24,15 +25,15 @@
 
 <div
   class="artwork-section"
-  onclick={() => tagState.pickAndApplyPicture()}
-  onkeydown={(e) => e.key === 'Enter' && tagState.pickAndApplyPicture()}
+  onclick={() => tagActions.pickAndApplyPicture()}
+  onkeydown={(e) => e.key === 'Enter' && tagActions.pickAndApplyPicture()}
   role="button"
   tabindex="0"
   title="Click to change artwork"
 >
-  {#if tagState.commonImageUrl}
+  {#if trackStore.commonImageUrl}
     <img
-      src={tagState.commonImageUrl}
+      src={trackStore.commonImageUrl}
       alt="Cover Art"
       class="cover-art"
       class:hidden={imageLoadError}
@@ -46,11 +47,11 @@
     {/if}
   {/if}
 
-  {#if !tagState.commonImageUrl || imageLoadError}
+  {#if !trackStore.commonImageUrl || imageLoadError}
     <div
       class="cover-placeholder"
       class:error={imageLoadError}
-      class:mixed={tagState.commonMetadata?.picture.type === 'divergent'}
+      class:mixed={trackStore.commonMetadata?.picture.type === 'divergent'}
     >
       <div class="icon-wrapper">
         <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
@@ -70,12 +71,12 @@
     aspect-ratio: 1 / 1;
     flex-shrink: 0;
     margin: 0 auto 2rem auto;
-    border-radius: 12px;
+    border-radius: var(--radius-xl);
     overflow: hidden;
     position: relative;
     cursor: pointer;
-    background-color: #2a2a2a;
-    border: 1px solid #333;
+    background-color: var(--bg-hover);
+    border: 1px solid var(--border-primary);
     padding: 1px;
   }
 
@@ -114,7 +115,7 @@
     letter-spacing: 1px;
     background: rgba(0, 0, 0, 0.4);
     padding: 0.5rem 1rem;
-    border-radius: 20px;
+    border-radius: var(--radius-2xl);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
@@ -124,7 +125,7 @@
     right: 8px;
     width: 24px;
     height: 24px;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     background: rgba(0, 0, 0, 0.6);
     color: white;
     border: none;
@@ -151,19 +152,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: #444;
-    border: 2px dashed #333;
-    border-radius: 12px;
+    color: var(--text-dim);
+    border: 2px dashed var(--border-primary);
+    border-radius: var(--radius-xl);
   }
 
   .cover-placeholder.error {
-    color: #ff3b30;
-    border-color: #ff3b30;
+    color: var(--accent-error);
+    border-color: var(--accent-error);
   }
 
   .cover-placeholder.mixed {
-    color: #ff9f0a;
-    border-color: #ff9f0a;
+    color: var(--accent-warning);
+    border-color: var(--accent-warning);
   }
 
   .cover-placeholder .text {

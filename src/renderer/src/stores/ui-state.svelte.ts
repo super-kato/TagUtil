@@ -5,9 +5,18 @@ import { formatTagError } from '../utils/tag-error-formatter';
 /**
  * アプリケーション全体の通知・ステータスメッセージを管理するストア。
  */
-class StatusState {
+class UiState {
   error = $state<string | null>(null);
+  isLoading = $state(false);
   isScanLimited = $state(false);
+
+  startLoading(): void {
+    this.isLoading = true;
+  }
+
+  stopLoading(): void {
+    this.isLoading = false;
+  }
 
   setError(item: Failure<TagError>): void {
     this.error = formatTagError(item.error);
@@ -32,8 +41,9 @@ class StatusState {
    */
   reset(): void {
     this.clearError();
+    this.stopLoading();
     this.isScanLimited = false;
   }
 }
 
-export const statusState = new StatusState();
+export const uiState = new UiState();

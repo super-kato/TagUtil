@@ -1,7 +1,7 @@
 <script lang="ts">
   import { selectionState } from '../stores/selection-state.svelte';
-  import { tagState } from '../stores/tag-state.svelte';
-  import type { TrackRecord } from '../stores/types';
+  import { trackStore } from '../stores/track-store.svelte';
+  import { TrackRecord } from '../stores/track-record.svelte';
 
   // 範囲選択（Shift + クリック）のために、最後にクリックされた行のインデックスを保持
   let lastSelectedIndex = $state<number | null>(null);
@@ -11,7 +11,7 @@
       // 範囲選択
       const start = Math.min(lastSelectedIndex, index);
       const end = Math.max(lastSelectedIndex, index);
-      const tracksToSelect = tagState.tracks.slice(start, end + 1);
+      const tracksToSelect = trackStore.tracks.slice(start, end + 1);
       selectionState.selectRange(tracksToSelect);
     } else if (e.metaKey || e.ctrlKey) {
       // トグル選択（個別追加・解除）
@@ -37,7 +37,7 @@
       }
 
       e.preventDefault();
-      selectionState.selectAll(tagState.tracks);
+      selectionState.selectAll(trackStore.tracks);
     }
   };
 </script>
@@ -45,7 +45,7 @@
 <svelte:window onkeydown={handleKeydown} />
 
 <div class="grid-wrapper">
-  {#if tagState.tracks.length > 0}
+  {#if trackStore.tracks.length > 0}
     <table class="data-grid">
       <thead>
         <tr>
@@ -58,7 +58,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each tagState.tracks as track, i (track.path)}
+        {#each trackStore.tracks as track, i (track.path)}
           <tr
             class="track-row"
             class:selected={selectionState.has(track)}
@@ -127,7 +127,7 @@
   }
 
   .track-row:hover {
-    background-color: var(--hover-bg);
+    background-color: var(--bg-hover);
   }
 
   /* --- 選択ハイライトとアクセント・バー --- */

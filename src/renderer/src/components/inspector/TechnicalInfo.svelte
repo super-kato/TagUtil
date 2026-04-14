@@ -1,8 +1,5 @@
 <script lang="ts">
-  import { tagState } from '../../stores/tag-state.svelte';
-
-  const CHANNELS_MONO = 1;
-  const CHANNELS_STEREO = 2;
+  import { trackStore } from '../../stores/track-store.svelte';
 
   const formatHz = (hz: number | undefined): string => {
     if (hz === undefined) {
@@ -10,27 +7,13 @@
     }
     return hz.toLocaleString() + ' Hz';
   };
-
-  const formatChannels = (ch: number | undefined): string => {
-    if (ch === undefined) {
-      return '-';
-    }
-    if (ch === CHANNELS_MONO) {
-      return 'Mono';
-    }
-    if (ch === CHANNELS_STEREO) {
-      return 'Stereo';
-    }
-    return `${ch} ch`;
-  };
 </script>
 
 <div class="technical-info">
-  <!-- 複数選択時でも共通なら表示する項目 -->
-  {#if tagState.commonMetadata}
-    {@const sampleRateState = tagState.commonMetadata.sampleRate}
-    {@const bitDepthState = tagState.commonMetadata.bitDepth}
-    {@const channelsState = tagState.commonMetadata.channels}
+  {#if trackStore.commonMetadata}
+    {@const sampleRateState = trackStore.commonMetadata.sampleRate}
+    {@const bitDepthState = trackStore.commonMetadata.bitDepth}
+    {@const channelsState = trackStore.commonMetadata.channels}
 
     <div class="info-group">
       <div class="info-label">Sample Rate / Bit Depth</div>
@@ -53,7 +36,7 @@
       <div class="info-label">Channels</div>
       <div class="info-value">
         {#if channelsState?.type === 'uniform'}
-          {formatChannels(channelsState.value)}
+          {channelsState.value} ch
         {:else}
           Mixed
         {/if}
@@ -61,9 +44,8 @@
     </div>
   {/if}
 
-  <!-- 単一選択時のみの意味がある項目 -->
-  {#if tagState.selectedTracks.length === 1}
-    {@const track = tagState.selectedTracks[0]}
+  {#if trackStore.selectedTracks.length === 1}
+    {@const track = trackStore.selectedTracks[0]}
     <div class="info-group">
       <div class="info-label">Duration</div>
       <div class="info-value">{Math.floor(track.metadata.streamInfo?.duration ?? 0)} s</div>
@@ -82,7 +64,7 @@
   .technical-info {
     margin-top: 1rem;
     padding-top: 1rem;
-    border-top: 1px solid #333;
+    border-top: 1px solid var(--border-primary);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -96,7 +78,7 @@
 
   .info-label {
     font-size: 0.65rem;
-    color: #666;
+    color: var(--text-muted);
     text-transform: uppercase;
     font-weight: bold;
     letter-spacing: 0.5px;
@@ -104,7 +86,7 @@
 
   .info-value {
     font-size: 0.75rem;
-    color: #999;
+    color: var(--text-secondary);
   }
 
   .path-text {

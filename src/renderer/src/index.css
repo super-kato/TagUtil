@@ -4,8 +4,7 @@
   --bg-main: #1e1e1e;
   --bg-inspector: #1e1e1e;
   --bg-header: #1e1e1e;
-  --bg-input: #333;
-  --bg-input-focus: #3a3a3a;
+  --bg-secondary: #252525;
 
   /* 境界線と装飾 */
   --border-primary: #444;
@@ -18,11 +17,9 @@
   --text-secondary: #ccc;
   --text-muted: #888;
   --text-dim: #666;
-  --text-on-accent: #000000;
 
   /* アクセントと状態 (より鮮やかなネオンライム) */
   --accent-primary: #adff2f;
-  --accent-hover: #bfff00;
   --accent-modified: #ff9500;
   --accent-error: #ff3b30;
   --accent-warning: #ff9f0a;
@@ -30,10 +27,17 @@
   /* 透過済みカラーのプリセット (HEX Alpha) */
   --bg-overlay: #1e1e1ee6;
   --selection-bg: #ffffff08;
-  --hover-bg: #ffffff05;
+  --bg-hover: #ffffff05;
   --selection-glow: #adff2fcc;
   --accent-modified-glow: #ff950066;
   --accent-primary-dim: #adff2f1a;
+
+  /* 角丸 */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-xl: 12px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
 }
 
 *,
@@ -65,7 +69,7 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background: var(--scrollbar-thumb);
-  border-radius: 5px;
+  border-radius: var(--radius-md);
   border: 2px solid transparent;
   background-clip: padding-box;
 }
@@ -97,42 +101,43 @@ body {
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .field label {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-dim);
 }
 
 .field input {
-  background-color: var(--bg-input);
+  padding: 0.6rem 0.8rem;
+  background-color: var(--bg-hover);
   border: 1px solid var(--border-primary);
-  padding: 0.6rem;
-  border-radius: 6px;
-  color: white;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
   font-size: 0.9rem;
+  outline: none;
   width: 100%;
   box-sizing: border-box;
   font-family: inherit;
-  transition:
-    border-color 0.2s,
-    background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .field input:focus {
-  outline: none;
-  border-color: var(--accent-hover);
-  background-color: var(--bg-input-focus);
+  border-color: var(--accent-primary);
+  background-color: var(--bg-secondary);
 }
 
 .field input.disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  background-color: #2a2a2a; /* この特定の色は bg-header と同じだが意図を聞いていないため固定 */
+  color: var(--text-muted);
+  font-style: italic;
+  cursor: default;
+  opacity: 0.7;
+}
+
+.field input.disabled::placeholder {
+  color: var(--text-muted);
 }
 
 .field-row {

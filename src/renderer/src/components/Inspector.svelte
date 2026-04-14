@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { tagState } from '../stores/tag-state.svelte';
+  import { trackStore } from '../stores/track-store.svelte';
   import ArtworkSection from './inspector/ArtworkSection.svelte';
   import BasicFields from './inspector/BasicFields.svelte';
   import GenreSection from './inspector/GenreSection.svelte';
@@ -8,7 +8,7 @@
 </script>
 
 <aside class="inspector">
-  {#if tagState.selectedTracks.length > 0}
+  {#if trackStore.selectedTracks.length > 0}
     <ArtworkSection />
 
     <div class="field-container">

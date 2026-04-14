@@ -1,12 +1,13 @@
 import type { EditableSingleKey } from '@domain/editor/batch-metadata';
-import { tagState } from '../../stores/tag-state.svelte';
+import { trackStore } from '../../stores/track-store.svelte';
+import { tagActions } from '../../services/tag-actions';
 
 /**
- * 単一値フィールドの入力イベントを処理し、tagState を更新します。
+ * 単一値フィールドの入力イベントを処理し、trackStore を更新します。
  */
 export const handleSingleInput = (key: EditableSingleKey, e: Event): void => {
   const input = e.target as HTMLInputElement;
-  tagState.updateSelectedSingleField(key, input.value);
+  tagActions.updateSelectedSingleField(key, input.value);
 };
 
 /**
@@ -14,7 +15,7 @@ export const handleSingleInput = (key: EditableSingleKey, e: Event): void => {
  * Mixed Value（複数選択で値が異なる）状態の場合は、表示を空にします。
  */
 export const getSingleFieldValue = (key: EditableSingleKey): string => {
-  const common = tagState.commonMetadata;
+  const common = trackStore.commonMetadata;
   if (!common) {
     return '';
   }

@@ -1,6 +1,7 @@
 <script lang="ts">
   import { DEFAULT_GENRES } from '@domain/flac/types';
-  import { tagState } from '../../stores/tag-state.svelte';
+  import { trackStore } from '../../stores/track-store.svelte';
+  import { tagActions } from '../../services/tag-actions';
   import BadgeField from './BadgeField.svelte';
 
   const MAX_QUICK_GENRES = 4;
@@ -9,13 +10,13 @@
   const applyGenre = (genre: string): void => {
     const trimmed = genre.trim();
     if (trimmed) {
-      tagState.addSelectedMultiFieldValue('genre', trimmed);
+      tagActions.addSelectedMultiFieldValue('genre', trimmed);
     }
   };
 </script>
 
-{#if tagState.commonMetadata}
-  {@const commonMetadata = tagState.commonMetadata}
+{#if trackStore.commonMetadata}
+  {@const commonMetadata = trackStore.commonMetadata}
   {@const genreState = commonMetadata.genre}
   <div class="genre-section">
     <BadgeField
@@ -23,7 +24,7 @@
       values={genreState.type === 'uniform' ? (genreState.value ?? []) : []}
       isUniform={genreState.type === 'uniform'}
       onAdd={(v) => applyGenre(v)}
-      onRemove={(i) => tagState.removeSelectedMultiFieldValue('genre', i)}
+      onRemove={(i) => tagActions.removeSelectedMultiFieldValue('genre', i)}
     />
 
     <div class="quick-genres">
@@ -53,9 +54,9 @@
     padding: 0.25rem 0.75rem;
     border-radius: var(--radius-full);
     background: var(--bg-secondary);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border-primary);
     font-size: 0.75rem;
-    color: var(--text-muted);
+    color: var(--text-dim);
     cursor: pointer;
     transition: all 0.2s;
   }

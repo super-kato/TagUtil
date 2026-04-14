@@ -56,6 +56,14 @@ export interface FlacMetadata {
 }
 
 /**
+ * FLACファイルとそのメタデータのペアを表すドメインモデル。
+ */
+export interface FlacTrack {
+  path: string;
+  metadata: FlacMetadata;
+}
+
+/**
  * トラックのアートワーク情報。
  *
  * IPC通信のボトルネックとレンダラープロセスのメモリ圧迫を避けるため、

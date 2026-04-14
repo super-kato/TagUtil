@@ -1,5 +1,5 @@
 import { failure, success } from '@domain/common/result';
-import { FlacMetadata, TagResult, tagErrors } from '@domain/flac/types';
+import { FlacMetadata, FlacTrack, TagResult, tagErrors } from '@domain/flac/types';
 import { writeFlacTags } from 'flac-tagger';
 import fs from 'fs/promises';
 import { hasErrorCode, toTagResultFailure } from '../../utils/error-handler';
@@ -9,10 +9,8 @@ import { mergeMetadataWithTags } from './tag-merger';
 /**
  * 指定されたパスのFLACファイルへメタデータを書き込みます。
  */
-export const writeMetadata = async (
-  path: string,
-  metadata: FlacMetadata
-): Promise<TagResult<void>> => {
+export const writeMetadata = async (track: FlacTrack): Promise<TagResult<void>> => {
+  const { path, metadata } = track;
   // 1. バリデーション
   const existResult = await ensureFileExists(path);
   if (existResult.type === 'error') {
