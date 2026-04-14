@@ -1,5 +1,4 @@
 import type { FlacTrack, Picture, ScanResult, TagResult } from '@domain/flac/types';
-import { ResolvedPath } from '@domain/common/system';
 
 /**
  * カスタムプロトコルのスキーム名。
@@ -19,9 +18,7 @@ export const IPC_CHANNELS = {
   /** ディレクトリ内のFLACファイルを探索 */
   SCAN_DIRECTORY: 'flac:scan-directory',
   /** 画像ファイルを選択して読み込み */
-  PICK_IMAGE: 'flac:pick-image',
-  /** パスの一覧に対して種別（ファイル/ディレクトリ）を判定 */
-  RESOLVE_PATHS: 'flac:resolve-paths'
+  PICK_IMAGE: 'flac:pick-image'
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -36,12 +33,10 @@ export interface IpcApi {
   writeMetadata: (track: FlacTrack) => Promise<TagResult<void>>;
   /** フォルダ選択ダイアログを表示し、選択されたパスを返します */
   selectDirectory: () => Promise<string | null>;
-  /** 指定されたディレクトリ内のFLACファイルのパスリストを返します */
-  scanDirectory: (dirPath: string) => Promise<TagResult<ScanResult>>;
+  /** 指定されたパス（ファイルまたはディレクトリ）内のFLACファイルのパスリストを返します */
+  scanDirectory: (targetPaths: string[]) => Promise<TagResult<ScanResult>>;
   /** 画像ファイルを選択し、メタデータ用の Picture オブジェクトを返します */
   pickImage: () => Promise<TagResult<Picture | null>>;
   /** File オブジェクトから OS 上のファイルシステムパスを取得します */
   getPathForFile: (file: File) => string;
-  /** 複数パスの種別を判定します */
-  resolvePaths: (targetPaths: string[]) => Promise<ResolvedPath[]>;
 }

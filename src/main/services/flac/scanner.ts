@@ -1,9 +1,10 @@
 import { success } from '@domain/common/result';
+import { ResolvedPath } from '@domain/common/system';
 import { ScanResult, tagErrors, TagResult } from '@domain/flac/types';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { isSupportedAudioFile, isHiddenPath } from '../../utils/file-utils';
 import { toTagResultFailure } from '../../utils/error-handler';
+import { determinePathType, resolvePaths } from './path-resolver';
 
 /**
  * スキャンするファイルの最大件数。
@@ -12,58 +13,98 @@ import { toTagResultFailure } from '../../utils/error-handler';
 const MAX_SCAN_FILES = 500;
 
 /**
- * 指定されたディレクトリから、再帰的に .flac ファイルのパスを探索します。
- * @param dirPath 探索対象のディレクトリパス
+ * 探索処理の状態を管理するコンテキスト。
+ */
+interface ScanContext {
+  paths: string[];
+  isLimited: boolean;
+}
+
+/**
+ * 指定された複数のパス（ファイルまたはディレクトリ）から、再帰的に .flac ファイルのパスを探索します。
+ * @param targetPaths 探索対象のパスの配列
  * @returns 見つかった FLAC ファイルの絶対パスの配列と制限フラグを含むオブジェクト
  */
-export const scanDirectory = async (dirPath: string): Promise<TagResult<ScanResult>> => {
+export const scanDirectory = async (targetPaths: string[]): Promise<TagResult<ScanResult>> => {
   try {
-    const paths: string[] = [];
-    const isLimited = await performScan(dirPath, paths);
-    return success({
-      paths: paths.sort(),
-      isLimited
-    });
+    const result = await collectTracksFromPaths(targetPaths);
+    return success({ paths: formatResultPaths(result.paths), isLimited: result.isLimited });
   } catch (error: unknown) {
-    return toTagResultFailure(error, tagErrors.scanFailed, { path: dirPath });
+    const representativePath = targetPaths[0] ?? '';
+    return toTagResultFailure(error, tagErrors.scanFailed, { path: representativePath });
   }
 };
 
 /**
- * 再帰的なスキャンの実行実体
- * @returns 上限に達して打ち切られた場合は true
+ * 与えられた複数のルートパスから、条件に合うファイルを収集します（内部用）。
  */
-const performScan = async (dirPath: string, accumulator: string[]): Promise<boolean> => {
-  // すでに上限に達している場合は探索しない
-  if (accumulator.length >= MAX_SCAN_FILES) {
+const collectTracksFromPaths = async (targetPaths: string[]): Promise<ScanResult> => {
+  const resolved = await resolvePaths(targetPaths);
+  const context: ScanContext = { paths: [], isLimited: false };
+  for (const item of resolved) {
+    if (item.type === 'unknown') {
+      continue;
+    }
+    if (await processScanEntry(item, context)) {
+      break;
+    }
+  }
+  return context;
+};
+
+/**
+ * 指定されたエントリ（ファイルまたはディレクトリ）を再帰的に処理します（内部用）。
+ * @param item 処理対象のエントリ
+ * @param context 探索状態のコンテキスト
+ * @returns 上限に達した場合は true、それ以外は false
+ */
+const processScanEntry = async (item: ResolvedPath, context: ScanContext): Promise<boolean> => {
+  // すでに上限に達している場合は何もしない
+  if (context.isLimited) {
     return true;
   }
+  if (item.type === 'unknown') {
+    return false;
+  }
+  if (item.type === 'file') {
+    return processFileEntry(item.path, context);
+  }
+  return processDirectoryEntry(item.path, context);
+};
 
-  const items = await readdir(dirPath, { withFileTypes: true });
+/**
+ * 単独のファイルをプロセスに追加し、上限を確認します（内部用）。
+ */
+const processFileEntry = (path: string, context: ScanContext): boolean => {
+  context.paths.push(path);
+  if (context.paths.length >= MAX_SCAN_FILES) {
+    context.isLimited = true;
+    return true;
+  }
+  return false;
+};
 
-  for (const item of items) {
-    if (isHiddenPath(item.name)) {
+/**
+ * ディレクトリ内の各エントリを走査します（内部用）。
+ */
+const processDirectoryEntry = async (dirPath: string, context: ScanContext): Promise<boolean> => {
+  const entries = await readdir(dirPath, { withFileTypes: true });
+  for (const entry of entries) {
+    const type = determinePathType(entry.name, entry);
+    if (type === 'unknown') {
       continue;
     }
-
-    const fullPath = join(dirPath, item.name);
-
-    if (item.isDirectory()) {
-      const isLimited = await performScan(fullPath, accumulator);
-      if (isLimited) {
-        return true;
-      }
-      continue;
-    }
-
-    if (item.isFile() && isSupportedAudioFile(item.name)) {
-      accumulator.push(fullPath);
-      // ファイル追加直後に上限チェック
-      if (accumulator.length >= MAX_SCAN_FILES) {
-        return true;
-      }
+    const path = join(dirPath, entry.name);
+    if (await processScanEntry({ path, type }, context)) {
+      return true;
     }
   }
-
   return false;
+};
+
+/**
+ * 結果となるパス一覧の加工（重複排除とソート）。
+ */
+const formatResultPaths = (paths: string[]): string[] => {
+  return Array.from(new Set(paths)).sort();
 };

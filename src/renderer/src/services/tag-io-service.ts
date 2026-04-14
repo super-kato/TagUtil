@@ -10,37 +10,6 @@ import type { FlacTrack, Picture, TagResult } from '@domain/flac/types';
  */
 
 /**
- * 与えられたパス（ファイルまたはディレクトリ）から FLAC ファイルのパスを一括収集します。
- */
-const collectFilePaths = async (
-  targetPaths: string[]
-): Promise<{ filePaths: string[]; isLimited: boolean }> => {
-  const resolvedPaths = await window.api.resolvePaths(targetPaths);
-  const allFilePaths: string[] = [];
-  let isLimited = false;
-
-  for (const item of resolvedPaths) {
-    if (item.type === 'unknown') {
-      continue;
-    }
-    if (item.type === 'file') {
-      allFilePaths.push(item.path);
-      continue;
-    }
-    const scanResult = await window.api.scanDirectory(item.path);
-    if (scanResult.type !== 'success') {
-      continue;
-    }
-    allFilePaths.push(...scanResult.value.paths);
-    if (scanResult.value.isLimited) {
-      isLimited = true;
-    }
-  }
-
-  return { filePaths: Array.from(new Set(allFilePaths)), isLimited };
-};
-
-/**
  * 1つのファイルに対してメタデータの読込を行います。
  */
 const loadSingleTrack = async (path: string): Promise<TagResult<FlacTrack>> => {
@@ -73,7 +42,6 @@ const scanAndLoadTracks = async (): Promise<
   if (!dirPath) {
     return success(null);
   }
-
   return await loadTracksFromPaths([dirPath]);
 };
 
@@ -83,7 +51,12 @@ const scanAndLoadTracks = async (): Promise<
 const loadTracksFromPaths = async (
   targetPaths: string[]
 ): Promise<TagResult<{ tracks: FlacTrack[]; isLimited: boolean }>> => {
-  const { filePaths, isLimited } = await collectFilePaths(targetPaths);
+  const scanResult = await window.api.scanDirectory(targetPaths);
+  if (scanResult.type === 'error') {
+    return scanResult;
+  }
+
+  const { paths: filePaths, isLimited } = scanResult.value;
   const tracks = await loadTracksFromFiles(filePaths);
 
   return success({ tracks, isLimited });
@@ -117,11 +90,7 @@ const pickImage = async (): Promise<TagResult<Picture | null>> => {
 };
 
 /**
- * メインプロセスとの通信（IPC）を担当するサービス。
- * インフラ層の責務として、外部の API をカプセル化します。
- * UI専用のモデル（TrackRecord）や表示用URLの生成には関知しません。
- *
- * このファイルは状態を持たない純粋な関数/オブジェクトの集まりです。
+ * タグ I/O サービスの実体。
  */
 export const tagIoService = {
   scanAndLoadTracks,

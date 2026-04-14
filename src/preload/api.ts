@@ -23,10 +23,11 @@ export const api: IpcApi = {
    */
   selectDirectory: () => ipcRenderer.invoke(IPC_CHANNELS.SELECT_DIRECTORY),
   /**
-   * 指定したディレクトリ内のFLACファイルをスキャンします。
-   * @param dirPath ディレクトリの絶対パス
+   * 指定したパス（ファイルまたはディレクトリ）内のFLACファイルをスキャンします。
+   * @param targetPaths ファイルまたはディレクトリの絶対パスの配列
    */
-  scanDirectory: (dirPath: string) => ipcRenderer.invoke(IPC_CHANNELS.SCAN_DIRECTORY, dirPath),
+  scanDirectory: (targetPaths: string[]) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SCAN_DIRECTORY, targetPaths),
   /**
    * 画像ファイルを選択し、メタデータ用の Picture オブジェクトを返します。
    */
@@ -35,12 +36,7 @@ export const api: IpcApi = {
    * File オブジェクトから OS 上のファイルシステムパスを取得します。
    * Electron v28+ で非推奨となった File.path の代替です。
    */
-  getPathForFile: (file: File) => webUtils.getPathForFile(file),
-  /**
-   * 複数パスの種別（ファイル/ディレクトリ）を判定します。
-   */
-  resolvePaths: (targetPaths: string[]) =>
-    ipcRenderer.invoke(IPC_CHANNELS.RESOLVE_PATHS, targetPaths)
+  getPathForFile: (file: File) => webUtils.getPathForFile(file)
 };
 
 export type Api = typeof api;

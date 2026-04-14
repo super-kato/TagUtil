@@ -1,6 +1,5 @@
 import { FlacTrack } from '@domain/flac/types';
 import { pickImage } from '@services/flac/image';
-import { resolvePaths } from '@services/flac/path-resolver';
 import { readMetadata } from '@services/flac/reader';
 import { scanDirectory } from '@services/flac/scanner';
 import { writeMetadata } from '@services/flac/writer';
@@ -21,18 +20,13 @@ export const registerFlacHandlers = (): void => {
     return await writeMetadata(track);
   });
 
-  // 指定されたディレクトリ内のFLACファイルを探索
-  ipcMain.handle(IPC_CHANNELS.SCAN_DIRECTORY, async (_event, dirPath: string) => {
-    return await scanDirectory(dirPath);
+  // 指定されたパス内のFLACファイルを探索
+  ipcMain.handle(IPC_CHANNELS.SCAN_DIRECTORY, async (_event, targetPaths: string[]) => {
+    return await scanDirectory(targetPaths);
   });
 
   // 画像ファイルを選択・読み込み
   ipcMain.handle(IPC_CHANNELS.PICK_IMAGE, async () => {
     return await pickImage();
-  });
-
-  // 複数パスの種別を判定
-  ipcMain.handle(IPC_CHANNELS.RESOLVE_PATHS, async (_event, targetPaths: string[]) => {
-    return await resolvePaths(targetPaths);
   });
 };

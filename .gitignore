@@ -34,3 +34,4 @@ yarn-error.log*
 samples/
 
 .todo.md
+.agents/
