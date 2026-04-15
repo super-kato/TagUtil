@@ -19,8 +19,6 @@ export const initAutoUpdater = (): void => {
 export const checkForUpdates = async (): Promise<void> => {
   try {
     const result = await autoUpdater.checkForUpdates();
-
-    // If no update (result is null or version is the same)
     if (!result || result.updateInfo.version === autoUpdater.currentVersion.version) {
       await dialog.showMessageBox({
         type: 'info',
@@ -30,13 +28,8 @@ export const checkForUpdates = async (): Promise<void> => {
       });
       return;
     }
-
-    // If update available, continue with standard notification and download
     await autoUpdater.checkForUpdatesAndNotify();
-  } catch (err) {
-    dialog.showErrorBox(
-      'Update Error',
-      `An error occurred while checking for updates:\n${err instanceof Error ? err.message : String(err)}`
-    );
+  } catch {
+    dialog.showErrorBox('Update Error', `An error occurred while checking for updates`);
   }
 };

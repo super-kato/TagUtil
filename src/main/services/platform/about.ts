@@ -19,7 +19,7 @@ export const showAboutWindow = (): void => {
       `Electron: ${process.versions.electron}\n` +
       `Chrome: ${process.versions.chrome}\n` +
       `Node.js: ${process.versions.node}\n\n` +
-      `Copyright (c) 2026 katouyoshiaki\n` +
+      `Copyright (c) 2026 super-kato\n` +
       `https://github.com/super-kato/TagUtil`,
     buttons: ['OK', 'Acknowledgements'],
     defaultId: 0,

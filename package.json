@@ -1,9 +1,9 @@
 {
   "name": "tag-util",
-  "version": "0.9.7",
+  "version": "0.9.10",
   "description": "Functional FLAC metadata editor with Svelte 5 TagState",
   "main": "./out/main/index.js",
-  "author": "katouyoshiaki",
+  "author": "super-kato",
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --plugin prettier-plugin-svelte --write .",
