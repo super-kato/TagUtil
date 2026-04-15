@@ -4,8 +4,11 @@
   import StatusBar from './components/StatusBar.svelte';
   import Toolbar from './components/Toolbar.svelte';
   import TrackGrid from './components/TrackGrid.svelte';
+  import KeyboardShortcuts from './components/KeyboardShortcuts.svelte';
   import { tagActions } from './services/tag-actions';
 </script>
+
+<KeyboardShortcuts />
 
 <DropZone onDrop={(paths) => tagActions.loadFromPaths(paths)}>
   <div class="app-container" role="region" aria-label="Application container">

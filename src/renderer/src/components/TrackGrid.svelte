@@ -23,26 +23,7 @@
       lastSelectedIndex = index;
     }
   };
-
-  const handleKeydown = (e: KeyboardEvent): void => {
-    // Ctrl + A または Cmd + A を検知
-    const isA = e.key.toLowerCase() === 'a';
-    const isMod = e.ctrlKey || e.metaKey;
-
-    if (isA && isMod) {
-      // 入力フィールドやフォーム要素にフォーカスがある場合は、ブラウザのデフォルト動作を優先する
-      const active = document.activeElement;
-      if (active && (active.tagName === 'INPUT' || (active as HTMLElement).isContentEditable)) {
-        return;
-      }
-
-      e.preventDefault();
-      selectionState.selectAll(trackStore.tracks);
-    }
-  };
 </script>
-
-<svelte:window onkeydown={handleKeydown} />
 
 <div class="grid-wrapper">
   {#if trackStore.tracks.length > 0}
