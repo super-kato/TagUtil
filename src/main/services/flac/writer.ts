@@ -1,11 +1,12 @@
+import { failure, success } from '@domain/common/result';
 import { FlacMetadata, FlacTrack, TagResult, tagErrors } from '@domain/flac/types';
 import { writeFlacTags } from 'flac-tagger';
-import fs from 'fs/promises';
-import { failure, success } from '@domain/common/result';
+import fs from 'node:fs/promises';
 import { hasErrorCode, toTagResultFailure } from '../../utils/error-handler';
-import { readRawData } from './reader';
+import { withAtomicWrite } from '../../utils/file-utils';
 import { mergeMetadataWithTags } from './mappers/flac-write-mapper';
 import { resolvePictureForWrite } from './mappers/flac-write-picture-resolver';
+import { readRawData } from './reader';
 
 /**
  * 指定されたパスのFLACファイルへメタデータを書き込みます。
@@ -71,16 +72,8 @@ const performWrite = async (filePath: string, metadata: FlacMetadata): Promise<T
   const picture = await resolvePictureForWrite(metadata.picture, rawData);
 
   const mergedTags = mergeMetadataWithTags(rawData, metadata, picture);
-  const tempPath = `${filePath}.tmp`;
-  await fs.copyFile(filePath, tempPath, fs.constants.COPYFILE_FICLONE);
-  try {
-    await writeFlacTags(mergedTags, tempPath);
-    await fs.rename(tempPath, filePath);
-    return success(undefined);
-  } catch (error: unknown) {
-    await fs.unlink(tempPath).catch((err) => {
-      console.warn(`[Writer] Failed to cleanup temporary file: ${tempPath}`, err);
-    });
-    throw error;
-  }
+
+  await withAtomicWrite(filePath, async (tempPath) => await writeFlacTags(mergedTags, tempPath));
+
+  return success(undefined);
 };
