@@ -1,10 +1,11 @@
-import { failure, success } from '@domain/common/result';
 import { FlacMetadata, FlacTrack, TagResult, tagErrors } from '@domain/flac/types';
 import { writeFlacTags } from 'flac-tagger';
 import fs from 'fs/promises';
+import { failure, success } from '@domain/common/result';
 import { hasErrorCode, toTagResultFailure } from '../../utils/error-handler';
 import { readRawData } from './reader';
-import { mergeMetadataWithTags } from './tag-merger';
+import { mergeMetadataWithTags } from './mappers/flac-write-mapper';
+import { resolvePictureForWrite } from './mappers/flac-write-picture-resolver';
 
 /**
  * 指定されたパスのFLACファイルへメタデータを書き込みます。
@@ -65,7 +66,11 @@ const ensureFileWritable = async (path: string): Promise<TagResult<void>> => {
  */
 const performWrite = async (filePath: string, metadata: FlacMetadata): Promise<TagResult<void>> => {
   const rawData = await readRawData(filePath);
-  const mergedTags = await mergeMetadataWithTags(rawData, metadata, filePath);
+
+  // 書き込み用の最終的な画像を解決（既存維持、削除、更新のいずれか）
+  const picture = await resolvePictureForWrite(metadata.picture, rawData);
+
+  const mergedTags = mergeMetadataWithTags(rawData, metadata, picture);
   const tempPath = `${filePath}.tmp`;
   await fs.copyFile(filePath, tempPath, fs.constants.COPYFILE_FICLONE);
   try {

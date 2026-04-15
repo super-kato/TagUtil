@@ -4,6 +4,9 @@ import { StreamInfo } from '@domain/flac/types';
  * ライブラリに依存しない、FLACの生のメタデータ構造。
  */
 export interface RawFlacData {
+  /** 対象ファイルの絶対パス */
+  path: string;
+
   /**
    * Vorbis Comment タグ。
    * キーは常に大文字で保持し、値は重複を許容するため配列で保持します。
