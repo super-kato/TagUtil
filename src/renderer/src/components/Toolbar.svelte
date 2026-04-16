@@ -14,6 +14,7 @@
     <button
       class="btn secondary"
       onclick={() => tagActions.openAndScanDirectory()}
+      disabled={uiState.isLoading}
       title="Open Directory"
     >
       <FolderOpen size={UI_TOKENS.icons.size} />

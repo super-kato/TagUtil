@@ -12,7 +12,7 @@
     "svelte-check": "svelte-check --tsconfig ./tsconfig.json",
     "typecheck": "pnpm svelte-check && pnpm typecheck:node",
     "start": "electron-vite preview",
-    "dev": "electron-vite dev",
+    "dev": "pnpm generate-licenses && electron-vite dev",
     "build": "pnpm generate-licenses && pnpm typecheck && electron-vite build",
     "generate-licenses": "node --experimental-strip-types scripts/generate-licenses.ts",
     "postinstall": "electron-builder install-app-deps",

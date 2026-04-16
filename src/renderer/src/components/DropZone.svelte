@@ -2,6 +2,7 @@
   import { FolderOpen } from 'lucide-svelte';
   import type { Snippet } from 'svelte';
   import { UI_TOKENS } from '../constants/design-system';
+  import { uiState } from '../stores/ui-state.svelte';
   import { getAllPathsFromDropEvent } from '../utils/drag-drop';
 
   interface Props {
@@ -34,6 +35,10 @@
     e.preventDefault();
     e.stopPropagation();
     isDragging = false;
+
+    if (uiState.isLoading) {
+      return;
+    }
 
     const paths = getAllPathsFromDropEvent(e);
     if (paths.length > 0) {
