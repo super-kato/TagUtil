@@ -30,7 +30,7 @@ jobs:
         run: |
           echo "### Test Coverage" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          pnpm test --reporter=default >> $GITHUB_STEP_SUMMARY
+          pnpm test --reporter=default --no-color >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
