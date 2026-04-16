@@ -14,6 +14,15 @@ jobs:
       - name: リポジトリのチェックアウト
         uses: actions/checkout@v6
 
+      - name: バージョン整合性チェック
+        run: |
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          TAG_VERSION=${GITHUB_REF_NAME#v}
+          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
+            echo "::error::バージョン不一致 pkg:$PKG_VERSION, tag:$TAG_VERSION"
+            exit 1
+          fi
+
       - name: Node.js のセットアップ
         uses: actions/setup-node@v6
         with:

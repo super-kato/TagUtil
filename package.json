@@ -20,7 +20,8 @@
     "build:win": "pnpm build && electron-builder --win --publish never",
     "build:mac": "pnpm build && electron-builder --mac --publish never",
     "sign": "dotenv -- pnpm build:mac",
-    "test": "vitest"
+    "test": "vitest",
+    "release": "pnpm version patch && git push origin main --follow-tags"
   },
   "dependencies": {},
   "devDependencies": {
