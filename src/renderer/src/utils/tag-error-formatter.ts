@@ -1,4 +1,4 @@
-import { TAG_ERROR_TYPES, type TagError } from '@domain/flac/types';
+import { type TagError } from '@domain/flac/types';
 
 /**
  * TagError かどうかの型ガード
@@ -8,7 +8,8 @@ const isTagError = (error: unknown): error is TagError => {
     !!error &&
     typeof error === 'object' &&
     'type' in error &&
-    (TAG_ERROR_TYPES as readonly unknown[]).includes((error as { type: unknown }).type)
+    'options' in error &&
+    typeof (error as { options: unknown }).options === 'object'
   );
 };
 

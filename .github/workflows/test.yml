@@ -10,23 +10,27 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3
+      - name: pnpm のセットアップ
+        uses: pnpm/action-setup@v5
         with:
           version: latest
 
-      - name: Install dependencies
+      - name: 依存関係のインストール
         run: pnpm install
 
-      - name: Run tests with coverage
-        run: pnpm test:cov
+      - name: テストの実行およびカバレッジ計測
+        run: |
+          echo "### Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          pnpm test --reporter=default >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

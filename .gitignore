@@ -6,7 +6,7 @@ node_modules/
 # Build outputs
 out
 dist
-coverage
+coverage/
 *.vsix
 
 # IDEs
