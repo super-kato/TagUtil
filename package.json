@@ -21,9 +21,9 @@
     "build:mac": "pnpm build && electron-builder --mac --publish never",
     "sign": "dotenv -- pnpm build:mac",
     "test": "vitest",
+    "test:cov": "vitest run --coverage",
     "release": "pnpm version patch && git push origin main --follow-tags"
   },
-  "dependencies": {},
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
     "@electron-toolkit/eslint-config-ts": "^3.1.0",
@@ -32,6 +32,7 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.0",
     "@types/node": "^22.19.1",
+    "@vitest/coverage-v8": "^4.1.4",
     "dotenv-cli": "^11.0.0",
     "electron": "^39.2.6",
     "electron-builder": "^26.0.12",
