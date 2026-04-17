@@ -17,7 +17,7 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: flac-trigger
+  executableName: tag-util
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
