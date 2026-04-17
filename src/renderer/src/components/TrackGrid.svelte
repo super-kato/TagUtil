@@ -1,26 +1,33 @@
 <script lang="ts">
   import { selectionState } from '../stores/selection-state.svelte';
-  import { trackStore } from '../stores/track-store.svelte';
   import { TrackRecord } from '../stores/track-record.svelte';
+  import { trackStore } from '../stores/track-store.svelte';
 
-  // 範囲選択（Shift + クリック）のために、最後にクリックされた行のインデックスを保持
-  let lastSelectedIndex = $state<number | null>(null);
+  const rowElements: HTMLElement[] = [];
+
+  // 選択インデックスの変更に合わせて自動スクロール
+  $effect(() => {
+    const index = selectionState.lastSelectedIndex;
+    if (index === null) {
+      return;
+    }
+    const row = rowElements[index];
+    if (!row) {
+      return;
+    }
+    row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  });
 
   const handleRowClick = (e: MouseEvent, index: number, track: TrackRecord): void => {
-    if (e.shiftKey && lastSelectedIndex !== null) {
+    if (e.shiftKey && selectionState.lastSelectedIndex !== null) {
       // 範囲選択
-      const start = Math.min(lastSelectedIndex, index);
-      const end = Math.max(lastSelectedIndex, index);
+      const start = Math.min(selectionState.lastSelectedIndex, index);
+      const end = Math.max(selectionState.lastSelectedIndex, index);
       const tracksToSelect = trackStore.tracks.slice(start, end + 1);
       selectionState.selectRange(tracksToSelect);
-    } else if (e.metaKey || e.ctrlKey) {
-      // トグル選択（個別追加・解除）
-      selectionState.toggle(track);
-      lastSelectedIndex = index;
     } else {
       // 単一選択（他を解除）
-      selectionState.selectSingle(track);
-      lastSelectedIndex = index;
+      selectionState.selectSingle(track, index);
     }
   };
 </script>
@@ -41,6 +48,7 @@
       <tbody>
         {#each trackStore.tracks as track, i (track.path)}
           <tr
+            bind:this={rowElements[i]}
             class="track-row"
             class:selected={selectionState.has(track)}
             class:modified={track.isModified}

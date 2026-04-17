@@ -4,38 +4,35 @@
   import { uiState } from '../stores/ui-state.svelte';
   import { tagActions } from '../services/tag-actions';
 
-  // 編集中の要素（INPUT等）にフォーカスがあるか判定
+  /**
+   * 編集中の要素（INPUT等）にフォーカスがあるか判定します。
+   */
   const isEditing = (): boolean => {
     const active = document.activeElement;
     return !!(active && (active.tagName === 'INPUT' || (active as HTMLElement).isContentEditable));
   };
 
-  // 全選択アクション
+  /**
+   * 全選択アクションを実行します。
+   */
   const handleSelectAll = (e: KeyboardEvent): void => {
-    if (isEditing()) {
-      return;
-    }
     e.preventDefault();
     selectionState.selectAll(trackStore.tracks);
   };
 
-  // 保存アクション
+  /**
+   * 全修正の保存アクションを実行します。
+   */
   const handleSave = (e: KeyboardEvent): void => {
-    if (isEditing()) {
-      return;
-    }
     e.preventDefault();
     tagActions.saveAllModified();
   };
 
-  const handleKeydown = (e: KeyboardEvent): void => {
-    // Ctrl(Cmd) キーが押されていない場合は何もしない
-    if (!(e.ctrlKey || e.metaKey)) {
-      return;
-    }
-
-    // 処理中の場合はすべてのショートカットを無視
-    if (uiState.isLoading) {
+  /**
+   * Modifier (Ctrl/Cmd) 系ショートカット（Save, SelectAll など）を処理します。
+   */
+  const handleModifierShortcuts = (e: KeyboardEvent): void => {
+    if (uiState.isLoading || isEditing()) {
       return;
     }
 
@@ -46,6 +43,34 @@
       case 's':
         handleSave(e);
         break;
+    }
+  };
+
+  /**
+   * ナビゲーション（上下移動）系ショートカットを処理します。
+   */
+  const handleNavigation = (e: KeyboardEvent): void => {
+    if (isEditing()) {
+      return;
+    }
+
+    switch (e.key) {
+      case 'ArrowUp':
+        e.preventDefault();
+        selectionState.selectPrevious(trackStore.tracks);
+        break;
+      case 'ArrowDown':
+        e.preventDefault();
+        selectionState.selectNext(trackStore.tracks);
+        break;
+    }
+  };
+
+  const handleKeydown = (e: KeyboardEvent): void => {
+    if (e.ctrlKey || e.metaKey) {
+      handleModifierShortcuts(e);
+    } else {
+      handleNavigation(e);
     }
   };
 </script>
