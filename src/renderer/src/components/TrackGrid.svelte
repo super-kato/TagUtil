@@ -146,6 +146,12 @@
     color: var(--text-secondary);
   }
 
+  /* 修正中の行の文字を強調 */
+  .track-row.modified td {
+    font-weight: 600;
+    color: var(--text-primary);
+  }
+
   .track-cell {
     color: var(--text-muted) !important;
     font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
