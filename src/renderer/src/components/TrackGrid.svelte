@@ -109,6 +109,7 @@
     cursor: default;
     position: relative;
     transition: background-color 0.15s ease;
+    scroll-margin-top: 2.5rem;
   }
 
   .track-row:hover {
