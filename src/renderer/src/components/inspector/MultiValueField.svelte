@@ -11,37 +11,64 @@
     children?: Snippet;
     onUpdate: (index: number, value: string) => void;
     onAdd: () => void;
-    onRemove: (index: number) => void;
+    onRemove: (value: string) => void;
+    onApplyChange?: (oldValue: string | undefined, newValue: string | undefined) => void;
   }
 
-  let { label, values, isUniform, placeholder, children, onUpdate, onAdd, onRemove }: Props =
-    $props();
+  let {
+    label,
+    values,
+    isUniform,
+    placeholder,
+    children,
+    onUpdate,
+    onAdd,
+    onRemove,
+    onApplyChange
+  }: Props = $props();
 
   const handleUpdate = (index: number, e: Event): void => {
     const input = e.target as HTMLInputElement;
     onUpdate(index, input.value);
+  };
+
+  const handleDivergentUpdate = (oldValue: string, e: Event): void => {
+    const input = e.target as HTMLInputElement;
+    onApplyChange?.(oldValue, input.value);
   };
 </script>
 
 <div class="multi-value-field field">
   <div class="field-header">
     <label for="multi-field-{label}">{label}</label>
-    {#if isUniform}
-      <button type="button" class="icon-button add-button" onclick={onAdd} title="Add value">
-        <Plus size={UI_TOKENS.icons.size} />
-      </button>
-    {/if}
+    <button type="button" class="icon-button add-button" onclick={onAdd} title="Add value">
+      <Plus size={UI_TOKENS.icons.size} />
+    </button>
   </div>
 
   <div class="values-list">
     {#if !isUniform}
-      <div class="divergent-placeholder">
-        {#if children}
-          {@render children()}
-        {:else}
-          <input type="text" value="" placeholder="Mixed Values" disabled class="disabled" />
-        {/if}
-      </div>
+      {#each values as value (value)}
+        <div class="value-row divergent-row">
+          <input
+            type="text"
+            {value}
+            onchange={(e) => handleDivergentUpdate(value, e)}
+            placeholder="Value"
+          />
+          <button
+            type="button"
+            class="icon-button remove-button"
+            onclick={() => onRemove(value)}
+            title="Remove from all tracks"
+          >
+            <X size={UI_TOKENS.icons.size} />
+          </button>
+        </div>
+      {/each}
+      {#if values.length === 0}
+        <div class="empty-placeholder">No values present.</div>
+      {/if}
     {:else if values.length === 0}
       <div class="empty-placeholder">
         {#if children}
@@ -51,7 +78,8 @@
         {/if}
       </div>
     {:else}
-      {#each values as value, i (i)}
+      {@const uniformValues = values as string[]}
+      {#each uniformValues as value, i (i)}
         <div class="value-row">
           <input
             id={i === 0 ? `multi-field-${label}` : undefined}
@@ -63,7 +91,7 @@
           <button
             type="button"
             class="icon-button remove-button"
-            onclick={() => onRemove(i)}
+            onclick={() => onRemove(value)}
             title="Remove value"
           >
             <X size={UI_TOKENS.icons.size} />
@@ -149,12 +177,6 @@
   .remove-button:hover {
     color: var(--accent-modified);
     opacity: 1 !important;
-  }
-
-  .divergent-placeholder input {
-    font-size: 0.75rem;
-    font-style: italic;
-    color: #666;
   }
 
   .empty-placeholder {

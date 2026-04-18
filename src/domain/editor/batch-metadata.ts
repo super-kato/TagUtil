@@ -1,7 +1,10 @@
 import type { FlacMetadata, Picture, StreamInfo } from '@domain/flac/types';
 import { arraysEqual } from '@shared/utils/array';
+import type { ElementType } from '@shared/types';
 
-export type FieldState<T> = { type: 'uniform'; value: T } | { type: 'divergent' };
+export type FieldState<T> =
+  | { type: 'uniform'; value: T }
+  | { type: 'divergent'; values?: ElementType<T>[] };
 
 /**
  * 単一値（文字列）として管理されるキーの一覧
@@ -87,19 +90,25 @@ const deriveSingleValueTags = (metadataList: FlacMetadata[]): SingleFieldSummary
 };
 
 /**
- * 複数値フィールドの共通性を算出します。
+ * 複数値フィールドの共通性を算出し、バラバラな場合はユニオン（和）を作成します。
  */
 const deriveMultiValueTags = (metadataList: FlacMetadata[]): MultiFieldSummary => {
-  const first = metadataList[0];
   const result = {} as MultiFieldSummary;
 
   for (const key of EDITABLE_MULTI_KEYS) {
-    const firstValue = first[key];
+    const firstValue = metadataList[0][key];
     const allSame = metadataList.every((meta) => arraysEqual(meta[key], firstValue));
 
-    result[key] = (
-      allSame ? { type: 'uniform', value: firstValue } : { type: 'divergent' }
-    ) as FieldState<string[] | undefined>;
+    if (allSame) {
+      result[key] = { type: 'uniform', value: firstValue };
+      continue;
+    }
+
+    const unionValues = new Set(metadataList.flatMap((meta) => meta[key] || []).filter((v) => !!v));
+    // ユニオンリストを作成し、文字の昇順でソート
+    const values = Array.from(unionValues).sort((a, b) => a.localeCompare(b));
+
+    result[key] = { type: 'divergent', values };
   }
 
   return result;

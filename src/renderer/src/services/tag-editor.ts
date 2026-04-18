@@ -46,17 +46,17 @@ const addMultiFieldValue = (
 };
 
 /**
- * 複数値フィールドから特定インデックスを削除します。
+ * 複数値フィールドから特定の値を削除します（該当するすべての値を削除）。
  */
 const removeMultiFieldValue = (
   tracks: TrackRecord[],
   key: EditableMultiKey,
-  index: number
+  value: string
 ): void => {
   for (const track of tracks) {
     const current = track.metadata[key];
     if (current) {
-      track.metadata[key] = current.filter((_, i) => i !== index);
+      track.metadata[key] = current.filter((v) => v !== value);
     }
   }
 };

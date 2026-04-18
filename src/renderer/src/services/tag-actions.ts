@@ -59,8 +59,21 @@ const addSelectedMultiFieldValue = (key: EditableMultiKey, value: string = ''): 
   tagEditor.addMultiFieldValue(trackStore.selectedTracks, key, value);
 };
 
-const removeSelectedMultiFieldValue = (key: EditableMultiKey, index: number): void => {
-  tagEditor.removeMultiFieldValue(trackStore.selectedTracks, key, index);
+const applySelectedMultiFieldChange = (
+  key: EditableMultiKey,
+  oldValue: string | undefined,
+  newValue: string | undefined
+): void => {
+  if (oldValue !== undefined) {
+    tagEditor.removeMultiFieldValue(trackStore.selectedTracks, key, oldValue);
+  }
+  if (newValue !== undefined && newValue !== '') {
+    tagEditor.addMultiFieldValue(trackStore.selectedTracks, key, newValue);
+  }
+};
+
+const removeSelectedMultiFieldValue = (key: EditableMultiKey, value: string): void => {
+  tagEditor.removeMultiFieldValue(trackStore.selectedTracks, key, value);
 };
 
 /**
@@ -152,6 +165,7 @@ export const tagActions = {
   updateSelectedMultiField,
   addSelectedMultiFieldValue,
   removeSelectedMultiFieldValue,
+  applySelectedMultiFieldChange,
   pickAndApplyPicture,
   removeArtwork,
   applyAutoNumbering,

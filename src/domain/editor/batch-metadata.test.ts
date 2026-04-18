@@ -49,11 +49,11 @@ describe('deriveCommonMetadata', () => {
     }
   });
 
-  it('異なる値が含まれる場合、divergent を返すこと', () => {
+  it('異なる値が含まれる場合、divergent とユニオンリストを返すこと', () => {
     const result = deriveCommonMetadata([mockMetadata1, mockMetadata2]);
     expect(result).not.toBeNull();
     if (result) {
-      // 異なるタイトル
+      // 異なるタイトル（単一値フィールドは現在 values 未対応だが divergent であることは確認）
       expect(result.title).toEqual({ type: 'divergent' });
       expect(result.trackNumber).toEqual({ type: 'divergent' });
       // 同一のアルバム名
@@ -61,6 +61,28 @@ describe('deriveCommonMetadata', () => {
       // 同一のアーティスト
       expect(result.artist).toEqual({ type: 'uniform', value: ['Artist 1'] });
     }
+  });
+
+  it('複数値フィールドが不一致の場合、ソートされたユニオンリストを返すこと', () => {
+    const meta1: FlacMetadata = { ...mockMetadata1, artist: ['Artist B', 'Artist A'] };
+    const meta2: FlacMetadata = { ...mockMetadata1, artist: ['Artist C', 'Artist A'] };
+    const result = deriveCommonMetadata([meta1, meta2]);
+
+    expect(result?.artist).toEqual({
+      type: 'divergent',
+      values: ['Artist A', 'Artist B', 'Artist C']
+    });
+  });
+
+  it('複数値フィールドに空の配列や未定義が含まれる場合も正しくユニオンを作成すること', () => {
+    const meta1: FlacMetadata = { ...mockMetadata1, genre: ['Rock'] };
+    const meta2: FlacMetadata = { ...mockMetadata1, genre: [] };
+    const result = deriveCommonMetadata([meta1, meta2]);
+
+    expect(result?.genre).toEqual({
+      type: 'divergent',
+      values: ['Rock']
+    });
   });
 
   it('画像ハッシュが異なる場合、画像項目は divergent になること', () => {

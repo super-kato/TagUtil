@@ -1,8 +1,19 @@
 <script lang="ts">
   import { trackStore } from '../../stores/track-store.svelte';
   import { tagActions } from '../../services/tag-actions';
+  import type { FieldState } from '@domain/editor/batch-metadata';
   import MultiValueField from './MultiValueField.svelte';
   import { getSingleFieldValue, handleSingleInput } from './tag-field-handlers';
+
+  const getMultiFieldValues = (state: FieldState<string[] | undefined>): string[] => {
+    if (state.type === 'uniform') {
+      return state.value ?? [];
+    }
+    if (state.type === 'divergent') {
+      return state.values ?? [];
+    }
+    return [];
+  };
 </script>
 
 {#if trackStore.commonMetadata}
@@ -26,11 +37,12 @@
 
     <MultiValueField
       label="Artist"
-      values={artistState.type === 'uniform' ? (artistState.value ?? []) : []}
+      values={getMultiFieldValues(artistState)}
       isUniform={artistState.type === 'uniform'}
       onUpdate={(i, v) => tagActions.updateSelectedMultiField('artist', i, v)}
       onAdd={() => tagActions.addSelectedMultiFieldValue('artist')}
-      onRemove={(i) => tagActions.removeSelectedMultiFieldValue('artist', i)}
+      onRemove={(v) => tagActions.removeSelectedMultiFieldValue('artist', v)}
+      onApplyChange={(oldV, newV) => tagActions.applySelectedMultiFieldChange('artist', oldV, newV)}
     />
 
     <div class="field">
@@ -46,11 +58,13 @@
 
     <MultiValueField
       label="Album Artist"
-      values={albumArtistState.type === 'uniform' ? (albumArtistState.value ?? []) : []}
+      values={getMultiFieldValues(albumArtistState)}
       isUniform={albumArtistState.type === 'uniform'}
       onUpdate={(i, v) => tagActions.updateSelectedMultiField('albumArtist', i, v)}
       onAdd={() => tagActions.addSelectedMultiFieldValue('albumArtist')}
-      onRemove={(i) => tagActions.removeSelectedMultiFieldValue('albumArtist', i)}
+      onRemove={(v) => tagActions.removeSelectedMultiFieldValue('albumArtist', v)}
+      onApplyChange={(oldV, newV) =>
+        tagActions.applySelectedMultiFieldChange('albumArtist', oldV, newV)}
     />
 
     <div class="field">
