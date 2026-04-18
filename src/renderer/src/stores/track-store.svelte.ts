@@ -4,18 +4,13 @@ import { createImageUrl } from '@renderer/utils/image';
 import { selectionState } from './selection-state.svelte';
 import { TrackRecord } from './track-record.svelte';
 
-/**
- * UIが参照するトラックの読込・編集状態を管理するストア。
- * ロード済みのすべての TrackRecord インスタンスを保持します。
- */
+/** UIが参照するトラックの読込・編集状態を管理するストア */
 class TrackStore {
-  /** ロード済みの全トラック */
   tracks = $state<TrackRecord[]>([]);
 
-  /** 選択されているトラックのリスト */
   selectedTracks = $derived(this.tracks.filter((t) => selectionState.has(t)));
 
-  /** 選択されたトラック間で共通の値を導出（Mixed Valuesロジック） */
+  /** 各トラック間で共通の値を導出（Mixed Values） */
   commonMetadata = $derived(deriveCommonMetadata(this.selectedTracks.map((t) => t.metadata)));
 
   /** 選択されたトラック間で共通のカバーアートURL */

@@ -1,6 +1,6 @@
 import type { FlacMetadata, Picture, StreamInfo } from '@domain/flac/types';
-import { arraysEqual } from '@shared/utils/array';
 import type { ElementType } from '@shared/types';
+import { arraysEqual } from '@shared/utils/array';
 
 export type FieldState<T> =
   | { type: 'uniform'; value: T }

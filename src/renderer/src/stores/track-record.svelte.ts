@@ -1,10 +1,7 @@
 import type { FlacMetadata, FlacTrack } from '@domain/flac/types';
 import { createImageUrl } from '@renderer/utils/image';
 
-/**
- * 1つのFLACファイルとその状態を管理するクラス。
- * Svelte 5 の Runes を使用して、データのカプセル化と変更検知の自動化を実現します。
- */
+/** 1つのFLACファイルとその状態を管理するクラス */
 export class TrackRecord {
   /** ファイルの絶対パス (一意の識別子であり、変更不可) */
   readonly path: string;
@@ -18,10 +15,7 @@ export class TrackRecord {
   /** メタデータの画像情報から導出される表示用URL */
   imageUrl = $derived(createImageUrl(this.metadata.picture));
 
-  /**
-   * 変更があったかどうかのフラグ
-   * 初期状態のスナップショットと比較することで自動的に算出されます。
-   */
+  /** 変更があったかどうかのフラグ */
   isModified = $derived(
     JSON.stringify($state.snapshot(this.metadata)) !== this.#initialMetadataSnapshot
   );
@@ -33,17 +27,10 @@ export class TrackRecord {
     this.#initialMetadataSnapshot = JSON.stringify($state.snapshot(metadata));
   }
 
-  /**
-   * 現在の変更を「保存済み」として確定させ、変更フラグをリセットします。
-   */
   markAsSaved(): void {
     this.#initialMetadataSnapshot = JSON.stringify($state.snapshot(this.metadata));
   }
 
-  /**
-   * 現在のメタデータのスナップショットを、プレーンなドメインオブジェクトとして返します。
-   * インフラ層（IoService）にデータを渡す際、プロキシを外すために使用します。
-   */
   toFlacTrack(): FlacTrack {
     return {
       path: this.path,

@@ -5,7 +5,6 @@
 
   const rowElements: HTMLElement[] = [];
 
-  // 選択インデックスの変更に合わせて自動スクロール
   $effect(() => {
     const index = selectionState.lastSelectedIndex;
     if (index === null) {
@@ -20,13 +19,11 @@
 
   const handleRowClick = (e: MouseEvent, index: number, track: TrackRecord): void => {
     if (e.shiftKey && selectionState.lastSelectedIndex !== null) {
-      // 範囲選択
       const start = Math.min(selectionState.lastSelectedIndex, index);
       const end = Math.max(selectionState.lastSelectedIndex, index);
       const tracksToSelect = trackStore.tracks.slice(start, end + 1);
       selectionState.selectRange(tracksToSelect);
     } else {
-      // 単一選択（他を解除）
       selectionState.selectSingle(track, index);
     }
   };
@@ -37,7 +34,6 @@
     <table class="data-grid">
       <thead>
         <tr>
-          <!-- 選択状態を示すだけの細い列 -->
           <th class="col-indicator"></th>
           <th class="col-track">#</th>
           <th>Title</th>
@@ -119,7 +115,6 @@
     background-color: var(--bg-hover);
   }
 
-  /* --- 選択ハイライトとアクセント・バー --- */
   .track-row.selected {
     background-color: var(--selection-bg);
   }
@@ -130,7 +125,6 @@
     position: relative;
   }
 
-  /* 選択行または修正中の行の左端にアクセント・バーを表示 */
   .track-row.selected .indicator-cell::after,
   .track-row.modified .indicator-cell::after {
     content: '';
@@ -143,7 +137,6 @@
     box-shadow: 2px 0 8px var(--selection-glow);
   }
 
-  /* 修正中の行はオレンジ色を優先 (Pending Save) */
   .track-row.modified .indicator-cell::after {
     background-color: var(--accent-modified);
     box-shadow: 2px 0 8px var(--accent-modified-glow);
@@ -154,7 +147,6 @@
     color: var(--text-secondary);
   }
 
-  /* 修正中の行の文字を強調 */
   .track-row.modified td {
     font-weight: 600;
     color: var(--text-primary);

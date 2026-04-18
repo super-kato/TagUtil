@@ -9,9 +9,7 @@ import { RawFlacData, RawPicture } from '../types';
  */
 const IGNORE_TAG_KEYS = ['METADATA_BLOCK_PICTURE'] as const;
 
-/**
- * music-metadata のパース結果を RawFlacData に変換します。
- */
+/** music-metadata のパース結果を RawFlacData に変換 */
 export const toRawFlacData = (mmData: readerImpl.IAudioMetadata, path: string): RawFlacData => {
   return {
     path,
@@ -26,9 +24,7 @@ export const toRawFlacData = (mmData: readerImpl.IAudioMetadata, path: string): 
   };
 };
 
-/**
- * 生のデータをドメインモデルに変換します。
- */
+/** パース済みの生データをドメインモデルに変換 */
 export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacMetadata => {
   const { tags } = rawData;
 
@@ -50,15 +46,13 @@ export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacM
   };
 };
 
-/**
- * music-metadata のタグ配列を、検索しやすい Record 形式に変換します。
- */
+/** ITag配列を Record<string, string[]> に変換 */
 const normalizeVorbisTags = (tags: readerImpl.ITag[]): Record<string, string[]> => {
   const normalized: Record<string, string[]> = {};
   for (const tag of tags) {
     const key = tag.id.toUpperCase();
 
-    // 除外リストに含まれるタグは、パースエラーを避けたり、冗長なデータを排除したりするためにスキップします。
+    // 除外リストに含まれるタグはスキップ
     if ((IGNORE_TAG_KEYS as readonly string[]).includes(key)) {
       continue;
     }
@@ -71,9 +65,7 @@ const normalizeVorbisTags = (tags: readerImpl.ITag[]): Record<string, string[]> 
   return normalized;
 };
 
-/**
- * music-metadata の画像を RawPicture 配列に変換します。
- */
+/** IPicture配列を RawPicture配列に変換 */
 const mapPictures = (pictures: readerImpl.IPicture[]): RawPicture[] => {
   return pictures.map((p) => ({
     mime: p.format,
@@ -82,9 +74,7 @@ const mapPictures = (pictures: readerImpl.IPicture[]): RawPicture[] => {
   }));
 };
 
-/**
- * タグマップから指定されたキー（およびその別名）に該当するすべての値を配列で返します。
- */
+/** タグマップから指定されたキー（およびその別名）の全値を配列で取得 */
 const getAllTags = (
   tagMap: Record<string, string[]>,
   canonicalKey: CanonicalTagKey
@@ -103,9 +93,7 @@ const getAllTags = (
   return results.length > 0 ? results : undefined;
 };
 
-/**
- * タグマップから最初に見つかった値を返します。
- */
+/** タグマップから最初に見つかった値を取得 */
 const getFirstTag = (
   tagMap: Record<string, string[]>,
   canonicalKey: CanonicalTagKey
@@ -114,9 +102,7 @@ const getFirstTag = (
   return values ? values[0] : undefined;
 };
 
-/**
- * ドメイン用の画像情報を生成します（パスのみ）。
- */
+/** ドメイン用の画像情報を生成 */
 const mapToDomainPicture = (rawData: RawFlacData, sourcePath: string): Picture | undefined => {
   if (rawData.pictures.length === 0) {
     return undefined;

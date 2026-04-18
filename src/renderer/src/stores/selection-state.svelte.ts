@@ -20,23 +20,18 @@ class SelectionState {
     return this.paths.has(track.path);
   }
 
-  /**
-   * 指定した1つのトラックのみを選択状態にします。
-   */
   selectSingle(track: SelectionTarget, index: number): void {
     this.paths.clear();
     this.paths.add(track.path);
     this.lastSelectedIndex = index;
   }
 
-  /** 指定された範囲のトラックを選択状態に追加します */
   selectRange(tracks: SelectionTarget[]): void {
     for (const track of tracks) {
       this.paths.add(track.path);
     }
   }
 
-  /** 指定されたすべてのトラックを選択状態にします */
   selectAll(tracks: SelectionTarget[]): void {
     for (const track of tracks) {
       this.paths.add(track.path);
@@ -44,25 +39,16 @@ class SelectionState {
     this.lastSelectedIndex = tracks.length > 0 ? tracks.length - 1 : null;
   }
 
-  /**
-   * 次のトラックを選択します。
-   */
   selectNext(tracks: SelectionTarget[]): void {
     const next = this.lastSelectedIndex === null ? 0 : this.lastSelectedIndex + 1;
     this.#selectIndex(next, tracks);
   }
 
-  /**
-   * 前のトラックを選択します。
-   */
   selectPrevious(tracks: SelectionTarget[]): void {
     const prev = this.lastSelectedIndex === null ? tracks.length - 1 : this.lastSelectedIndex - 1;
     this.#selectIndex(prev, tracks);
   }
 
-  /**
-   * インデックスを指定してトラックを選択します（範囲外はクランプされます）。
-   */
   #selectIndex(index: number, tracks: SelectionTarget[]): void {
     if (tracks.length === 0) {
       return;
