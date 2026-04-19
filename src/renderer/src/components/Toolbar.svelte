@@ -23,8 +23,9 @@
   <div class="brand">
     <Tag
       size={UI_TOKENS.icons.logoSize}
-      color="var(--accent-primary)"
+      color="var(--text-primary)"
       strokeWidth={UI_TOKENS.icons.strokeBold}
+      class="logo-icon"
     />
     <h1>TagUtil</h1>
   </div>
@@ -85,10 +86,15 @@
     gap: 0.6rem;
   }
 
+  :global(.brand .logo-icon) {
+    margin-top: 0.1rem; /* 視覚的な中央揃えの微調整 */
+  }
+
   .brand h1 {
     font-size: 1.2rem;
     font-weight: 300;
     margin: 0;
+    line-height: 1;
     letter-spacing: 1px;
     color: var(--text-primary);
   }
