@@ -8,7 +8,37 @@ on:
       - 'package.json'
 
 jobs:
-  build:
+  check-release:
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.check_release.outputs.exists != 'true' }}
+      tag: ${{ steps.get_version.outputs.tag }}
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
+
+      - name: バージョン取得
+        id: get_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: リリースの存在確認
+        id: check_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "${{ steps.get_version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Release ${{ steps.get_version.outputs.tag }} already exists. Skipping build."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "Release ${{ steps.get_version.outputs.tag }} does not exist. Proceeding with build."
+          fi
+
+  build-and-release:
+    needs: check-release
+    if: needs.check-release.outputs.should_release == 'true'
     runs-on: macos-latest
     permissions:
       contents: write
@@ -18,47 +48,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: バージョン取得
-        id: get_version
-        run: |
-          VERSION=$(node -p "require('./package.json').version")
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
-
-      - name: 重複リリースの防止 (既にリリース済みならスキップ)
-        id: check_release
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if gh release view "${{ steps.get_version.outputs.tag }}" >/dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Release ${{ steps.get_version.outputs.tag }} already exists. Skipping build and release steps."
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Node.js のセットアップ
-        if: steps.check_release.outputs.exists != 'true'
         uses: actions/setup-node@v6
-
         with:
           node-version: 24
 
       - name: pnpm のセットアップ
-        if: steps.check_release.outputs.exists != 'true'
         uses: pnpm/action-setup@v6
-
         with:
           version: latest
 
       - name: 依存関係のインストール
-        if: steps.check_release.outputs.exists != 'true'
         run: pnpm install
 
       - name: ビルドおよび公証
-        if: steps.check_release.outputs.exists != 'true'
         run: pnpm build:mac
-
         env:
           # コード署名
           CSC_LINK: ${{ secrets.MACOS_CERTIFICATE }}
@@ -70,16 +74,16 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
       - name: GitHub リリースの作成
-        if: steps.check_release.outputs.exists != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.check-release.outputs.tag }}
         run: |
           # 現在のコミットに関連するマージ済み PR のタイトルと本文を取得してリリースノートにする
           PR_DATA=$(gh pr list --commit ${{ github.sha }} --state merged --json title,body --jq '.[0] | .title + "\n\n" + .body') || \
           PR_DATA=$(git log -1 --pretty=%B) # フォールバック
 
-          gh release create ${{ steps.get_version.outputs.tag }} \
-            --title "${{ steps.get_version.outputs.tag }}" \
+          gh release create $TAG \
+            --title "$TAG" \
             --notes "$PR_DATA" \
             --target main \
             dist/*.dmg \
