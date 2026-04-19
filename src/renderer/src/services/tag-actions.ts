@@ -82,6 +82,7 @@ const removeSelectedMultiFieldValue = (key: EditableMultiKey, value: string): vo
  * 画像ファイルを選択し、選択中のトラックに適用します。
  */
 const pickAndApplyPicture = async (): Promise<void> => {
+  uiState.clearError();
   const result = await tagIoService.pickImage();
   if (result.type === 'error') {
     uiState.setError(result);
@@ -108,13 +109,13 @@ const applyAutoNumbering = (): void => {
  * 選択中の変更を破棄して再読み込みします。
  */
 const revertSelected = async (): Promise<void> => {
+  uiState.clearError();
   const modifiedSelected = trackStore.selectedTracks.filter((t) => t.isModified);
   if (modifiedSelected.length === 0) {
     return;
   }
 
   uiState.startLoading();
-  uiState.clearError();
 
   try {
     for (const track of modifiedSelected) {
@@ -137,6 +138,7 @@ const revertSelected = async (): Promise<void> => {
  * 変更があったすべてのトラックを保存します。
  */
 const saveAllModified = async (): Promise<void> => {
+  uiState.clearError();
   const modified = trackStore.tracks.filter((t) => t.isModified);
   if (modified.length === 0) {
     return;
