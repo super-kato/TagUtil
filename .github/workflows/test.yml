@@ -1,12 +1,56 @@
-name: Test
+name: CI
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
+
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: pnpm のセットアップ
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+
+      - name: 依存関係のインストール
+        run: pnpm install
+
+      - name: Lint の実行
+        run: pnpm lint
+
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
+
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: pnpm のセットアップ
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+
+      - name: 依存関係のインストール
+        run: pnpm install
+
+      - name: フォーマットチェックの実行
+        run: pnpm format:check
+
   test:
     name: Vitest
     runs-on: ubuntu-latest
