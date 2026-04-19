@@ -16,6 +16,9 @@
    * 全選択アクションを実行します。
    */
   const handleSelectAll = (e: KeyboardEvent): void => {
+    if (isEditing()) {
+      return;
+    }
     e.preventDefault();
     selectionState.selectAll(trackStore.tracks);
   };
@@ -38,9 +41,7 @@
 
     switch (e.key.toLowerCase()) {
       case 'a':
-        if (!isEditing()) {
-          handleSelectAll(e);
-        }
+        handleSelectAll(e);
         break;
       case 's':
         handleSave(e);
