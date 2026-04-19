@@ -99,7 +99,9 @@ export const TAG_ERROR_TYPES = [
   'PARSE_FAILED',
   'WRITE_FAILED',
   'SCAN_FAILED',
-  'PICK_IMAGE_FAILED'
+  'PICK_IMAGE_FAILED',
+  'MISSING_TRACK_NUMBER',
+  'MISSING_TITLE'
 ] as const;
 
 /**
@@ -128,7 +130,9 @@ export type TagError =
   | { type: 'PARSE_FAILED'; options: TagErrorOptions }
   | { type: 'WRITE_FAILED'; options: TagErrorOptions }
   | { type: 'SCAN_FAILED'; options: TagErrorOptions }
-  | { type: 'PICK_IMAGE_FAILED'; options: TagErrorOptions };
+  | { type: 'PICK_IMAGE_FAILED'; options: TagErrorOptions }
+  | { type: 'MISSING_TRACK_NUMBER'; options: TagErrorOptions }
+  | { type: 'MISSING_TITLE'; options: TagErrorOptions };
 
 /**
  * TagError を生成する共通のファクトリ関数を作成します。
@@ -156,7 +160,11 @@ export const tagErrors = {
   /** ディレクトリのスキャンに失敗した場合のエラー */
   scanFailed: createFactory('SCAN_FAILED'),
   /** 画像の選択・読み込みに失敗した場合のエラー */
-  pickImageFailed: createFactory('PICK_IMAGE_FAILED')
+  pickImageFailed: createFactory('PICK_IMAGE_FAILED'),
+  /** トラック番号が欠損している場合のエラー */
+  missingTrackNumber: createFactory('MISSING_TRACK_NUMBER'),
+  /** タイトルが欠損している場合のエラー */
+  missingTitle: createFactory('MISSING_TITLE')
 } as const;
 
 /**

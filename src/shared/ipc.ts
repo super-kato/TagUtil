@@ -18,7 +18,9 @@ export const IPC_CHANNELS = {
   /** ディレクトリ内のFLACファイルを探索 */
   SCAN_DIRECTORY: 'flac:scan-directory',
   /** 画像ファイルを選択して読み込み */
-  PICK_IMAGE: 'flac:pick-image'
+  PICK_IMAGE: 'flac:pick-image',
+  /** ファイルのリネーム */
+  RENAME_FILE: 'flac:rename-file'
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -37,6 +39,13 @@ export interface IpcApi {
   scanDirectory: (targetPaths: string[]) => Promise<TagResult<ScanResult>>;
   /** 画像ファイルを選択し、メタデータ用の Picture オブジェクトを返します */
   pickImage: () => Promise<TagResult<Picture | null>>;
+  /** ファイルをリネーム（移動）します */
+  renameFile: (oldPath: string, newPath: string) => Promise<TagResult<void>>;
   /** File オブジェクトから OS 上のファイルシステムパスを取得します */
   getPathForFile: (file: File) => string;
+  /** パス操作ユーティリティ */
+  path: {
+    dirname: (path: string) => string;
+    join: (...paths: string[]) => string;
+  };
 }

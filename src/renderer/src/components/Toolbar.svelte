@@ -1,9 +1,22 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { Disc3, FolderOpen, RotateCcw, Save } from 'lucide-svelte';
+  import { Disc3, FilePen, FolderOpen, RotateCcw, Save } from 'lucide-svelte';
+  import { tagActions } from '../services/tag-actions';
+  import { fileActions } from '../services/file-actions';
   import { trackStore } from '../stores/track-store.svelte';
   import { uiState } from '../stores/ui-state.svelte';
-  import { tagActions } from '../services/tag-actions';
+
+  const handleRenameClick = (): void => {
+    const ok = confirm(
+      `Rename ${trackStore.selectedTracks.length} selected files based on metadata?\n` +
+        `Format: {trackNumber} - {title}.flac`
+    );
+    if (!ok) {
+      return;
+    }
+
+    fileActions.renameSelectedFiles();
+  };
 </script>
 
 <header class="toolbar">
@@ -18,6 +31,15 @@
       title="Open Directory"
     >
       <FolderOpen size={UI_TOKENS.icons.size} />
+    </button>
+    <div class="divider"></div>
+    <button
+      class="btn secondary"
+      onclick={handleRenameClick}
+      disabled={uiState.isLoading || trackStore.selectedTracks.length === 0}
+      title="Rename Files from Metadata"
+    >
+      <FilePen size={UI_TOKENS.icons.size} />
     </button>
     <button
       class="btn revert"
@@ -99,5 +121,13 @@
 
   .revert:enabled {
     color: var(--accent-warning);
+  }
+
+  .divider {
+    width: 1px;
+    height: 1.5rem;
+    background-color: var(--border-primary);
+    margin: 0 0.25rem;
+    align-self: center;
   }
 </style>

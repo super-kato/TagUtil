@@ -1,6 +1,7 @@
 import { FlacTrack } from '@domain/flac/types';
 import { pickImage } from '@services/flac/image';
 import { readMetadata } from '@services/flac/reader';
+import { renameFile } from '@services/flac/renamer';
 import { scanDirectory } from '@services/flac/scanner';
 import { writeMetadata } from '@services/flac/writer';
 import { IPC_CHANNELS } from '@shared/ipc';
@@ -22,5 +23,9 @@ export const registerFlacHandlers = (): void => {
 
   ipcMain.handle(IPC_CHANNELS.PICK_IMAGE, async () => {
     return await pickImage();
+  });
+
+  ipcMain.handle(IPC_CHANNELS.RENAME_FILE, async (_event, oldPath: string, newPath: string) => {
+    return await renameFile(oldPath, newPath);
   });
 };

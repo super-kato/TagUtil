@@ -26,10 +26,12 @@ export const writeMetadata = async (track: FlacTrack): Promise<TagResult<void>> 
 
   // 2. 書き込み実行
   try {
-    return await performWrite(path, metadata);
+    await performWrite(path, metadata);
   } catch (error: unknown) {
     return toTagResultFailure(error, tagErrors.writeFailed, { path });
   }
+
+  return success(undefined);
 };
 
 /**
@@ -38,13 +40,14 @@ export const writeMetadata = async (track: FlacTrack): Promise<TagResult<void>> 
 const ensureFileExists = async (path: string): Promise<TagResult<void>> => {
   try {
     await fs.access(path);
-    return success(undefined);
   } catch (error: unknown) {
     if (hasErrorCode(error, 'ENOENT')) {
       return failure(tagErrors.fileNotFound({ path }));
     }
     return toTagResultFailure(error, tagErrors.writeFailed, { path });
   }
+
+  return success(undefined);
 };
 
 /**
@@ -53,19 +56,20 @@ const ensureFileExists = async (path: string): Promise<TagResult<void>> => {
 const ensureFileWritable = async (path: string): Promise<TagResult<void>> => {
   try {
     await fs.access(path, fs.constants.W_OK);
-    return success(undefined);
   } catch (error: unknown) {
     if (hasErrorCode(error, 'EACCES') || hasErrorCode(error, 'EPERM')) {
       return failure(tagErrors.permissionDenied({ path, detail: '(Read-only file)' }));
     }
     return toTagResultFailure(error, tagErrors.writeFailed, { path });
   }
+
+  return success(undefined);
 };
 
 /**
  * 書き込み処理の具体的な実行手順。
  */
-const performWrite = async (filePath: string, metadata: FlacMetadata): Promise<TagResult<void>> => {
+const performWrite = async (filePath: string, metadata: FlacMetadata): Promise<void> => {
   const rawData = await readRawData(filePath);
 
   // 書き込み用の最終的な画像を解決（既存維持、削除、更新のいずれか）
@@ -74,6 +78,4 @@ const performWrite = async (filePath: string, metadata: FlacMetadata): Promise<T
   const mergedTags = mergeMetadataWithTags(rawData, metadata, picture);
 
   await withAtomicWrite(filePath, async (tempPath) => await writeFlacTags(mergedTags, tempPath));
-
-  return success(undefined);
 };

@@ -1,8 +1,8 @@
 import { success } from '@domain/common/result';
 import { FlacTrack, tagErrors, TagResult } from '@domain/flac/types';
-import fs from 'fs/promises';
 import * as readerImpl from 'music-metadata';
 import { toTagResultFailure } from '../../utils/error-handler';
+import { ensureFileExists } from '../../utils/fs';
 import { mapToFlacMetadata, toRawFlacData } from './mappers/flac-read-mapper';
 import { RawFlacData } from './types';
 
@@ -29,11 +29,4 @@ export const readMetadata = async (filePath: string): Promise<TagResult<FlacTrac
 export const readRawData = async (filePath: string): Promise<RawFlacData> => {
   const mmData = await readerImpl.parseFile(filePath);
   return toRawFlacData(mmData, filePath);
-};
-
-/**
- * 読み取り対象のファイルが存在し、アクセス可能であることを確認します。
- */
-const ensureFileExists = async (filePath: string): Promise<void> => {
-  await fs.access(filePath);
 };

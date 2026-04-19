@@ -22,7 +22,9 @@ const ERROR_LABELS: Record<TagError['type'], string> = {
   PARSE_FAILED: 'Failed to parse file',
   WRITE_FAILED: 'Failed to write metadata',
   SCAN_FAILED: 'Failed to scan directory',
-  PICK_IMAGE_FAILED: 'Failed to select image'
+  PICK_IMAGE_FAILED: 'Failed to select image',
+  MISSING_TRACK_NUMBER: 'Track number is missing',
+  MISSING_TITLE: 'Title is missing'
 };
 
 /**

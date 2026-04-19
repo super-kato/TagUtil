@@ -3,7 +3,7 @@ import { createImageUrl } from '@renderer/utils/image';
 
 /** 1つのFLACファイルとその状態を管理するクラス */
 export class TrackRecord {
-  /** ファイルの絶対パス (一意の識別子であり、変更不可) */
+  /** ファイルの絶対パス (一意の識別子) */
   readonly path: string;
 
   /** 編集中のメタデータ */

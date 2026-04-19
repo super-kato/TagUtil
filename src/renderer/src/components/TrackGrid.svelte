@@ -42,7 +42,7 @@
         </tr>
       </thead>
       <tbody>
-        {#each trackStore.tracks as track, i (track.path)}
+        {#each trackStore.tracks as track, i (track)}
           <tr
             bind:this={rowElements[i]}
             class="track-row"

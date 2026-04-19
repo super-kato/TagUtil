@@ -15,19 +15,21 @@ const handleScanOperation = async (
   uiState.reset();
   uiState.startLoading();
 
-  const result = await operation();
+  try {
+    const result = await operation();
 
-  if (result.type === 'error') {
-    uiState.setError(result);
-  } else if (result.value) {
-    const { tracks: rawTracks, isLimited } = result.value;
-    const tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
+    if (result.type === 'error') {
+      uiState.setError(result);
+    } else if (result.value) {
+      const { tracks: rawTracks, isLimited } = result.value;
+      const tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
 
-    trackStore.tracks = tracks;
-    uiState.setScanLimited(isLimited);
+      trackStore.tracks = tracks;
+      uiState.setScanLimited(isLimited);
+    }
+  } finally {
+    uiState.stopLoading();
   }
-
-  uiState.stopLoading();
 };
 
 /**
@@ -114,19 +116,21 @@ const revertSelected = async (): Promise<void> => {
   uiState.startLoading();
   uiState.clearError();
 
-  for (const track of modifiedSelected) {
-    const result = await tagIoService.readMetadata(track.path);
-    if (result.type === 'error') {
-      uiState.setError(result);
-      break;
+  try {
+    for (const track of modifiedSelected) {
+      const result = await tagIoService.readMetadata(track.path);
+      if (result.type === 'error') {
+        uiState.setError(result);
+        break;
+      }
+
+      // 取得したドメインモデルを UI モデルに反映
+      track.metadata = result.value.metadata;
+      track.markAsSaved();
     }
-
-    // 取得したドメインモデルを UI モデルに反映
-    track.metadata = result.value.metadata;
-    track.markAsSaved();
+  } finally {
+    uiState.stopLoading();
   }
-
-  uiState.stopLoading();
 };
 
 /**
@@ -140,18 +144,21 @@ const saveAllModified = async (): Promise<void> => {
 
   uiState.startLoading();
 
-  // インフラ層に渡すためにドメインモデルの配列に整形
-  const rawData = modified.map((t) => t.toFlacTrack());
-  const result = await tagIoService.saveTracks(rawData);
+  try {
+    // インフラ層に渡すためにドメインモデルの配列に整形
+    const rawData = modified.map((t) => t.toFlacTrack());
+    const result = await tagIoService.saveTracks(rawData);
 
-  if (result.type === 'error') {
-    uiState.setError(result);
-  } else {
-    for (const track of modified) {
-      track.markAsSaved();
+    if (result.type === 'error') {
+      uiState.setError(result);
+    } else {
+      for (const track of modified) {
+        track.markAsSaved();
+      }
     }
+  } finally {
+    uiState.stopLoading();
   }
-  uiState.stopLoading();
 };
 
 /**
