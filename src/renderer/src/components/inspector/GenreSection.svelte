@@ -24,7 +24,7 @@
       values={genreState.type === 'uniform' ? (genreState.value ?? []) : []}
       isUniform={genreState.type === 'uniform'}
       onAdd={(v) => applyGenre(v)}
-      onRemove={(i) => tagActions.removeSelectedMultiFieldValue('genre', i)}
+      onRemove={(v) => tagActions.removeSelectedMultiFieldValue('genre', v)}
     />
 
     <div class="quick-genres">

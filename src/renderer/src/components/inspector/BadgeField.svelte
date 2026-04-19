@@ -8,7 +8,7 @@
     isUniform: boolean;
     placeholder?: string;
     onAdd: (value: string) => void;
-    onRemove: (index: number) => void;
+    onRemove: (value: string) => void;
   }
 
   let { label, values, isUniform, onAdd, onRemove }: Props = $props();
@@ -25,7 +25,7 @@
       }
     } else if (e.key === 'Backspace' && inputValue === '' && values.length > 0) {
       // 入力欄が空の状態でバックスペースを押すと最後の項目を削除
-      onRemove(values.length - 1);
+      onRemove(values[values.length - 1]);
     }
   };
 
@@ -52,7 +52,7 @@
       {#each values as val, i (i)}
         <span class="badge">
           {val}
-          <button type="button" class="remove-btn" onclick={() => onRemove(i)} title="Remove">
+          <button type="button" class="remove-btn" onclick={() => onRemove(val)} title="Remove">
             <X size={UI_TOKENS.icons.sizeSmall} strokeWidth={UI_TOKENS.icons.strokeBold} />
           </button>
         </span>
