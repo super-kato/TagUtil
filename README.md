@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <strong>Functional FLAC metadata editor for MacOs</strong>
+  <strong>Functional FLAC metadata editor for macOS</strong>
 </p>
 
 <p align="center">
@@ -17,12 +17,13 @@
 
 ---
 
-**TagUtil** is a desktop application specialized for editing FLAC file metadata.
+**TagUtil** is a desktop application specialized for editing FLAC file metadata on macOS.
 
 ## Features
 
 - **Metadata Editing**: Full support for editing cover art, title, artist, album, track number, disc number, and more.
 - **Multi-value Support**: Properly handles complex tag structures with multiple artists or genres.
+- **Metadata-based Renaming**: Automatically rename files based on their metadata patterns (e.g., `TrackNo - Title.flac`).
 - **Atomic Writing**: Ensures data integrity by using atomic operations to prevent corruption during the writing process.
 - **Auto Updates**: Automatically detects and notifies when new versions are released to ensure you always have the latest features and stability.
 
