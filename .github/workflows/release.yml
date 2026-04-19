@@ -2,8 +2,10 @@ name: Release
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
+    paths:
+      - 'package.json'
 
 jobs:
   build:
@@ -13,14 +15,21 @@ jobs:
     steps:
       - name: リポジトリのチェックアウト
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
 
-      - name: バージョン整合性チェック
+      - name: バージョン取得
+        id: get_version
         run: |
-          PKG_VERSION=$(node -p "require('./package.json').version")
-          TAG_VERSION=${GITHUB_REF_NAME#v}
-          if [ "$PKG_VERSION" != "$TAG_VERSION" ]; then
-            echo "::error::バージョン不一致 pkg:$PKG_VERSION, tag:$TAG_VERSION"
-            exit 1
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=v$VERSION" >> $GITHUB_OUTPUT
+
+      - name: 既存タグのチェック
+        run: |
+          if git rev-parse "${{ steps.get_version.outputs.tag }}" >/dev/null 2>&1; then
+            echo "Tag ${{ steps.get_version.outputs.tag }} already exists. Skipping release."
+            exit 0
           fi
 
       - name: Node.js のセットアップ
@@ -52,16 +61,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # タグのメッセージを取得（注釈付きタグの場合）
-          TAG_MSG=$(git tag -l --format='%(contents)' ${{ github.ref_name }})
-          # メッセージが空（軽量タグ）の場合は、最新のコミットメッセージを使用
-          if [ -z "$TAG_MSG" ]; then
-            TAG_MSG=$(git log -1 --pretty=%B)
-          fi
+          # 最新のコミットメッセージをリリースノートのデフォルトにする
+          TAG_MSG=$(git log -1 --pretty=%B)
 
-          gh release create ${{ github.ref_name }} \
-            --title "${{ github.ref_name }}" \
+          gh release create ${{ steps.get_version.outputs.tag }} \
+            --title "${{ steps.get_version.outputs.tag }}" \
             --notes "$TAG_MSG" \
+            --target main \
             dist/*.dmg \
             dist/*.zip \
             dist/latest-mac.yml
