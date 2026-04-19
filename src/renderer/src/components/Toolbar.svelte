@@ -22,7 +22,7 @@
 <header class="toolbar">
   <div class="brand">
     <Tag
-      size={UI_TOKENS.icons.size}
+      size={UI_TOKENS.icons.logoSize}
       color="var(--accent-primary)"
       strokeWidth={UI_TOKENS.icons.strokeBold}
     />
