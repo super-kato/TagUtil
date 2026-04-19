@@ -32,13 +32,15 @@
    * Modifier (Ctrl/Cmd) 系ショートカット（Save, SelectAll など）を処理します。
    */
   const handleModifierShortcuts = (e: KeyboardEvent): void => {
-    if (uiState.isLoading || isEditing()) {
+    if (uiState.isLoading) {
       return;
     }
 
     switch (e.key.toLowerCase()) {
       case 'a':
-        handleSelectAll(e);
+        if (!isEditing()) {
+          handleSelectAll(e);
+        }
         break;
       case 's':
         handleSave(e);
