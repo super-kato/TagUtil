@@ -25,11 +25,13 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
-      - name: 既存タグのチェック
+      - name: 重複リリースの防止 (既にリリース済みならスキップ)
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          if git rev-parse "${{ steps.get_version.outputs.tag }}" >/dev/null 2>&1; then
-            echo "Tag ${{ steps.get_version.outputs.tag }} already exists. Skipping release."
-            exit 0
+            echo "::error::Release ${{ steps.get_version.outputs.tag }} already exists on GitHub. Terminating workflow."
+            # ジョブを失敗扱いで終了させる
+            exit 1
           fi
 
       - name: Node.js のセットアップ
@@ -61,12 +63,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # 最新のコミットメッセージをリリースノートのデフォルトにする
-          TAG_MSG=$(git log -1 --pretty=%B)
+          # マージされた PR のタイトルと本文を取得してリリースノートにする
+          PR_DATA=$(gh pr view ${{ github.event.pull_request.number }} --json title,body --template '{{.title}}{{"\n\n"}}{{.body}}') || \
+          PR_DATA=$(git log -1 --pretty=%B) # フォールバック
 
           gh release create ${{ steps.get_version.outputs.tag }} \
             --title "${{ steps.get_version.outputs.tag }}" \
-            --notes "$TAG_MSG" \
+            --notes "$PR_DATA" \
             --target main \
             dist/*.dmg \
             dist/*.zip \
