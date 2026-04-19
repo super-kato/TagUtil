@@ -8,6 +8,7 @@ on:
 
 jobs:
   test:
+    name: Vitest
     runs-on: ubuntu-latest
     steps:
       - name: リポジトリのチェックアウト
@@ -26,11 +27,11 @@ jobs:
       - name: 依存関係のインストール
         run: pnpm install
 
-      - name: テストの実行およびカバレッジ計測
+      - name: テストの実行とカバレッジ計測
         run: |
-          echo "### Test Coverage" >> $GITHUB_STEP_SUMMARY
+          echo "### Vitest Results & Coverage" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          pnpm test --reporter=default --no-color >> $GITHUB_STEP_SUMMARY
+          pnpm test --reporter=default --no-color | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
