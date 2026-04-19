@@ -26,30 +26,41 @@ jobs:
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
       - name: 重複リリースの防止 (既にリリース済みならスキップ)
+        id: check_release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           if gh release view "${{ steps.get_version.outputs.tag }}" >/dev/null 2>&1; then
-            echo "::error::Release ${{ steps.get_version.outputs.tag }} already exists on GitHub. Terminating workflow."
-            # ジョブを失敗扱いで終了させる
-            exit 1
+            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "Release ${{ steps.get_version.outputs.tag }} already exists. Skipping build and release steps."
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
+
       - name: Node.js のセットアップ
+        if: steps.check_release.outputs.exists != 'true'
         uses: actions/setup-node@v6
+
         with:
           node-version: 24
 
       - name: pnpm のセットアップ
+        if: steps.check_release.outputs.exists != 'true'
         uses: pnpm/action-setup@v6
+
         with:
           version: latest
 
       - name: 依存関係のインストール
+        if: steps.check_release.outputs.exists != 'true'
         run: pnpm install
 
+
       - name: ビルドおよび公証
+        if: steps.check_release.outputs.exists != 'true'
         run: pnpm build:mac
+
         env:
           # コード署名
           CSC_LINK: ${{ secrets.MACOS_CERTIFICATE }}
@@ -61,7 +72,9 @@ jobs:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
 
       - name: GitHub リリースの作成
+        if: steps.check_release.outputs.exists != 'true'
         env:
+
           GH_TOKEN: ${{ github.token }}
         run: |
           # 現在のコミットに関連するマージ済み PR のタイトルと本文を取得してリリースノートにする
