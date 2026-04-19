@@ -64,8 +64,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # マージされた PR のタイトルと本文を取得してリリースノートにする
-          PR_DATA=$(gh pr view ${{ github.event.pull_request.number }} --json title,body --template '{{.title}}{{"\n\n"}}{{.body}}') || \
+          # 現在のコミットに関連するマージ済み PR のタイトルと本文を取得してリリースノートにする
+          PR_DATA=$(gh pr list --commit ${{ github.sha }} --state merged --json title,body --jq '.[0] | .title + "\n\n" + .body') || \
           PR_DATA=$(git log -1 --pretty=%B) # フォールバック
 
           gh release create ${{ steps.get_version.outputs.tag }} \
