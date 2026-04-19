@@ -140,7 +140,7 @@
   }
 
   .remove-artwork:hover {
-    background: #ff3b30;
+    background: var(--accent-modified);
     opacity: 1;
     transform: scale(1.1);
   }
