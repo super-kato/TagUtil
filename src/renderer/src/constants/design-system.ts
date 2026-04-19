@@ -13,6 +13,8 @@ export const UI_TOKENS = {
     /** Lucideアイコンなどの標準的な線の太さ */
     strokeWidth: 1.5,
     /** 小さなアイコンでも視認性を確保するための太めの線 */
-    strokeBold: 2.5
+    strokeBold: 2.5,
+    /** ツールバーのロゴなどに使用するアイコンサイズ (px) */
+    logoSize: 22
   }
 } as const;

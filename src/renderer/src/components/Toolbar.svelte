@@ -1,6 +1,6 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { Disc3, FilePen, FolderOpen, RotateCcw, Save } from 'lucide-svelte';
+  import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from 'lucide-svelte';
   import { tagActions } from '../services/tag-actions';
   import { fileActions } from '../services/file-actions';
   import { trackStore } from '../stores/track-store.svelte';
@@ -21,6 +21,12 @@
 
 <header class="toolbar">
   <div class="brand">
+    <Tag
+      size={UI_TOKENS.icons.logoSize}
+      color="var(--text-primary)"
+      strokeWidth={UI_TOKENS.icons.strokeBold}
+      class="logo-icon"
+    />
     <h1>TagUtil</h1>
   </div>
   <div class="actions">
@@ -74,10 +80,21 @@
     border-bottom: 1px solid var(--border-primary);
   }
 
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  :global(.brand .logo-icon) {
+    margin-top: 0.1rem; /* 視覚的な中央揃えの微調整 */
+  }
+
   .brand h1 {
     font-size: 1.2rem;
     font-weight: 300;
     margin: 0;
+    line-height: 1;
     letter-spacing: 1px;
     color: var(--text-primary);
   }
