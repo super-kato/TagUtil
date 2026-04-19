@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/v/release/super-kato/TagUtil?style=flat-square" alt="Release">
-  <img src="https://img.shields.io/github/license/super-kato/TagUtil?style=flat-square" alt="License">
-  <img src="https://img.shields.io/github/actions/workflow/status/super-kato/TagUtil/test.yml?label=CI&style=flat-square" alt="CI Status">
-  <img src="https://img.shields.io/github/actions/workflow/status/super-kato/TagUtil/release.yml?style=flat-square" alt="Build Status">
+  <a href="https://github.com/super-kato/TagUtil/releases"><img src="https://img.shields.io/github/v/release/super-kato/TagUtil?style=flat-square" alt="Release"></a>
+  <a href="https://github.com/super-kato/TagUtil/blob/main/LICENSE"><img src="https://img.shields.io/github/license/super-kato/TagUtil?style=flat-square" alt="License"></a>
+  <a href="https://github.com/super-kato/TagUtil/actions/workflows/test.yml"><img src="https://img.shields.io/github/actions/workflow/status/super-kato/TagUtil/test.yml?label=CI&style=flat-square" alt="CI Status"></a>
+  <a href="https://github.com/super-kato/TagUtil/actions/workflows/release.yml"><img src="https://img.shields.io/github/actions/workflow/status/super-kato/TagUtil/release.yml?style=flat-square" alt="Build Status"></a>
 </p>
 
 ---
