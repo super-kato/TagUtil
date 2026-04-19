@@ -1,6 +1,6 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { Disc3, FilePen, FolderOpen, RotateCcw, Save } from 'lucide-svelte';
+  import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from 'lucide-svelte';
   import { tagActions } from '../services/tag-actions';
   import { fileActions } from '../services/file-actions';
   import { trackStore } from '../stores/track-store.svelte';
@@ -21,6 +21,11 @@
 
 <header class="toolbar">
   <div class="brand">
+    <Tag
+      size={UI_TOKENS.icons.size}
+      color="var(--accent-primary)"
+      strokeWidth={UI_TOKENS.icons.strokeBold}
+    />
     <h1>TagUtil</h1>
   </div>
   <div class="actions">
@@ -72,6 +77,12 @@
     align-items: center;
     background-color: var(--bg-inspector);
     border-bottom: 1px solid var(--border-primary);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
   }
 
   .brand h1 {
