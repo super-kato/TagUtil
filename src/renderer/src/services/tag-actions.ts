@@ -82,6 +82,7 @@ const removeSelectedMultiFieldValue = (key: EditableMultiKey, value: string): vo
  * 画像ファイルを選択し、選択中のトラックに適用します。
  */
 const pickAndApplyPicture = async (): Promise<void> => {
+  uiState.clearError();
   const result = await tagIoService.pickImage();
   if (result.type === 'error') {
     uiState.setError(result);
@@ -142,6 +143,7 @@ const saveAllModified = async (): Promise<void> => {
     return;
   }
 
+  uiState.clearError();
   uiState.startLoading();
 
   try {
