@@ -16,6 +16,9 @@
    * 全選択アクションを実行します。
    */
   const handleSelectAll = (e: KeyboardEvent): void => {
+    if (isEditing()) {
+      return;
+    }
     e.preventDefault();
     selectionState.selectAll(trackStore.tracks);
   };
@@ -32,7 +35,7 @@
    * Modifier (Ctrl/Cmd) 系ショートカット（Save, SelectAll など）を処理します。
    */
   const handleModifierShortcuts = (e: KeyboardEvent): void => {
-    if (uiState.isLoading || isEditing()) {
+    if (uiState.isLoading) {
       return;
     }
 
