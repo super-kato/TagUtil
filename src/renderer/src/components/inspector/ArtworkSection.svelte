@@ -96,11 +96,19 @@
     background-color: var(--bg-hover);
     border: 1px solid var(--border-primary);
     padding: 1px;
+    display: grid;
+    place-items: center;
+  }
+
+  .cover-art,
+  .cover-placeholder,
+  .art-overlay {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
   }
 
   .cover-art {
-    width: 100%;
-    height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease;
   }
@@ -110,8 +118,6 @@
   }
 
   .art-overlay {
-    position: absolute;
-    inset: 0;
     background: rgba(0, 0, 0, 0.4);
     display: flex;
     align-items: center;
@@ -119,6 +125,7 @@
     opacity: 0;
     transition: opacity 0.2s;
     backdrop-filter: blur(2px);
+    z-index: 5;
   }
 
   .artwork-section:hover .art-overlay {
@@ -164,8 +171,6 @@
   }
 
   .cover-placeholder {
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
