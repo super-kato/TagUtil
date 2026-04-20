@@ -1,5 +1,4 @@
 import { HTTP_STATUS } from '@shared/http-status';
-import { IMAGE_PROTOCOL_SCHEME } from '@shared/ipc';
 import { net } from 'electron';
 import path from 'node:path';
 import { pathToFileURL } from 'url';
@@ -39,22 +38,26 @@ export const handleImageRequest = async (request: Request): Promise<Response> =>
  * @throws ProtocolError パスが無効な場合
  */
 const parseProtocolUrl = (requestUrl: string): string => {
-  // 1. スキーム部分 (flac-image://) を正規表現で取り除く
-  const rawPath = requestUrl.replace(new RegExp(`^${IMAGE_PROTOCOL_SCHEME}://`), '');
+  try {
+    const url = new URL(requestUrl);
+    // デコードされたパスを取得（ホスト名部分とパス部分を結合）
+    // protocol.handleに渡されるリクエストURLは正規化されているが、
+    // URLオブジェクトを通すことでクエリパラメータ等を安全に除外できる。
+    const decodedPath = decodeURIComponent(url.pathname);
+    // Windows環境や絶対パスの扱いを共通化するため正規化
+    const filePath = path.resolve('/', decodedPath);
 
-  // 2. デコードして元のパス文字列を復元
-  const decoded = decodeURIComponent(rawPath);
+    if (!filePath || filePath === '/') {
+      throw new ProtocolError('File path is required', HTTP_STATUS.BAD_REQUEST);
+    }
 
-  // 3. 絶対パスとして正規化
-  // 先頭のスラッシュが欠落していても path.resolve('/') が補完し、
-  // Windows のドライブレターなども正しくハンドルされる。
-  const filePath = path.resolve('/', decoded);
-
-  if (!filePath || filePath === '/') {
-    throw new ProtocolError('File path is required', HTTP_STATUS.BAD_REQUEST);
+    return filePath;
+  } catch (error) {
+    if (error instanceof ProtocolError) {
+      throw error;
+    }
+    throw new ProtocolError('Invalid URL format', HTTP_STATUS.BAD_REQUEST);
   }
-
-  return filePath;
 };
 
 /**

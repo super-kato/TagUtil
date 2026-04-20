@@ -9,6 +9,13 @@
 
   let imageLoadError = $state(false);
 
+  // URLが変わるたびにエラー状態をリセットする
+  $effect(() => {
+    if (trackStore.commonImageUrl) {
+      imageLoadError = false;
+    }
+  });
+
   const handleRemoveArtwork = (e: MouseEvent): void => {
     e.stopPropagation();
     tagActions.removeArtwork();

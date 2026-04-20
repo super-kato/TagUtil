@@ -17,5 +17,6 @@ export const createImageUrl = (picture?: Picture | null): string | null => {
   }
   // 絶対パスを（大文字小文字を含め）そのまま維持できるよう、
   // 3本スラッシュ形式 (flac-image:///path/to/file) の URL を生成します。
-  return `${IMAGE_PROTOCOL_SCHEME}://${picture.sourcePath}`;
+  // 特殊文字（#や?など）をエスケープするため encodeURI を使用します。
+  return `${IMAGE_PROTOCOL_SCHEME}://${encodeURI(picture.sourcePath)}`;
 };
