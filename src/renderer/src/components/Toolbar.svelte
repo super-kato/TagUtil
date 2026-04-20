@@ -1,6 +1,6 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from 'lucide-svelte';
+  import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from '@lucide/svelte';
   import { tagActions } from '../services/tag-actions';
   import { fileActions } from '../services/file-actions';
   import { trackStore } from '../stores/track-store.svelte';

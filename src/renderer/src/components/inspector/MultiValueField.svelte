@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Plus, X } from 'lucide-svelte';
+  import { Plus, X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
   import { UI_TOKENS } from '../../constants/design-system';
 

@@ -1,16 +1,17 @@
 <script lang="ts">
-  import { FolderOpen } from 'lucide-svelte';
   import type { Snippet } from 'svelte';
-  import { UI_TOKENS } from '../constants/design-system';
   import { uiState } from '../stores/ui-state.svelte';
-  import { getAllPathsFromDropEvent } from '../utils/drag-drop';
+  import { getAllPathsFromDropEvent } from '../infrastructure/file-drop-adapter';
+  import { filterByExtensions } from '@shared/utils/file-filter';
 
   interface Props {
     children: Snippet;
+    overlay: Snippet;
     onDrop: (paths: string[]) => void;
+    accept?: readonly string[];
   }
 
-  let { children, onDrop }: Props = $props();
+  let { children, overlay, onDrop, accept = [] }: Props = $props();
 
   let isDragging = $state(false);
 
@@ -23,7 +24,6 @@
   const handleDragLeave = (e: DragEvent): void => {
     e.preventDefault();
     e.stopPropagation();
-    // 子要素への移動ではリセットしない (本当のコンテナ外脱出のみ判定)
     const container = e.currentTarget as HTMLElement;
     const related = e.relatedTarget as Node | null;
     if (!related || !container.contains(related)) {
@@ -40,7 +40,12 @@
       return;
     }
 
-    const paths = getAllPathsFromDropEvent(e);
+    let paths = getAllPathsFromDropEvent(e);
+
+    if (accept.length > 0) {
+      paths = filterByExtensions(paths, accept);
+    }
+
     if (paths.length > 0) {
       onDrop(paths);
     }
@@ -59,13 +64,7 @@
 
   {#if isDragging}
     <div class="drop-overlay">
-      <div class="drop-content">
-        <div class="icon-wrapper">
-          <FolderOpen size={UI_TOKENS.icons.sizeLarge} strokeWidth={1} />
-        </div>
-        <h2>Drop to scan FLAC files</h2>
-        <p>Release to open</p>
-      </div>
+      {@render overlay()}
     </div>
   {/if}
 </div>
@@ -103,33 +102,5 @@
       opacity: 1;
       transform: scale(1);
     }
-  }
-
-  .drop-content {
-    text-align: center;
-    color: var(--accent-primary);
-  }
-
-  .drop-content h2 {
-    font-size: 1.5rem;
-    margin: 1rem 0 0.5rem;
-    font-weight: 600;
-  }
-
-  .drop-content p {
-    color: var(--text-muted);
-    font-size: 1rem;
-  }
-
-  .icon-wrapper {
-    background: var(--accent-primary-dim);
-    color: var(--accent-primary);
-    width: 96px;
-    height: 96px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
   }
 </style>

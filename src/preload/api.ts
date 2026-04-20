@@ -34,6 +34,11 @@ export const api: IpcApi = {
    */
   pickImage: () => ipcRenderer.invoke(IPC_CHANNELS.PICK_IMAGE),
   /**
+   * 指定したパスの画像情報を取得します。
+   * @param path 画像ファイルの絶対パス
+   */
+  getImageInfo: (path: string) => ipcRenderer.invoke(IPC_CHANNELS.GET_IMAGE_INFO, path),
+  /**
    * ファイルをリネーム（移動）します。
    * @param oldPath 現在のパス
    * @param newPath 新しいパス

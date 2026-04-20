@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getAllPathsFromDropEvent, type DropEventLike } from './drag-drop';
+import { getAllPathsFromDropEvent, type DropEventLike } from './file-drop-adapter';
 
 describe('getAllPathsFromDropEvent', () => {
   const mockGetPathForFile = vi.fn();

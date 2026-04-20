@@ -1,3 +1,4 @@
+import { SUPPORTED_IMAGE_EXTENSIONS } from '@domain/file-extensions';
 import { dialog, OpenDialogOptions } from 'electron';
 
 /**
@@ -22,7 +23,12 @@ export const pickImageFile = async (
 ): Promise<string | null> => {
   const result = await dialog.showOpenDialog({
     title: 'Select Artwork',
-    filters: [{ name: 'Images', extensions: ['jpg', 'jpeg', 'png', 'webp'] }],
+    filters: [
+      {
+        name: 'Images',
+        extensions: SUPPORTED_IMAGE_EXTENSIONS.map((ext) => ext.replace(/^\./, ''))
+      }
+    ],
     properties: ['openFile'],
     ...options
   });

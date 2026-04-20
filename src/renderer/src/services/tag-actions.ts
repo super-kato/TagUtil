@@ -4,7 +4,7 @@ import { trackStore } from '../stores/track-store.svelte';
 import { TrackRecord } from '../stores/track-record.svelte';
 import { uiState } from '../stores/ui-state.svelte';
 import { tagEditor } from './tag-editor';
-import { tagIoService } from './tag-io-service';
+import { tagRepository } from '../infrastructure/tag-repository';
 
 /**
  * スキャン処理の共通的なフローを制御するヘルパー関数。
@@ -36,14 +36,14 @@ const handleScanOperation = async (
  * フォルダ選択ダイアログを開き、中のFLACファイルをスキャンします。
  */
 const openAndScanDirectory = async (): Promise<void> => {
-  await handleScanOperation(() => tagIoService.scanAndLoadTracks());
+  await handleScanOperation(() => tagRepository.scanAndLoadTracks());
 };
 
 /**
  * 指定された複数のパスを直接スキャンして読み込みます。
  */
 const loadFromPaths = async (targetPaths: string[]): Promise<void> => {
-  await handleScanOperation(() => tagIoService.loadTracksFromPaths(targetPaths));
+  await handleScanOperation(() => tagRepository.loadTracksFromPaths(targetPaths));
 };
 
 /**
@@ -83,7 +83,20 @@ const removeSelectedMultiFieldValue = (key: EditableMultiKey, value: string): vo
  */
 const pickAndApplyPicture = async (): Promise<void> => {
   uiState.clearError();
-  const result = await tagIoService.pickImage();
+  const result = await tagRepository.pickImage();
+  if (result.type === 'error') {
+    uiState.setError(result);
+  } else if (result.value) {
+    tagEditor.applyPicture(trackStore.selectedTracks, result.value);
+  }
+};
+
+/**
+ * 指定されたパスの画像を読み込み、選択中のトラックに適用します（ドラッグ＆ドロップ用）。
+ */
+const applyPictureFromPath = async (path: string): Promise<void> => {
+  uiState.clearError();
+  const result = await tagRepository.getImageInfo(path);
   if (result.type === 'error') {
     uiState.setError(result);
   } else if (result.value) {
@@ -119,7 +132,7 @@ const revertSelected = async (): Promise<void> => {
 
   try {
     for (const track of modifiedSelected) {
-      const result = await tagIoService.readMetadata(track.path);
+      const result = await tagRepository.readMetadata(track.path);
       if (result.type === 'error') {
         uiState.setError(result);
         break;
@@ -149,7 +162,7 @@ const saveAllModified = async (): Promise<void> => {
   try {
     // インフラ層に渡すためにドメインモデルの配列に整形
     const rawData = modified.map((t) => t.toFlacTrack());
-    const result = await tagIoService.saveTracks(rawData);
+    const result = await tagRepository.saveTracks(rawData);
 
     if (result.type === 'error') {
       uiState.setError(result);
@@ -176,6 +189,7 @@ export const tagActions = {
   removeSelectedMultiFieldValue,
   applySelectedMultiFieldChange,
   pickAndApplyPicture,
+  applyPictureFromPath,
   removeArtwork,
   applyAutoNumbering,
   revertSelected,
