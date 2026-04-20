@@ -45,12 +45,12 @@ const parseProtocolUrl = (requestUrl: string): string => {
     throw new ProtocolError('Invalid URL format', HTTP_STATUS.BAD_REQUEST);
   }
 
-  // デコードされたパスを取得（ホスト名部分とパス部分を結合）
-  // protocol.handleに渡されるリクエストURLは正規化されているが、
-  // URLオブジェクトを通すことでクエリパラメータ等を安全に除外できる。
-  const decodedPath = decodeURIComponent(url.pathname);
+  // ホスト部分（もしあれば）とパス部分を結合して絶対パスを復元する
+  // (flac-image://host/path -> host/path, flac-image:///path -> /path)
+  const fullPath = url.host + url.pathname;
+  const decodedPath = decodeURIComponent(fullPath);
 
-  // Windows環境や絶対パスの扱いを共通化するため正規化
+  // 絶対パスとして正規化
   const filePath = path.resolve('/', decodedPath);
 
   if (!filePath || filePath === '/') {
