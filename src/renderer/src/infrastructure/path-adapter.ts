@@ -1,4 +1,8 @@
 /**
+ * Electron/Node.jsのパス操作APIをRendererプロセスから利用するためのアダプター。
+ */
+
+/**
  * フルパスからディレクトリ名を抽出します。
  * @param path 対象のフルパス
  * @returns ディレクトリパス

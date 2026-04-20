@@ -26,6 +26,18 @@ export const extractEmbeddedImage = async (
 };
 
 /**
+ * 指定されたパスの画像ファイルから Picture オブジェクトを生成して返します。
+ * @param filePath 画像ファイルの絶対パス
+ */
+export const getImageInfo = async (filePath: string): Promise<TagResult<Picture>> => {
+  return success({
+    format: getMimeTypeFromPath(filePath),
+    sourcePath: filePath,
+    hash: computeMd5(await readFile(filePath))
+  });
+};
+
+/**
  * 画像ファイル選択ダイアログを表示し、選択された画像のパス情報を返します。
  * @returns 選択された画像のパス情報。キャンセルされた場合は Result(null)。
  */
@@ -36,9 +48,5 @@ export const pickImage = async (): Promise<TagResult<Picture | null>> => {
     return success(null);
   }
 
-  return success({
-    format: getMimeTypeFromPath(filePath),
-    sourcePath: filePath,
-    hash: computeMd5(await readFile(filePath))
-  });
+  return await getImageInfo(filePath);
 };

@@ -3,8 +3,9 @@ import { TrackRecord } from '../stores/track-record.svelte';
 import { trackStore } from '../stores/track-store.svelte';
 import { uiState } from '../stores/ui-state.svelte';
 import { selectionState } from '../stores/selection-state.svelte';
-import { tagIoService } from './tag-io-service';
-import { getDirectoryName, joinPath } from '../utils/path';
+import { tagRepository } from '../infrastructure/tag-repository';
+import { fileRepository } from '../infrastructure/file-repository';
+import { getDirectoryName, joinPath } from '../infrastructure/path-adapter';
 
 /**
  * 選択中のファイルをメタデータに基づいてリネームします。
@@ -74,14 +75,14 @@ const renameTrack = async (track: TrackRecord): Promise<TrackRecord | null> => {
   }
 
   // 3. 物理的なリネーム実行
-  const result = await window.api.renameFile(track.path, newPath);
+  const result = await fileRepository.renameFile(track.path, newPath);
   if (result.type === 'error') {
     uiState.setError(result);
     return null;
   }
 
   // 3. 成功時: 再読み込みして新しい不変インスタンスを作成
-  const reloadResult = await tagIoService.readMetadata(newPath);
+  const reloadResult = await tagRepository.readMetadata(newPath);
   if (reloadResult.type === 'error') {
     uiState.setError(reloadResult);
     return null;

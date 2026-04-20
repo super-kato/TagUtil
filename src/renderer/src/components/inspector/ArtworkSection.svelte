@@ -1,8 +1,11 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { Music, X } from 'lucide-svelte';
-  import { trackStore } from '../../stores/track-store.svelte';
+  import { Image as ImageIcon, Music, X } from '@lucide/svelte';
+  import { SUPPORTED_IMAGE_EXTENSIONS } from '@domain/file-extensions';
   import { tagActions } from '../../services/tag-actions';
+  import { trackStore } from '../../stores/track-store.svelte';
+  import DropZone from '../DropZone.svelte';
+  import DropZoneOverlay from '../DropZoneOverlay.svelte';
 
   let imageLoadError = $state(false);
 
@@ -23,47 +26,55 @@
   };
 </script>
 
-<div
-  class="artwork-section"
-  onclick={() => tagActions.pickAndApplyPicture()}
-  onkeydown={(e) => e.key === 'Enter' && tagActions.pickAndApplyPicture()}
-  role="button"
-  tabindex="0"
-  title="Click to change artwork"
+<DropZone
+  accept={SUPPORTED_IMAGE_EXTENSIONS}
+  onDrop={(paths) => tagActions.applyPictureFromPath(paths[0])}
 >
-  {#if trackStore.commonImageUrl}
-    <img
-      src={trackStore.commonImageUrl}
-      alt="Cover Art"
-      class="cover-art"
-      class:hidden={imageLoadError}
-      onerror={() => (imageLoadError = true)}
-      onload={() => (imageLoadError = false)}
-    />
-    {#if !imageLoadError}
-      <button class="remove-artwork" onclick={handleRemoveArtwork} title="Remove Artwork">
-        <X size={UI_TOKENS.icons.size} />
-      </button>
+  {#snippet overlay()}
+    <DropZoneOverlay icon={ImageIcon} title="Drop to set Artwork" sub="Apply to selected tracks" />
+  {/snippet}
+  <div
+    class="artwork-section"
+    onclick={() => tagActions.pickAndApplyPicture()}
+    onkeydown={(e) => e.key === 'Enter' && tagActions.pickAndApplyPicture()}
+    role="button"
+    tabindex="0"
+    title="Click to change artwork"
+  >
+    {#if trackStore.commonImageUrl}
+      <img
+        src={trackStore.commonImageUrl}
+        alt="Cover Art"
+        class="cover-art"
+        class:hidden={imageLoadError}
+        onerror={() => (imageLoadError = true)}
+        onload={() => (imageLoadError = false)}
+      />
+      {#if !imageLoadError}
+        <button class="remove-artwork" onclick={handleRemoveArtwork} title="Remove Artwork">
+          <X size={UI_TOKENS.icons.size} />
+        </button>
+      {/if}
     {/if}
-  {/if}
 
-  {#if !trackStore.commonImageUrl || imageLoadError}
-    <div
-      class="cover-placeholder"
-      class:error={imageLoadError}
-      class:mixed={trackStore.commonMetadata?.picture.type === 'divergent'}
-    >
-      <div class="icon-wrapper">
-        <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
+    {#if !trackStore.commonImageUrl || imageLoadError}
+      <div
+        class="cover-placeholder"
+        class:error={imageLoadError}
+        class:mixed={trackStore.commonMetadata?.picture.type === 'divergent'}
+      >
+        <div class="icon-wrapper">
+          <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
+        </div>
+        <span class="text">{getPlaceholderText()}</span>
       </div>
-      <span class="text">{getPlaceholderText()}</span>
-    </div>
-  {/if}
+    {/if}
 
-  <div class="art-overlay">
-    <span>Change Artwork</span>
+    <div class="art-overlay">
+      <span>Change Artwork</span>
+    </div>
   </div>
-</div>
+</DropZone>
 
 <style>
   .artwork-section {

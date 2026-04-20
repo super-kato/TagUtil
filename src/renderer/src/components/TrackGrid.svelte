@@ -1,7 +1,12 @@
 <script lang="ts">
+  import { SUPPORTED_AUDIO_EXTENSIONS } from '@domain/file-extensions';
+  import { FolderOpen } from '@lucide/svelte';
+  import { tagActions } from '../services/tag-actions';
   import { selectionState } from '../stores/selection-state.svelte';
   import { TrackRecord } from '../stores/track-record.svelte';
   import { trackStore } from '../stores/track-store.svelte';
+  import DropZone from './DropZone.svelte';
+  import DropZoneOverlay from './DropZoneOverlay.svelte';
 
   const rowElements: HTMLElement[] = [];
 
@@ -29,43 +34,48 @@
   };
 </script>
 
-<div class="grid-wrapper">
-  {#if trackStore.tracks.length > 0}
-    <table class="data-grid">
-      <thead>
-        <tr>
-          <th class="col-indicator"></th>
-          <th class="col-track">#</th>
-          <th>Title</th>
-          <th>Artist</th>
-          <th>Album</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each trackStore.tracks as track, i (track)}
-          <tr
-            bind:this={rowElements[i]}
-            class="track-row"
-            class:selected={selectionState.has(track)}
-            class:modified={track.isModified}
-            onclick={(e) => handleRowClick(e, i, track)}
-            aria-selected={selectionState.has(track)}
-          >
-            <td class="indicator-cell"></td>
-            <td class="track-cell">{track.metadata.trackNumber ?? ''}</td>
-            <td>{track.metadata.title}</td>
-            <td>{track.metadata.artist}</td>
-            <td>{track.metadata.album}</td>
+<DropZone onDrop={(paths) => tagActions.loadFromPaths(paths)} accept={SUPPORTED_AUDIO_EXTENSIONS}>
+  {#snippet overlay()}
+    <DropZoneOverlay icon={FolderOpen} title="Drop to scan FLAC files" sub="Release to open" />
+  {/snippet}
+  <div class="grid-wrapper">
+    {#if trackStore.tracks.length > 0}
+      <table class="data-grid">
+        <thead>
+          <tr>
+            <th class="col-indicator"></th>
+            <th class="col-track">#</th>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Album</th>
           </tr>
-        {/each}
-      </tbody>
-    </table>
-  {:else}
-    <div class="empty-state">
-      <p>Click "Open Folder" to start tagging your FLAC files.</p>
-    </div>
-  {/if}
-</div>
+        </thead>
+        <tbody>
+          {#each trackStore.tracks as track, i (track)}
+            <tr
+              bind:this={rowElements[i]}
+              class="track-row"
+              class:selected={selectionState.has(track)}
+              class:modified={track.isModified}
+              onclick={(e) => handleRowClick(e, i, track)}
+              aria-selected={selectionState.has(track)}
+            >
+              <td class="indicator-cell"></td>
+              <td class="track-cell">{track.metadata.trackNumber ?? ''}</td>
+              <td>{track.metadata.title}</td>
+              <td>{track.metadata.artist}</td>
+              <td>{track.metadata.album}</td>
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    {:else}
+      <div class="empty-state">
+        <p>Click "Open Folder" to start tagging your FLAC files.</p>
+      </div>
+    {/if}
+  </div>
+</DropZone>
 
 <style>
   .grid-wrapper {

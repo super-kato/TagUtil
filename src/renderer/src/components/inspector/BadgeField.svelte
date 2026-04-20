@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { X } from 'lucide-svelte';
+  import { X } from '@lucide/svelte';
   import { UI_TOKENS } from '../../constants/design-system';
 
   interface Props {
