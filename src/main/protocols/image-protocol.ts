@@ -38,26 +38,26 @@ export const handleImageRequest = async (request: Request): Promise<Response> =>
  * @throws ProtocolError パスが無効な場合
  */
 const parseProtocolUrl = (requestUrl: string): string => {
+  let url: URL;
   try {
-    const url = new URL(requestUrl);
-    // デコードされたパスを取得（ホスト名部分とパス部分を結合）
-    // protocol.handleに渡されるリクエストURLは正規化されているが、
-    // URLオブジェクトを通すことでクエリパラメータ等を安全に除外できる。
-    const decodedPath = decodeURIComponent(url.pathname);
-    // Windows環境や絶対パスの扱いを共通化するため正規化
-    const filePath = path.resolve('/', decodedPath);
-
-    if (!filePath || filePath === '/') {
-      throw new ProtocolError('File path is required', HTTP_STATUS.BAD_REQUEST);
-    }
-
-    return filePath;
-  } catch (error) {
-    if (error instanceof ProtocolError) {
-      throw error;
-    }
+    url = new URL(requestUrl);
+  } catch {
     throw new ProtocolError('Invalid URL format', HTTP_STATUS.BAD_REQUEST);
   }
+
+  // デコードされたパスを取得（ホスト名部分とパス部分を結合）
+  // protocol.handleに渡されるリクエストURLは正規化されているが、
+  // URLオブジェクトを通すことでクエリパラメータ等を安全に除外できる。
+  const decodedPath = decodeURIComponent(url.pathname);
+
+  // Windows環境や絶対パスの扱いを共通化するため正規化
+  const filePath = path.resolve('/', decodedPath);
+
+  if (!filePath || filePath === '/') {
+    throw new ProtocolError('File path is required', HTTP_STATUS.BAD_REQUEST);
+  }
+
+  return filePath;
 };
 
 /**
