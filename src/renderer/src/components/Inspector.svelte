@@ -12,7 +12,7 @@
   import DropZoneOverlay from './DropZoneOverlay.svelte';
 </script>
 
-<aside class="inspector">
+<aside class="inspector" tabindex="-1">
   <DropZone
     accept={SUPPORTED_IMAGE_EXTENSIONS}
     onDrop={(paths) => tagActions.applyPictureFromPath(paths[0])}
@@ -23,7 +23,7 @@
         title="Drop to set Artwork"
         sub="Apply to selected tracks"
       />
-    {/snippet}
+    {#/snippet}
 
     {#if trackStore.selectedTracks.length > 0}
       <ArtworkSection />
