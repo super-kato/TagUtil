@@ -195,9 +195,9 @@
     border-radius: var(--radius-xl);
     color: var(--text-muted);
     margin-bottom: 0.5rem;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border-primary);
-    animation: breathing 4s ease-in-out infinite;
+    /* 枠線に沿った静的なグロー効果 */
+    box-shadow: 0 0 15px var(--selection-glow);
   }
 
   .empty-state p {
@@ -205,17 +205,5 @@
     font-size: 1rem;
     opacity: 0.7;
     letter-spacing: 0.5px;
-  }
-
-  @keyframes breathing {
-    0%,
-    100% {
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
-      transform: scale(1);
-    }
-    50% {
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.35);
-      transform: scale(1.02);
-    }
   }
 </style>
