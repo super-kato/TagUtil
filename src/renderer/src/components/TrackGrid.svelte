@@ -72,9 +72,13 @@
       </table>
     {:else}
       <div class="empty-state">
-        <div class="empty-icon">
+        <button
+          class="empty-icon"
+          onclick={() => tagActions.openAndScanDirectory()}
+          aria-label="Open Directory"
+        >
           <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
-        </div>
+        </button>
         <p>Open a folder or drop FLAC files here to begin.</p>
       </div>
     {/if}
@@ -198,6 +202,28 @@
     border: 1px solid var(--border-primary);
     /* 枠線に沿った静的なグロー効果 */
     box-shadow: 0 0 15px var(--selection-glow);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    outline: none;
+  }
+
+  .empty-icon:hover {
+    background-color: var(--bg-secondary);
+    box-shadow: 0 0 25px var(--selection-glow);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+  }
+
+  .empty-icon:active {
+    transform: scale(0.95);
+  }
+
+  .empty-icon:focus-visible {
+    border-color: var(--accent-primary);
+    box-shadow:
+      0 0 0 2px var(--accent-primary-dim),
+      0 0 15px var(--selection-glow);
   }
 
   .empty-state p {
