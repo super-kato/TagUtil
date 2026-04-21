@@ -145,7 +145,8 @@
     pointer-events: auto;
   }
 
-  .remove-btn:hover {
+  .remove-btn:hover,
+  .remove-btn:focus-visible {
     color: var(--accent-modified);
     opacity: 1 !important;
   }
