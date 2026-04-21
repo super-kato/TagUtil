@@ -1,8 +1,8 @@
 import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
 import { FlacMetadata, Picture } from '@domain/flac/types';
 import type * as readerImpl from 'music-metadata';
-import { computeMd5 } from '@main/utils/hash';
-import { RawFlacData, RawPicture } from '@main/services/flac/types';
+import { computeMd5 } from '@utils/hash';
+import { RawFlacData, RawPicture } from '@services/flac/types';
 
 /**
  * テキストタグとして読み込み・書き込みをスキップするタグキーのリスト。

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { X } from '@lucide/svelte';
-  import { UI_TOKENS } from '@renderer/constants/design-system';
+  import { UI_TOKENS } from '@constants/design-system';
 
   interface Props {
     label: string;

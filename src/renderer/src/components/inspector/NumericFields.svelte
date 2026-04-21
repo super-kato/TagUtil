@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { tagActions } from '@renderer/services/tag-actions';
-  import { trackStore } from '@renderer/stores/track-store.svelte';
+  import { tagActions } from '@services/tag-actions';
+  import { trackStore } from '@stores/track-store.svelte';
   import { getSingleFieldValue, handleSingleInput } from './tag-field-handlers';
 </script>
 

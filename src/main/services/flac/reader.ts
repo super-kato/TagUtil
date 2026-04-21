@@ -1,8 +1,8 @@
 import { success } from '@domain/common/result';
 import { FlacTrack, tagErrors, TagResult } from '@domain/flac/types';
 import * as readerImpl from 'music-metadata';
-import { toTagResultFailure } from '@main/utils/error-handler';
-import { ensureFileExists } from '@main/utils/fs';
+import { toTagResultFailure } from '@utils/error-handler';
+import { ensureFileExists } from '@utils/fs';
 import { mapToFlacMetadata, toRawFlacData } from './mappers/flac-read-mapper';
 import { RawFlacData } from './types';
 

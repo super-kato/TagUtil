@@ -2,8 +2,8 @@ import { HTTP_STATUS } from '@shared/http-status';
 import { net } from 'electron';
 import path from 'node:path';
 import { pathToFileURL } from 'url';
-import { extractEmbeddedImage } from '@main/services/flac/image';
-import { isSupportedAudioFile } from '@main/utils/file-utils';
+import { extractEmbeddedImage } from '@services/flac/image';
+import { isSupportedAudioFile } from '@utils/file-utils';
 import { ProtocolError, isProtocolError } from './error';
 
 /**

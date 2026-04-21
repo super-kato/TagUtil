@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { UI_TOKENS } from '@renderer/constants/design-system';
+  import { UI_TOKENS } from '@constants/design-system';
   import { Music, X } from '@lucide/svelte';
-  import { tagActions } from '@renderer/services/tag-actions';
-  import { trackStore } from '@renderer/stores/track-store.svelte';
+  import { tagActions } from '@services/tag-actions';
+  import { trackStore } from '@stores/track-store.svelte';
 
   let imageLoadError = $state(false);
 
