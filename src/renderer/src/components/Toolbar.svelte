@@ -5,12 +5,16 @@
   import { fileActions } from '@renderer/services/file-actions';
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
+  import { modalStore } from '@renderer/stores/modal-store.svelte';
 
-  const handleRenameClick = (): void => {
-    const ok = confirm(
-      `Rename ${trackStore.selectedTracks.length} selected files based on metadata?\n` +
-        `Format: {trackNumber} - {title}.flac`
-    );
+  const handleRenameClick = async (): Promise<void> => {
+    const ok = await modalStore.confirm({
+      title: 'Rename Files',
+      message:
+        `Rename ${trackStore.selectedTracks.length} selected files based on metadata?\n` +
+        `Format: {trackNumber} - {title}.flac`,
+      confirmLabel: 'Rename'
+    });
     if (!ok) {
       return;
     }

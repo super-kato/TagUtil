@@ -4,6 +4,7 @@
   import Toolbar from './components/Toolbar.svelte';
   import TrackGrid from './components/TrackGrid.svelte';
   import KeyboardShortcuts from './components/KeyboardShortcuts.svelte';
+  import ConfirmationDialog from './components/ui/ConfirmationDialog.svelte';
 </script>
 
 <KeyboardShortcuts />
@@ -21,6 +22,7 @@
   </section>
 
   <Inspector />
+  <ConfirmationDialog />
 </div>
 
 <style>
