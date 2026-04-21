@@ -89,27 +89,23 @@ jobs:
             dist/*.zip \
             dist/latest-mac.yml
 
-      - name: 旧バージョンのリリースとタグの削除
+      - name: 旧バージョンの判定
+        id: check_old_release
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ needs.check-release.outputs.tag }}
         run: |
-          # 1. 1つ前のリリースを取得 (最新2件の2番目)
           PREV_TAG=$(gh release list -L 2 --json tagName -q '.[1].tagName // empty' || true)
 
-          if [[ -z "$PREV_TAG" ]]; then
-            echo "No previous release found. Skipping deletion."
-            exit 0
-          fi
-
-          # 2. X.Y の部分を切り出し（.Z を取り除く）
-          CURRENT_MINOR="${TAG%.*}"
-          PREV_MINOR="${PREV_TAG%.*}"
-
-          # 3. メジャー・マイナーが同じなら、1つ前のリリースとタグを削除
-          if [[ "$CURRENT_MINOR" == "$PREV_MINOR" ]]; then
-            echo "Previous release $PREV_TAG has the same minor version ($CURRENT_MINOR). Deleting it..."
-            gh release delete "$PREV_TAG" --yes --cleanup-tag || true
+          if [[ -n "$PREV_TAG" ]] && [[ "${TAG%.*}" == "${PREV_TAG%.*}" ]]; then
+            echo "prev_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+            echo "should_delete=true" >> $GITHUB_OUTPUT
           else
-            echo "Previous release $PREV_TAG is a different minor version ($PREV_MINOR != $CURRENT_MINOR). Skipping deletion."
+            echo "should_delete=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: 旧バージョンのリリースとタグの削除
+        if: steps.check_old_release.outputs.should_delete == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release delete "${{ steps.check_old_release.outputs.prev_tag }}" --yes --cleanup-tag
