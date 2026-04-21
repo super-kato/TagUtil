@@ -162,19 +162,21 @@
     color: var(--accent-primary);
   }
 
-  /* 削除ボタンは行のホバー時のみ表示 */
+  /* 削除ボタンは行のホバー時またはフォーカス時に表示 */
   .remove-button {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s;
   }
 
-  .value-row:hover .remove-button {
+  .value-row:hover .remove-button,
+  .value-row:focus-within .remove-button {
     opacity: 0.8;
     pointer-events: auto;
   }
 
-  .remove-button:hover {
+  .remove-button:hover,
+  .remove-button:focus-visible {
     color: var(--accent-modified);
     opacity: 1 !important;
   }
