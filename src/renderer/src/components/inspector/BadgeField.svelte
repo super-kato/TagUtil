@@ -87,6 +87,7 @@
   .badge-container:focus-within {
     border-color: var(--accent-primary);
     background-color: var(--bg-secondary);
+    box-shadow: var(--focus-ring), var(--focus-glow);
   }
 
   .badge-container.divergent {
