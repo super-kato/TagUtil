@@ -80,9 +80,6 @@ jobs:
         run: |
           # 現在のコミットに関連するマージ済み PR のタイトルと本文を取得してリリースノートにする
           PR_DATA=$(gh api repos/${{ github.repository }}/commits/${{ github.sha }}/pulls --jq '.[0] | select(. != null) | .title + "\n\n" + .body')
-          if [ -z "$PR_DATA" ] || [ "$PR_DATA" = "null" ]; then
-            PR_DATA=$(git log -1 --pretty=%B)
-          fi
 
           gh release create $TAG \
             --title "$TAG" \
