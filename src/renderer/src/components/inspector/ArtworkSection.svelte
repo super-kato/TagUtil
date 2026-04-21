@@ -33,62 +33,72 @@
   };
 </script>
 
-<DropZone
-  accept={SUPPORTED_IMAGE_EXTENSIONS}
-  onDrop={(paths) => tagActions.applyPictureFromPath(paths[0])}
->
-  {#snippet overlay()}
-    <DropZoneOverlay icon={ImageIcon} title="Drop to set Artwork" sub="Apply to selected tracks" />
-  {/snippet}
-  <div
-    class="artwork-section"
-    onclick={() => tagActions.pickAndApplyPicture()}
-    onkeydown={(e) => e.key === 'Enter' && tagActions.pickAndApplyPicture()}
-    role="button"
-    tabindex="0"
-    title="Click to change artwork"
+<div class="artwork-container">
+  <DropZone
+    accept={SUPPORTED_IMAGE_EXTENSIONS}
+    onDrop={(paths) => tagActions.applyPictureFromPath(paths[0])}
   >
-    {#if trackStore.commonImageUrl}
-      <img
-        src={trackStore.commonImageUrl}
-        alt="Cover Art"
-        class="cover-art"
-        class:hidden={imageLoadError}
-        onerror={() => (imageLoadError = true)}
-        onload={() => (imageLoadError = false)}
+    {#snippet overlay()}
+      <DropZoneOverlay
+        icon={ImageIcon}
+        title="Drop to set Artwork"
+        sub="Apply to selected tracks"
       />
-      {#if !imageLoadError}
-        <button class="remove-artwork" onclick={handleRemoveArtwork} title="Remove Artwork">
-          <X size={UI_TOKENS.icons.size} />
-        </button>
+    {/snippet}
+    <div
+      class="artwork-section"
+      onclick={() => tagActions.pickAndApplyPicture()}
+      onkeydown={(e) => e.key === 'Enter' && tagActions.pickAndApplyPicture()}
+      role="button"
+      tabindex="0"
+      title="Click to change artwork"
+    >
+      {#if trackStore.commonImageUrl}
+        <img
+          src={trackStore.commonImageUrl}
+          alt="Cover Art"
+          class="cover-art"
+          class:hidden={imageLoadError}
+          onerror={() => (imageLoadError = true)}
+          onload={() => (imageLoadError = false)}
+        />
+        {#if !imageLoadError}
+          <button class="remove-artwork" onclick={handleRemoveArtwork} title="Remove Artwork">
+            <X size={UI_TOKENS.icons.size} />
+          </button>
+        {/if}
       {/if}
-    {/if}
 
-    {#if !trackStore.commonImageUrl || imageLoadError}
-      <div
-        class="cover-placeholder"
-        class:error={imageLoadError}
-        class:mixed={trackStore.commonMetadata?.picture.type === 'divergent'}
-      >
-        <div class="icon-wrapper">
-          <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
+      {#if !trackStore.commonImageUrl || imageLoadError}
+        <div
+          class="cover-placeholder"
+          class:error={imageLoadError}
+          class:mixed={trackStore.commonMetadata?.picture.type === 'divergent'}
+        >
+          <div class="icon-wrapper">
+            <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
+          </div>
+          <span class="text">{getPlaceholderText()}</span>
         </div>
-        <span class="text">{getPlaceholderText()}</span>
-      </div>
-    {/if}
+      {/if}
 
-    <div class="art-overlay">
-      <span>Change Artwork</span>
+      <div class="art-overlay">
+        <span>Change Artwork</span>
+      </div>
     </div>
-  </div>
-</DropZone>
+  </DropZone>
+</div>
 
 <style>
-  .artwork-section {
+  .artwork-container {
     width: 90%;
-    aspect-ratio: 1 / 1;
-    flex-shrink: 0;
     margin: 0 auto 2rem auto;
+    flex-shrink: 0;
+  }
+
+  .artwork-section {
+    width: 100%;
+    aspect-ratio: 1 / 1;
     border-radius: var(--radius-xl);
     overflow: hidden;
     position: relative;
