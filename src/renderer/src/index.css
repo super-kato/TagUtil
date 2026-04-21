@@ -41,7 +41,7 @@
 
   /* フォーカスエフェクト */
   --focus-ring: 0 0 0 2px var(--accent-primary-dim);
-  --focus-glow: 0 0 4px var(--selection-glow);
+  --focus-glow: 0 0 6px var(--selection-glow);
 }
 
 *,
