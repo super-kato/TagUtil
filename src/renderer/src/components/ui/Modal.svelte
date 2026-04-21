@@ -6,12 +6,12 @@
     isOpen: boolean;
     /** モーダルを閉じる際のコールバック */
     onClose: () => void;
-    /** タイトル (header スニペットが未指定の場合に使用) */
-    title?: string;
+    /** タイトル */
+    title: string;
     /** ヘッダー部分のカスタムスニペット */
     header?: Snippet;
     /** 本文部分のスニペット */
-    children?: Snippet;
+    children: Snippet;
     /** フッター部分のスニペット */
     footer?: Snippet;
   }
@@ -40,25 +40,39 @@
 
   /**
    * 背景クリックで閉じる処理。
-   * dialog 要素自体のクリックを検知し、content 外であれば閉じる。
+   * dialog 要素自体のクリックを検知し、content 外（backdrop）であれば閉じる。
    */
   const handleBackdropClick = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;
-    if (target.tagName === 'DIALOG') {
-      onClose();
+    if (target.tagName !== 'DIALOG') {
+      return;
+    }
+    onClose();
+  };
+
+  /**
+   * a11y のためのキーダウンハンドラ。
+   */
+  const handleKeyDown = (e: KeyboardEvent): void => {
+    // ネイティブの dialog は Escape で自動的に閉じられるが、
+    // クリックイベントと対になる操作として Enter/Space を定義。
+    if (e.key === 'Enter' || e.key === ' ') {
+      const target = e.target as HTMLElement;
+      if (target.tagName === 'DIALOG') {
+        onClose();
+      }
     }
   };
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <dialog
   bind:this={dialog}
   oncancel={handleCancel}
   onclick={handleBackdropClick}
+  onkeydown={handleKeyDown}
   class="custom-modal"
 >
-  <div class="modal-container">
+  <div class="modal-container" role="document">
     <header class="modal-header">
       {#if header}
         {@render header()}
@@ -68,9 +82,7 @@
     </header>
 
     <main class="modal-body">
-      {#if children}
-        {@render children()}
-      {/if}
+      {@render children()}
     </main>
 
     {#if footer}
@@ -132,11 +144,11 @@
   .modal-container {
     display: flex;
     flex-direction: column;
+    outline: none;
   }
 
   .modal-header {
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--border-primary);
+    padding: 1rem 1.5rem;
   }
 
   .modal-header h2 {
@@ -148,7 +160,7 @@
   }
 
   .modal-body {
-    padding: 1.5rem;
+    padding: 0.75rem 1.5rem;
     font-size: 0.95rem;
     line-height: 1.6;
     color: var(--text-secondary);
@@ -156,13 +168,9 @@
   }
 
   .modal-footer {
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1.5rem 1rem;
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
-    border-top: 1px solid var(--border-primary);
   }
-
-  /* モーダルが閉じられる時のアニメーション（将来的な対応用） */
-  /* 現時点では dialog.close() は瞬時に消えるため、CSS のみではアニメーション不可 */
 </style>
