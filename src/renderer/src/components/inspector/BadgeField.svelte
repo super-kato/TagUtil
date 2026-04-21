@@ -139,7 +139,8 @@
     pointer-events: none;
   }
 
-  .badge:hover .remove-btn {
+  .badge:hover .remove-btn,
+  .badge:focus-within .remove-btn {
     opacity: 0.8;
     pointer-events: auto;
   }
