@@ -1,27 +1,45 @@
 <script lang="ts">
+  import { Image as ImageIcon } from '@lucide/svelte';
+  import { SUPPORTED_IMAGE_EXTENSIONS } from '@domain/file-extensions';
   import { trackStore } from '../stores/track-store.svelte';
+  import { tagActions } from '../services/tag-actions';
   import ArtworkSection from './inspector/ArtworkSection.svelte';
   import BasicFields from './inspector/BasicFields.svelte';
   import GenreSection from './inspector/GenreSection.svelte';
   import NumericFields from './inspector/NumericFields.svelte';
   import TechnicalInfo from './inspector/TechnicalInfo.svelte';
+  import DropZone from './DropZone.svelte';
+  import DropZoneOverlay from './DropZoneOverlay.svelte';
 </script>
 
 <aside class="inspector">
-  {#if trackStore.selectedTracks.length > 0}
-    <ArtworkSection />
+  <DropZone
+    accept={SUPPORTED_IMAGE_EXTENSIONS}
+    onDrop={(paths) => tagActions.applyPictureFromPath(paths[0])}
+  >
+    {#snippet overlay()}
+      <DropZoneOverlay
+        icon={ImageIcon}
+        title="Drop to set Artwork"
+        sub="Apply to selected tracks"
+      />
+    {/snippet}
 
-    <div class="field-container">
-      <BasicFields />
-      <NumericFields />
-      <GenreSection />
-      <TechnicalInfo />
-    </div>
-  {:else}
-    <div class="empty-inspector">
-      <p>Select tracks to edit metadata</p>
-    </div>
-  {/if}
+    {#if trackStore.selectedTracks.length > 0}
+      <ArtworkSection />
+
+      <div class="field-container">
+        <BasicFields />
+        <NumericFields />
+        <GenreSection />
+        <TechnicalInfo />
+      </div>
+    {:else}
+      <div class="empty-inspector">
+        <p>Select tracks to edit metadata</p>
+      </div>
+    {/if}
+  </DropZone>
 </aside>
 
 <style>
