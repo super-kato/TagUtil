@@ -94,24 +94,22 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ needs.check-release.outputs.tag }}
         run: |
-          # 1. タグが vX.Y.Z の形式かチェック
-          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Invalid tag format. Skipping deletion."
+          # 1. 1つ前のリリースを取得 (最新2件の2番目)
+          PREV_TAG=$(gh release list -L 2 --exclude-drafts --exclude-pre-releases --json tagName -q '.[1].tagName // empty' || true)
+
+          if [[ -z "$PREV_TAG" ]]; then
+            echo "No previous release found. Skipping deletion."
             exit 0
           fi
 
-          # 2. X.Y と Z の部分をBashの標準機能で切り出し
-          MINOR_PREFIX="${TAG%.*}"   # 後ろの .Z を切り落とす (例: v0.13)
-          PATCH_VERSION="${TAG##*.}" # 先頭から . までを切り落とす (例: 1)
+          # 2. X.Y の部分を切り出し（.Z を取り除く）
+          CURRENT_MINOR="${TAG%.*}"
+          PREV_MINOR="${PREV_TAG%.*}"
 
-          # 3. Zが0の場合はマイナーリリース扱いとして削除処理をスキップ
-          if [[ "$PATCH_VERSION" == "0" ]]; then
-            echo "Not a patch release (patch is 0). Skipping deletion."
-            exit 0
+          # 3. メジャー・マイナーが同じなら、1つ前のリリースとタグを削除
+          if [[ "$CURRENT_MINOR" == "$PREV_MINOR" ]]; then
+            echo "Previous release $PREV_TAG has the same minor version ($CURRENT_MINOR). Deleting it..."
+            gh release delete "$PREV_TAG" --yes --cleanup-tag || true
+          else
+            echo "Previous release $PREV_TAG is a different minor version ($PREV_MINOR != $CURRENT_MINOR). Skipping deletion."
           fi
-
-          OLD_TAGS=$(gh release list --json tagName -q ".[].tagName" | grep "^${MINOR_PREFIX}\." | grep -v "^${TAG}$" || true)
-          for old_tag in $OLD_TAGS; do
-            echo "Deleting release and tag: $old_tag"
-            gh release delete "$old_tag" --yes --cleanup-tag || true
-          done
