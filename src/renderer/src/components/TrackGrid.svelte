@@ -93,6 +93,7 @@
     overflow-y: auto;
     background-color: var(--bg-main);
     user-select: none;
+    min-height: 0;
   }
 
   .data-grid {
