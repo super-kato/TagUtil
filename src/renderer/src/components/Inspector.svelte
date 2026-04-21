@@ -23,7 +23,7 @@
         title="Drop to set Artwork"
         sub="Apply to selected tracks"
       />
-    {#/snippet}
+    {/snippet}
 
     {#if trackStore.selectedTracks.length > 0}
       <ArtworkSection />
