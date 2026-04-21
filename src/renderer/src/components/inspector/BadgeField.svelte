@@ -139,12 +139,14 @@
     pointer-events: none;
   }
 
-  .badge:hover .remove-btn {
+  .badge:hover .remove-btn,
+  .badge:focus-within .remove-btn {
     opacity: 0.8;
     pointer-events: auto;
   }
 
-  .remove-btn:hover {
+  .remove-btn:hover,
+  .remove-btn:focus-visible {
     color: var(--accent-modified);
     opacity: 1 !important;
   }
