@@ -13,7 +13,7 @@
       message:
         `Rename ${trackStore.selectedTracks.length} selected files based on metadata?\n` +
         `Format: {trackNumber} - {title}.flac`,
-      confirmLabel: 'Rename'
+      icon: FilePen
     });
     if (!ok) {
       return;

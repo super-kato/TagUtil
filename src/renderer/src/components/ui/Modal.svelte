@@ -137,7 +137,6 @@
   .modal-header {
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid var(--border-primary);
-    background-color: var(--bg-secondary);
   }
 
   .modal-header h2 {
@@ -161,7 +160,6 @@
     display: flex;
     justify-content: flex-end;
     gap: 0.75rem;
-    background-color: var(--bg-secondary);
     border-top: 1px solid var(--border-primary);
   }
 

@@ -1,3 +1,5 @@
+import type { Component } from 'svelte';
+
 /**
  * モーダルの設定オプション。
  */
@@ -6,12 +8,8 @@ export type ModalOptions = {
   title: string;
   /** モーダルの本文メッセージ */
   message: string;
-  /** 確認ボタンのラベル (デフォルト: "OK") */
-  confirmLabel?: string;
-  /** キャンセルボタンのラベル (デフォルト: "Cancel") */
-  cancelLabel?: string;
-  /** ボタンの視覚的バリエーション */
-  variant?: 'primary' | 'danger' | 'warning';
+  /** 表示するアイコン */
+  icon: Component;
 };
 
 /**
@@ -23,15 +21,9 @@ class ModalStore {
   isOpen = $state(false);
 
   /** 現在のモーダル設定 */
-  options = $state<Required<ModalOptions>>({
-    title: '',
-    message: '',
-    confirmLabel: 'OK',
-    cancelLabel: 'Cancel',
-    variant: 'primary'
-  });
+  options = $state<ModalOptions | null>(null);
 
-  private resolve: ((value: boolean) => void) | null = null;
+  #resolve: ((value: boolean) => void) | null = null;
 
   /**
    * 確認ダイアログを表示し、ユーザーの入力を Promise で返します。
@@ -40,20 +32,15 @@ class ModalStore {
    */
   confirm(options: ModalOptions): Promise<boolean> {
     // 既存の Promise がある場合は、以前の呼び出しをキャンセル（false を返す）
-    if (this.resolve) {
-      this.resolve(false);
+    if (this.#resolve) {
+      this.#resolve(false);
     }
 
-    this.options = {
-      confirmLabel: 'OK',
-      cancelLabel: 'Cancel',
-      variant: 'primary',
-      ...options
-    };
+    this.options = options;
     this.isOpen = true;
 
     return new Promise((resolve) => {
-      this.resolve = resolve;
+      this.#resolve = resolve;
     });
   }
 
@@ -62,8 +49,8 @@ class ModalStore {
    */
   handleConfirm(): void {
     this.isOpen = false;
-    this.resolve?.(true);
-    this.resolve = null;
+    this.#resolve?.(true);
+    this.#resolve = null;
   }
 
   /**
@@ -71,8 +58,8 @@ class ModalStore {
    */
   handleCancel(): void {
     this.isOpen = false;
-    this.resolve?.(false);
-    this.resolve = null;
+    this.#resolve?.(false);
+    this.#resolve = null;
   }
 }
 
