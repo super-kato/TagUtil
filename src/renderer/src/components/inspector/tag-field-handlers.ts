@@ -1,6 +1,6 @@
 import type { EditableSingleKey } from '@domain/editor/batch-metadata';
-import { trackStore } from '../../stores/track-store.svelte';
-import { tagActions } from '../../services/tag-actions';
+import { trackStore } from '@renderer/stores/track-store.svelte';
+import { tagActions } from '@renderer/services/tag-actions';
 
 /**
  * 単一値フィールドの入力イベントを処理し、trackStore を更新します。

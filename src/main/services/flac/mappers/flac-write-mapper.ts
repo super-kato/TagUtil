@@ -1,7 +1,7 @@
 import { FlacMetadata } from '@domain/flac/types';
 import { FlacTagMap, FlacTags } from 'flac-tagger';
 import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
-import { RawFlacData } from '../types';
+import { RawFlacData } from '@services/flac/types';
 
 /**
  * 既存の生のメタデータとドメインモデルの情報をマージし、書き込み用の FlacTags オブジェクトを返します。

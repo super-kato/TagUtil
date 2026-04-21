@@ -3,7 +3,7 @@ import { ResolvedPath } from '@domain/common/system';
 import { ScanResult, tagErrors, TagResult } from '@domain/flac/types';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { toTagResultFailure } from '../../utils/error-handler';
+import { toTagResultFailure } from '@main/utils/error-handler';
 import { determinePathType, resolvePaths } from './path-resolver';
 
 /**

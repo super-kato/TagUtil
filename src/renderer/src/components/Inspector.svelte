@@ -1,8 +1,8 @@
 <script lang="ts">
   import { Image as ImageIcon } from '@lucide/svelte';
   import { SUPPORTED_IMAGE_EXTENSIONS } from '@domain/file-extensions';
-  import { trackStore } from '../stores/track-store.svelte';
-  import { tagActions } from '../services/tag-actions';
+  import { trackStore } from '@renderer/stores/track-store.svelte';
+  import { tagActions } from '@renderer/services/tag-actions';
   import ArtworkSection from './inspector/ArtworkSection.svelte';
   import BasicFields from './inspector/BasicFields.svelte';
   import GenreSection from './inspector/GenreSection.svelte';

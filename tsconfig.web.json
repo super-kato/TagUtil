@@ -13,7 +13,9 @@
     "paths": {
       "@renderer/*": ["./src/renderer/src/*"],
       "@shared/*": ["./src/shared/*"],
-      "@domain/*": ["./src/domain/*"]
+      "@domain/*": ["./src/domain/*"],
+      "@resources/*": ["./resources/*"],
+      "@root/*": ["./*"]
     },
     "verbatimModuleSyntax": true,
     "useDefineForClassFields": true,

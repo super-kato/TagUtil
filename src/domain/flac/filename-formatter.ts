@@ -1,5 +1,5 @@
-import { sanitize } from '../../shared/utils/filename';
-import { failure, success } from '../common/result';
+import { sanitize } from '@shared/utils/filename';
+import { failure, success } from '@domain/common/result';
 import { tagErrors, type FlacTrack, type TagResult } from './types';
 
 const TRACK_NUMBER_PADDING = 2;

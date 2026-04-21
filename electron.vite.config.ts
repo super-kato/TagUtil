@@ -8,7 +8,10 @@ export default defineConfig({
       alias: {
         '@shared': resolve('src/shared'),
         '@domain': resolve('src/domain'),
-        '@services': resolve('src/main/services')
+        '@services': resolve('src/main/services'),
+        '@main': resolve('src/main'),
+        '@resources': resolve('resources'),
+        '@root': resolve('.')
       }
     }
   },
@@ -16,7 +19,9 @@ export default defineConfig({
     resolve: {
       alias: {
         '@shared': resolve('src/shared'),
-        '@domain': resolve('src/domain')
+        '@domain': resolve('src/domain'),
+        '@resources': resolve('resources'),
+        '@root': resolve('.')
       }
     }
   },
@@ -25,7 +30,9 @@ export default defineConfig({
       alias: {
         '@renderer': resolve('src/renderer/src'),
         '@shared': resolve('src/shared'),
-        '@domain': resolve('src/domain')
+        '@domain': resolve('src/domain'),
+        '@resources': resolve('resources'),
+        '@root': resolve('.')
       }
     },
     plugins: [svelte()]

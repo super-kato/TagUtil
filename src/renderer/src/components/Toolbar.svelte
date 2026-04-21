@@ -1,10 +1,10 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from '@lucide/svelte';
-  import { tagActions } from '../services/tag-actions';
-  import { fileActions } from '../services/file-actions';
-  import { trackStore } from '../stores/track-store.svelte';
-  import { uiState } from '../stores/ui-state.svelte';
+  import { tagActions } from '@renderer/services/tag-actions';
+  import { fileActions } from '@renderer/services/file-actions';
+  import { trackStore } from '@renderer/stores/track-store.svelte';
+  import { uiState } from '@renderer/stores/ui-state.svelte';
 
   const handleRenameClick = (): void => {
     const ok = confirm(

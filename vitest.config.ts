@@ -11,7 +11,10 @@ export default defineConfig({
       '@shared': resolve(__dirname, 'src/shared'),
       '@domain': resolve(__dirname, 'src/domain'),
       '@renderer': resolve(__dirname, 'src/renderer/src'),
-      '@services': resolve(__dirname, 'src/main/services')
+      '@services': resolve(__dirname, 'src/main/services'),
+      '@main': resolve(__dirname, 'src/main'),
+      '@resources': resolve(__dirname, 'resources'),
+      '@root': resolve(__dirname, '.')
     },
     coverage: {
       provider: 'v8',

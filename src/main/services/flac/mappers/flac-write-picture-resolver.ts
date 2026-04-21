@@ -1,7 +1,7 @@
 import { Picture } from '@domain/flac/types';
 import { FlacTags } from 'flac-tagger';
 import fs from 'fs/promises';
-import { RawFlacData } from '../types';
+import { RawFlacData } from '@services/flac/types';
 
 /** 書き込みに使用する最終的な画像データを解決（読み込み含む） */
 export const resolvePictureForWrite = async (
