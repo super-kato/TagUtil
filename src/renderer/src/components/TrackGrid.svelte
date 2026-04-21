@@ -192,10 +192,10 @@
     align-items: center;
     justify-content: center;
     background-color: var(--bg-header);
-    border-radius: var(--radius-2xl);
+    border-radius: var(--radius-xl);
     color: var(--text-muted);
     margin-bottom: 0.5rem;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border-primary);
     animation: breathing 4s ease-in-out infinite;
   }
@@ -210,11 +210,11 @@
   @keyframes breathing {
     0%,
     100% {
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.15);
       transform: scale(1);
     }
     50% {
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.35);
       transform: scale(1.02);
     }
   }
