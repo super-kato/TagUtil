@@ -31,7 +31,7 @@
     flex-direction: column;
     background-color: #1e1e1e;
     border-right: 1px solid #333;
-    overflow: hidden;
+    overflow: clip;
     min-height: 0;
   }
 </style>
