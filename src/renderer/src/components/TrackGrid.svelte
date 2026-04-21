@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { UI_TOKENS } from '@constants/design-system';
+  import { UI_TOKENS } from '@renderer/constants/design-system';
   import { SUPPORTED_AUDIO_EXTENSIONS } from '@domain/file-extensions';
   import { FolderOpen, Music } from '@lucide/svelte';
-  import { tagActions } from '@services/tag-actions';
-  import { selectionState } from '@stores/selection-state.svelte';
-  import { TrackRecord } from '@stores/track-record.svelte';
-  import { trackStore } from '@stores/track-store.svelte';
+  import { tagActions } from '@renderer/services/tag-actions';
+  import { selectionState } from '@renderer/stores/selection-state.svelte';
+  import { TrackRecord } from '@renderer/stores/track-record.svelte';
+  import { trackStore } from '@renderer/stores/track-store.svelte';
   import DropZone from './DropZone.svelte';
   import DropZoneOverlay from './DropZoneOverlay.svelte';
 

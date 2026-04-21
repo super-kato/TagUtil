@@ -1,8 +1,8 @@
 import { success } from '@domain/common/result';
 import { tagErrors, TagResult } from '@domain/flac/types';
 import fs from 'fs/promises';
-import { toTagResultFailure } from '@utils/error-handler';
-import { ensureFileExists } from '@utils/fs';
+import { toTagResultFailure } from '@main/utils/error-handler';
+import { ensureFileExists } from '@main/utils/fs';
 
 /**
  * ファイルを新しいパスにリネーム（移動）します。

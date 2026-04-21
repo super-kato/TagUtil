@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { selectionState } from '@stores/selection-state.svelte';
-  import { trackStore } from '@stores/track-store.svelte';
-  import { uiState } from '@stores/ui-state.svelte';
-  import { tagActions } from '@services/tag-actions';
+  import { selectionState } from '@renderer/stores/selection-state.svelte';
+  import { trackStore } from '@renderer/stores/track-store.svelte';
+  import { uiState } from '@renderer/stores/ui-state.svelte';
+  import { tagActions } from '@renderer/services/tag-actions';
 
   /**
    * 編集中の要素（INPUT等）にフォーカスがあるか判定します。

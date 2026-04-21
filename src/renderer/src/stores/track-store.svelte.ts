@@ -1,6 +1,6 @@
 import { deriveCommonMetadata } from '@domain/editor/batch-metadata';
 import { DEFAULT_GENRES } from '@domain/flac/types';
-import { createImageUrl } from '@utils/image';
+import { createImageUrl } from '@renderer/utils/image';
 import { selectionState } from './selection-state.svelte';
 import { TrackRecord } from './track-record.svelte';
 

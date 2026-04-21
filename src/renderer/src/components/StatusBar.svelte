@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { uiState } from '@stores/ui-state.svelte';
+  import { uiState } from '@renderer/stores/ui-state.svelte';
   import { CircleAlert, TriangleAlert } from '@lucide/svelte';
-  import { UI_TOKENS } from '@constants/design-system';
+  import { UI_TOKENS } from '@renderer/constants/design-system';
 </script>
 
 {#if uiState.error || uiState.isScanLimited}

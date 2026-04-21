@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { UI_TOKENS } from '@constants/design-system';
+  import { UI_TOKENS } from '@renderer/constants/design-system';
   import { type IconProps } from '@lucide/svelte';
   import type { Component } from 'svelte';
 

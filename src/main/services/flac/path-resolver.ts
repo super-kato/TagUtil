@@ -1,7 +1,7 @@
 import { PathType, ResolvedPath } from '@domain/common/system';
 import { Dirent, Stats } from 'node:fs';
 import { stat } from 'node:fs/promises';
-import { isHiddenPath, isSupportedAudioFile } from '@utils/file-utils';
+import { isHiddenPath, isSupportedAudioFile } from '@main/utils/file-utils';
 
 /**
  * 指定された複数のパスの種別（ファイル/ディレクトリ）を一括判定します。

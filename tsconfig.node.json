@@ -8,9 +8,6 @@
       "@domain/*": ["./src/domain/*"],
       "@services/*": ["./src/main/services/*"],
       "@main/*": ["./src/main/*"],
-      "@utils/*": ["./src/main/utils/*"],
-      "@ipc/*": ["./src/main/ipc/*"],
-      "@protocols/*": ["./src/main/protocols/*"],
       "@resources/*": ["./resources/*"],
       "@root/*": ["./*"]
     },

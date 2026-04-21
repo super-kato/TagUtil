@@ -3,7 +3,7 @@ import { net } from 'electron';
 import path from 'node:path';
 import { pathToFileURL } from 'url';
 import { extractEmbeddedImage } from '@services/flac/image';
-import { isSupportedAudioFile } from '@utils/file-utils';
+import { isSupportedAudioFile } from '@main/utils/file-utils';
 import { ProtocolError, isProtocolError } from './error';
 
 /**

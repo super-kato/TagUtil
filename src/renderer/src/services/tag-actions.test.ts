@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
-import { TrackRecord } from '@stores/track-record.svelte';
-import { trackStore } from '@stores/track-store.svelte';
+import { TrackRecord } from '@renderer/stores/track-record.svelte';
+import { trackStore } from '@renderer/stores/track-store.svelte';
 import { tagActions } from './tag-actions';
 import { tagEditor } from './tag-editor';
 

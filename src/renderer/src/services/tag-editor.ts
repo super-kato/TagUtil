@@ -1,6 +1,6 @@
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
 import type { Picture } from '@domain/flac/types';
-import { TrackRecord } from '@stores/track-record.svelte';
+import { TrackRecord } from '@renderer/stores/track-record.svelte';
 
 /**
  * 単一値フィールドを一括更新します。

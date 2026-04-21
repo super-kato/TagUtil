@@ -1,11 +1,11 @@
 import { formatFlacFilename } from '@domain/flac/filename-formatter';
-import { TrackRecord } from '@stores/track-record.svelte';
-import { trackStore } from '@stores/track-store.svelte';
-import { uiState } from '@stores/ui-state.svelte';
-import { selectionState } from '@stores/selection-state.svelte';
-import { tagRepository } from '@infrastructure/tag-repository';
-import { fileRepository } from '@infrastructure/file-repository';
-import { getDirectoryName, joinPath } from '@infrastructure/path-adapter';
+import { TrackRecord } from '@renderer/stores/track-record.svelte';
+import { trackStore } from '@renderer/stores/track-store.svelte';
+import { uiState } from '@renderer/stores/ui-state.svelte';
+import { selectionState } from '@renderer/stores/selection-state.svelte';
+import { tagRepository } from '@renderer/infrastructure/tag-repository';
+import { fileRepository } from '@renderer/infrastructure/file-repository';
+import { getDirectoryName, joinPath } from '@renderer/infrastructure/path-adapter';
 
 /**
  * 選択中のファイルをメタデータに基づいてリネームします。

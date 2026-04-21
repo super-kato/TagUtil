@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Plus, X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
-  import { UI_TOKENS } from '@constants/design-system';
+  import { UI_TOKENS } from '@renderer/constants/design-system';
 
   interface Props {
     label: string;

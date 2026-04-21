@@ -10,9 +10,6 @@ export default defineConfig({
         '@domain': resolve('src/domain'),
         '@services': resolve('src/main/services'),
         '@main': resolve('src/main'),
-        '@utils': resolve('src/main/utils'),
-        '@ipc': resolve('src/main/ipc'),
-        '@protocols': resolve('src/main/protocols'),
         '@resources': resolve('resources'),
         '@root': resolve('.')
       }
@@ -34,12 +31,6 @@ export default defineConfig({
         '@renderer': resolve('src/renderer/src'),
         '@shared': resolve('src/shared'),
         '@domain': resolve('src/domain'),
-        '@services': resolve('src/renderer/src/services'),
-        '@stores': resolve('src/renderer/src/stores'),
-        '@components': resolve('src/renderer/src/components'),
-        '@infrastructure': resolve('src/renderer/src/infrastructure'),
-        '@utils': resolve('src/renderer/src/utils'),
-        '@constants': resolve('src/renderer/src/constants'),
         '@resources': resolve('resources'),
         '@root': resolve('.')
       }

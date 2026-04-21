@@ -1,7 +1,7 @@
 <script lang="ts">
   import { DEFAULT_GENRES } from '@domain/flac/types';
-  import { trackStore } from '@stores/track-store.svelte';
-  import { tagActions } from '@services/tag-actions';
+  import { trackStore } from '@renderer/stores/track-store.svelte';
+  import { tagActions } from '@renderer/services/tag-actions';
   import BadgeField from './BadgeField.svelte';
 
   const MAX_QUICK_GENRES = 4;

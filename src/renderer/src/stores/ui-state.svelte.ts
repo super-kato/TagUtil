@@ -1,6 +1,6 @@
 import type { Failure } from '@domain/common/result';
 import type { TagError } from '@domain/flac/types';
-import { formatTagError } from '@utils/tag-error-formatter';
+import { formatTagError } from '@renderer/utils/tag-error-formatter';
 
 /**
  * アプリケーション全体の通知・ステータスメッセージを管理するストア。

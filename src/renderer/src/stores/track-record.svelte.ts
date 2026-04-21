@@ -1,5 +1,5 @@
 import type { FlacMetadata, FlacTrack } from '@domain/flac/types';
-import { createImageUrl } from '@utils/image';
+import { createImageUrl } from '@renderer/utils/image';
 
 /** 1つのFLACファイルとその状態を管理するクラス */
 export class TrackRecord {
