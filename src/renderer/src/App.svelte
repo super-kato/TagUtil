@@ -8,7 +8,12 @@
 
 <KeyboardShortcuts />
 
-<div class="app-container" role="region" aria-label="Application container" tabindex="-1">
+<div
+  class="app-container no-focus-glow"
+  role="region"
+  aria-label="Application container"
+  tabindex="-1"
+>
   <section class="main-content">
     <Toolbar />
     <TrackGrid />

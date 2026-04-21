@@ -55,6 +55,12 @@
   box-shadow: var(--focus-ring), var(--focus-glow);
 }
 
+.no-focus-glow:focus,
+.no-focus-glow:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
 body {
   margin: 0;
   padding: 0;

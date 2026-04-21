@@ -12,7 +12,7 @@
   import DropZoneOverlay from './DropZoneOverlay.svelte';
 </script>
 
-<aside class="inspector" tabindex="-1">
+<aside class="inspector no-focus-glow" tabindex="-1">
   <DropZone
     accept={SUPPORTED_IMAGE_EXTENSIONS}
     onDrop={(paths) => tagActions.applyPictureFromPath(paths[0])}
