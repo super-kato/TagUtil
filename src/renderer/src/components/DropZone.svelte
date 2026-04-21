@@ -59,6 +59,7 @@
   ondrop={handleDrop}
   role="region"
   aria-label="File drop zone"
+  tabindex="-1"
 >
   {@render children()}
 
@@ -77,6 +78,7 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+    min-height: 0;
   }
 
   .drop-overlay {

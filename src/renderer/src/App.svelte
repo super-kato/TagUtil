@@ -8,7 +8,12 @@
 
 <KeyboardShortcuts />
 
-<div class="app-container" role="region" aria-label="Application container">
+<div
+  class="app-container no-focus-glow"
+  role="region"
+  aria-label="Application container"
+  tabindex="-1"
+>
   <section class="main-content">
     <Toolbar />
     <TrackGrid />
@@ -31,7 +36,7 @@
     flex-direction: column;
     background-color: #1e1e1e;
     border-right: 1px solid #333;
-    overflow: hidden;
+    overflow: clip;
     min-height: 0;
   }
 </style>

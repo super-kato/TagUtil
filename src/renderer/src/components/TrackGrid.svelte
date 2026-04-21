@@ -39,7 +39,7 @@
   {#snippet overlay()}
     <DropZoneOverlay icon={FolderOpen} title="Drop to scan FLAC files" sub="Release to open" />
   {/snippet}
-  <div class="grid-wrapper">
+  <div class="grid-wrapper no-focus-glow" tabindex="-1">
     {#if trackStore.tracks.length > 0}
       <table class="data-grid">
         <thead>
