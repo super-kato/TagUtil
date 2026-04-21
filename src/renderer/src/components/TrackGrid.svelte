@@ -221,9 +221,7 @@
 
   .empty-icon:focus-visible {
     border-color: var(--accent-primary);
-    box-shadow:
-      0 0 0 2px var(--accent-primary-dim),
-      0 0 15px var(--selection-glow);
+    box-shadow: var(--focus-ring), var(--focus-glow);
   }
 
   .empty-state p {

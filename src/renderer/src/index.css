@@ -38,12 +38,21 @@
   --radius-xl: 12px;
   --radius-2xl: 20px;
   --radius-full: 9999px;
-}
+ 
+   /* フォーカスエフェクト */
+   --focus-ring: 0 0 0 2px var(--accent-primary-dim);
+   --focus-glow: 0 0 8px var(--selection-glow);
+ }
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring), var(--focus-glow);
 }
 
 body {
@@ -127,6 +136,7 @@ body {
 .field input:focus {
   border-color: var(--accent-primary);
   background-color: var(--bg-secondary);
+  box-shadow: var(--focus-ring), var(--focus-glow);
 }
 
 .field input.disabled {
