@@ -25,20 +25,22 @@
       />
     {/snippet}
 
-    {#if trackStore.selectedTracks.length > 0}
-      <ArtworkSection />
+    <div class="inspector-content">
+      {#if trackStore.selectedTracks.length > 0}
+        <ArtworkSection />
 
-      <div class="field-container">
-        <BasicFields />
-        <NumericFields />
-        <GenreSection />
-        <TechnicalInfo />
-      </div>
-    {:else}
-      <div class="empty-inspector">
-        <p>Select tracks to edit metadata</p>
-      </div>
-    {/if}
+        <div class="field-container">
+          <BasicFields />
+          <NumericFields />
+          <GenreSection />
+          <TechnicalInfo />
+        </div>
+      {:else}
+        <div class="empty-inspector">
+          <p>Select tracks to edit metadata</p>
+        </div>
+      {/if}
+    </div>
   </DropZone>
 </aside>
 
@@ -48,8 +50,15 @@
     background-color: var(--bg-inspector);
     display: flex;
     flex-direction: column;
+    overflow-y: hidden;
+  }
+
+  .inspector-content {
+    display: flex;
+    flex-direction: column;
     padding: 1.5rem;
     overflow-y: auto;
+    height: 100%;
   }
 
   .field-container {
