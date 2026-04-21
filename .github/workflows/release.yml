@@ -95,7 +95,7 @@ jobs:
           TAG: ${{ needs.check-release.outputs.tag }}
         run: |
           # 1. 1つ前のリリースを取得 (最新2件の2番目)
-          PREV_TAG=$(gh release list -L 2 --exclude-drafts --exclude-pre-releases --json tagName -q '.[1].tagName // empty' || true)
+          PREV_TAG=$(gh release list -L 2 --json tagName -q '.[1].tagName // empty' || true)
 
           if [[ -z "$PREV_TAG" ]]; then
             echo "No previous release found. Skipping deletion."
