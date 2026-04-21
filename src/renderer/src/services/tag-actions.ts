@@ -1,10 +1,10 @@
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
 import type { FlacTrack, TagResult } from '@domain/flac/types';
-import { trackStore } from '../stores/track-store.svelte';
-import { TrackRecord } from '../stores/track-record.svelte';
-import { uiState } from '../stores/ui-state.svelte';
+import { trackStore } from '@renderer/stores/track-store.svelte';
+import { TrackRecord } from '@renderer/stores/track-record.svelte';
+import { uiState } from '@renderer/stores/ui-state.svelte';
 import { tagEditor } from './tag-editor';
-import { tagRepository } from '../infrastructure/tag-repository';
+import { tagRepository } from '@renderer/infrastructure/tag-repository';
 
 /**
  * スキャン処理の共通的なフローを制御するヘルパー関数。

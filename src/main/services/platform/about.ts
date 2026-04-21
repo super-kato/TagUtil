@@ -1,8 +1,8 @@
 import { app, BrowserWindow, dialog, nativeImage } from 'electron';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import pkg from '../../../../package.json';
-import iconPath from '../../../../resources/icon.png?asset';
+import pkg from '@root/package.json';
+import iconPath from '@resources/icon.png?asset';
 
 /**
  * 「このアプリについて」ダイアログを表示します。

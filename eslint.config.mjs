@@ -50,6 +50,18 @@ export default defineConfig(
         }
       ],
       '@typescript-eslint/prefer-for-of': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../**'],
+              message:
+                'Relative imports starting with ../ are not allowed. Please use path aliases (e.g. @renderer, @main, @shared, @domain).'
+            }
+          ]
+        }
+      ],
       '@typescript-eslint/naming-convention': [
         'error',
         {

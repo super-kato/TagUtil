@@ -1,9 +1,9 @@
 import { success } from '@domain/common/result';
 import { Picture, TagResult } from '@domain/flac/types';
 import { readFile } from 'node:fs/promises';
-import { computeMd5 } from '../../utils/hash';
-import { getMimeTypeFromPath } from '../../utils/mime';
-import { pickImageFile } from '../platform/dialog';
+import { computeMd5 } from '@main/utils/hash';
+import { getMimeTypeFromPath } from '@main/utils/mime';
+import { pickImageFile } from '@main/services/platform/dialog';
 import { readRawData } from './reader';
 
 /**

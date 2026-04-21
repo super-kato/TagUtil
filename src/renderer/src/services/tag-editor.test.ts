@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TrackRecord } from '../stores/track-record.svelte';
+import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { tagEditor } from './tag-editor';
 import type { FlacMetadata } from '@domain/flac/types';
 

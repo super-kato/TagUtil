@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { trackStore } from '../../stores/track-store.svelte';
+  import { trackStore } from '@renderer/stores/track-store.svelte';
 
   const formatHz = (hz: number | undefined): string => {
     if (hz === undefined) {

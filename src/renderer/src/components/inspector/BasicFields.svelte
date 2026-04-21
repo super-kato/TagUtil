@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { trackStore } from '../../stores/track-store.svelte';
-  import { tagActions } from '../../services/tag-actions';
+  import { trackStore } from '@renderer/stores/track-store.svelte';
+  import { tagActions } from '@renderer/services/tag-actions';
   import type { FieldState } from '@domain/editor/batch-metadata';
   import MultiValueField from './MultiValueField.svelte';
   import { getSingleFieldValue, handleSingleInput } from './tag-field-handlers';

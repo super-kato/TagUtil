@@ -6,7 +6,10 @@
     "paths": {
       "@shared/*": ["./src/shared/*"],
       "@domain/*": ["./src/domain/*"],
-      "@services/*": ["./src/main/services/*"]
+      "@services/*": ["./src/main/services/*"],
+      "@main/*": ["./src/main/*"],
+      "@resources/*": ["./resources/*"],
+      "@root/*": ["./*"]
     },
     "types": ["electron-vite/node"]
   }
