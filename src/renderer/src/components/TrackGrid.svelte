@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { UI_TOKENS } from '@renderer/constants/design-system';
   import { SUPPORTED_AUDIO_EXTENSIONS } from '@domain/file-extensions';
-  import { FolderOpen } from '@lucide/svelte';
+  import { FolderOpen, Music } from '@lucide/svelte';
   import { tagActions } from '../services/tag-actions';
   import { selectionState } from '../stores/selection-state.svelte';
   import { TrackRecord } from '../stores/track-record.svelte';
@@ -71,7 +72,11 @@
       </table>
     {:else}
       <div class="empty-state">
-        <p>Click "Open Folder" to start tagging your FLAC files.</p>
+        <div class="empty-icon">
+          <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
+        </div>
+        <h2>Ready to start tagging?</h2>
+        <p>Open a folder or drop FLAC files here to begin.</p>
       </div>
     {/if}
   </div>
@@ -170,10 +175,53 @@
   }
 
   .empty-state {
-    height: 100%;
+    flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: var(--text-dim);
+    gap: 1rem;
+    padding-bottom: 4rem; /* 視覚的な重みの中央揃え */
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-header);
+    border-radius: var(--radius-2xl);
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-primary);
+  }
+
+  .empty-state h2 {
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    font-weight: 300;
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+
+  .empty-state p {
+    margin: 0;
+    font-size: 0.95rem;
+    opacity: 0.8;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 </style>
