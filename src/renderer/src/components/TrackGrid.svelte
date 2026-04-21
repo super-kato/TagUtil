@@ -1,6 +1,7 @@
 <script lang="ts">
+  import { UI_TOKENS } from '@renderer/constants/design-system';
   import { SUPPORTED_AUDIO_EXTENSIONS } from '@domain/file-extensions';
-  import { FolderOpen } from '@lucide/svelte';
+  import { FolderOpen, Music } from '@lucide/svelte';
   import { tagActions } from '../services/tag-actions';
   import { selectionState } from '../stores/selection-state.svelte';
   import { TrackRecord } from '../stores/track-record.svelte';
@@ -71,7 +72,14 @@
       </table>
     {:else}
       <div class="empty-state">
-        <p>Click "Open Folder" to start tagging your FLAC files.</p>
+        <button
+          class="empty-icon"
+          onclick={() => tagActions.openAndScanDirectory()}
+          aria-label="Open Directory"
+        >
+          <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
+        </button>
+        <p>Open a folder or drop FLAC files here to begin.</p>
       </div>
     {/if}
   </div>
@@ -80,6 +88,8 @@
 <style>
   .grid-wrapper {
     flex: 1;
+    display: flex;
+    flex-direction: column;
     overflow-y: auto;
     background-color: var(--bg-main);
     user-select: none;
@@ -170,10 +180,56 @@
   }
 
   .empty-state {
-    height: 100%;
+    flex: 1;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: var(--text-dim);
+    gap: 1.5rem;
+  }
+
+  .empty-icon {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-header);
+    border-radius: var(--radius-xl);
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+    border: 1px solid var(--border-primary);
+    /* 枠線に沿った静的なグロー効果 */
+    box-shadow: 0 0 15px var(--selection-glow);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    outline: none;
+  }
+
+  .empty-icon:hover {
+    background-color: var(--bg-secondary);
+    box-shadow: 0 0 25px var(--selection-glow);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+  }
+
+  .empty-icon:active {
+    transform: scale(0.95);
+  }
+
+  .empty-icon:focus-visible {
+    border-color: var(--accent-primary);
+    box-shadow:
+      0 0 0 2px var(--accent-primary-dim),
+      0 0 15px var(--selection-glow);
+  }
+
+  .empty-state p {
+    margin: 0;
+    font-size: 1rem;
+    opacity: 0.7;
+    letter-spacing: 0.5px;
   }
 </style>
