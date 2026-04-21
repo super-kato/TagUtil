@@ -59,6 +59,7 @@
   ondrop={handleDrop}
   role="region"
   aria-label="File drop zone"
+  tabindex="-1"
 >
   {@render children()}
 
