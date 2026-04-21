@@ -88,3 +88,24 @@ jobs:
             dist/*.dmg \
             dist/*.zip \
             dist/latest-mac.yml
+
+      - name: 旧バージョンの判定
+        id: check_old_release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ needs.check-release.outputs.tag }}
+        run: |
+          PREV_TAG=$(gh release list -L 2 --json tagName -q '.[1].tagName // empty' || true)
+
+          if [[ -n "$PREV_TAG" ]] && [[ "${TAG%.*}" == "${PREV_TAG%.*}" ]]; then
+            echo "prev_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+            echo "should_delete=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_delete=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 旧バージョンのリリースとタグの削除
+        if: steps.check_old_release.outputs.should_delete == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release delete "${{ steps.check_old_release.outputs.prev_tag }}" --yes --cleanup-tag
