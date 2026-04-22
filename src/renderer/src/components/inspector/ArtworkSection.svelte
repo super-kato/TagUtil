@@ -49,7 +49,11 @@
         onload={() => (imageLoadError = false)}
       />
       {#if !imageLoadError}
-        <button class="remove-artwork" onclick={handleRemoveArtwork} title="Remove Artwork">
+        <button
+          class="remove-artwork no-hover-glow"
+          onclick={handleRemoveArtwork}
+          title="Remove Artwork"
+        >
           <X size={UI_TOKENS.icons.size} />
         </button>
       {/if}

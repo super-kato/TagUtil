@@ -55,6 +55,10 @@
   box-shadow: var(--focus-ring), var(--focus-glow);
 }
 
+button:hover:not(.no-hover-glow):not(:disabled) {
+  box-shadow: var(--focus-ring), var(--focus-glow);
+}
+
 .no-focus-glow:focus,
 .no-focus-glow:focus-visible {
   outline: none !important;

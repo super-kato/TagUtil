@@ -41,7 +41,12 @@
 <div class="multi-value-field field">
   <div class="field-header">
     <label for="multi-field-{label}">{label}</label>
-    <button type="button" class="icon-button add-button" onclick={onAdd} title="Add value">
+    <button
+      type="button"
+      class="icon-button add-button no-hover-glow"
+      onclick={onAdd}
+      title="Add value"
+    >
       <Plus size={UI_TOKENS.icons.size} />
     </button>
   </div>
@@ -58,7 +63,7 @@
           />
           <button
             type="button"
-            class="icon-button remove-button"
+            class="icon-button remove-button no-hover-glow"
             onclick={() => onRemove(value)}
             title="Remove from all tracks"
           >
@@ -90,7 +95,7 @@
           />
           <button
             type="button"
-            class="icon-button remove-button"
+            class="icon-button remove-button no-hover-glow"
             onclick={() => onRemove(value)}
             title="Remove value"
           >
