@@ -4,10 +4,13 @@ import { TrackRecord } from './track-record.svelte';
 import type { FlacMetadata } from '@domain/flac/types';
 
 describe('SelectionState', () => {
+  const m1: FlacMetadata = { title: 'T1' };
+  const m2: FlacMetadata = { title: 'T2' };
+  const m3: FlacMetadata = { title: 'T3' };
   const mockTracks = [
-    new TrackRecord('path1', { title: 'T1' } as FlacMetadata),
-    new TrackRecord('path2', { title: 'T2' } as FlacMetadata),
-    new TrackRecord('path3', { title: 'T3' } as FlacMetadata)
+    new TrackRecord('path1', m1),
+    new TrackRecord('path2', m2),
+    new TrackRecord('path3', m3)
   ];
 
   beforeEach(() => {

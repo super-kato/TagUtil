@@ -20,8 +20,10 @@ describe('TrackStore', () => {
   });
 
   it('selectedTracks が選択状態に応じて正しくフィルタリングされること', () => {
-    const t1 = new TrackRecord('p1', { title: 'T1' } as FlacMetadata);
-    const t2 = new TrackRecord('p2', { title: 'T2' } as FlacMetadata);
+    const m1: FlacMetadata = { title: 'T1' };
+    const m2: FlacMetadata = { title: 'T2' };
+    const t1 = new TrackRecord('p1', m1);
+    const t2 = new TrackRecord('p2', m2);
     trackStore.tracks = [t1, t2];
 
     selectionState.selectSingle(t1, 0);
@@ -32,8 +34,10 @@ describe('TrackStore', () => {
   });
 
   it('allGenres がデフォルトジャンルとトラック内のジャンルをマージしてソートすること', () => {
-    const t1 = new TrackRecord('p1', { genre: ['Rock', 'Jazz'] } as FlacMetadata);
-    const t2 = new TrackRecord('p2', { genre: ['Pop'] } as FlacMetadata);
+    const m1: FlacMetadata = { genre: ['Rock', 'Jazz'] };
+    const m2: FlacMetadata = { genre: ['Pop'] };
+    const t1 = new TrackRecord('p1', m1);
+    const t2 = new TrackRecord('p2', m2);
     trackStore.tracks = [t1, t2];
 
     const genres = trackStore.allGenres;
@@ -50,8 +54,10 @@ describe('TrackStore', () => {
   });
 
   it('commonMetadata が選択中のトラックから導出されること', () => {
-    const t1 = new TrackRecord('p1', { title: 'T1', artist: ['Artist'] } as FlacMetadata);
-    const t2 = new TrackRecord('p2', { title: 'T2', artist: ['Artist'] } as FlacMetadata);
+    const m1: FlacMetadata = { title: 'T1', artist: ['Artist'] };
+    const m2: FlacMetadata = { title: 'T2', artist: ['Artist'] };
+    const t1 = new TrackRecord('p1', m1);
+    const t2 = new TrackRecord('p2', m2);
     trackStore.tracks = [t1, t2];
     selectionState.selectRange([t1, t2]);
 

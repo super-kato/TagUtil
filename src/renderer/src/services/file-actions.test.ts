@@ -54,14 +54,18 @@ describe('fileActions', () => {
     });
 
     it('トラックのリネームが成功した場合、ストアを更新すること', async () => {
-      const mockTrack = new TrackRecord('old.flac', { title: 'T' } as FlacMetadata);
+      const metadata: FlacMetadata = { title: 'T' };
+      const mockTrack = new TrackRecord('old.flac', metadata);
       trackStore.tracks = [mockTrack];
       selectionState.selectSingle(mockTrack, 0);
 
       vi.mocked(fileRepository.renameFile).mockResolvedValue(success(undefined));
-      vi.mocked(tagRepository.readMetadata).mockResolvedValue(
-        success({ path: '/dir/new.flac', metadata: { title: 'T', artist: ['Artist'] } } as FlacTrack)
-      );
+
+      const updatedTrack: FlacTrack = {
+        path: '/dir/new.flac',
+        metadata: { title: 'T', artist: ['Artist'] }
+      };
+      vi.mocked(tagRepository.readMetadata).mockResolvedValue(success(updatedTrack));
 
       await fileActions.renameSelectedFiles();
 
@@ -72,14 +76,16 @@ describe('fileActions', () => {
     });
 
     it('リネームに失敗した場合はエラーを設定し、処理を中断すること', async () => {
-      const mockTrack = new TrackRecord('old.flac', { title: 'T' } as FlacMetadata);
+      const metadata: FlacMetadata = { title: 'T' };
+      const mockTrack = new TrackRecord('old.flac', metadata);
       trackStore.tracks = [mockTrack];
       selectionState.selectSingle(mockTrack, 0);
 
-      const mockError = failure({
+      const error: TagError = {
         type: 'WRITE_FAILED',
         options: { path: 'old.flac' }
-      } as TagError);
+      };
+      const mockError = failure(error);
       vi.mocked(fileRepository.renameFile).mockResolvedValue(mockError);
 
       // uiState.error をシミュレート

@@ -19,7 +19,8 @@ describe('tag-repository', () => {
 
   describe('readMetadata', () => {
     it('window.api.readMetadata を呼び出すこと', async () => {
-      const mockResult = success({ path: 'test.flac', metadata: {} } as FlacTrack);
+      const track: FlacTrack = { path: 'test.flac', metadata: {} };
+      const mockResult = success(track);
       vi.mocked(window.api.readMetadata).mockResolvedValue(mockResult);
 
       const result = await tagRepository.readMetadata('test.flac');
@@ -34,9 +35,11 @@ describe('tag-repository', () => {
       vi.mocked(window.api.scanDirectory).mockResolvedValue(
         success({ paths: ['a.flac', 'b.flac'], isLimited: false })
       );
+      const trackA: FlacTrack = { path: 'a.flac', metadata: { title: 'A' } };
+      const trackB: FlacTrack = { path: 'b.flac', metadata: { title: 'B' } };
       vi.mocked(window.api.readMetadata)
-        .mockResolvedValueOnce(success({ path: 'a.flac', metadata: { title: 'A' } } as FlacTrack))
-        .mockResolvedValueOnce(success({ path: 'b.flac', metadata: { title: 'B' } } as FlacTrack));
+        .mockResolvedValueOnce(success(trackA))
+        .mockResolvedValueOnce(success(trackB));
 
       const result = await tagRepository.loadTracksFromPaths(['/dir']);
 
@@ -49,10 +52,11 @@ describe('tag-repository', () => {
     });
 
     it('スキャンに失敗した場合はエラーを返すこと', async () => {
-      const mockError = failure({
+      const error: TagError = {
         type: 'SCAN_FAILED',
         options: { path: '/dir' }
-      } as TagError);
+      };
+      const mockError = failure(error);
       vi.mocked(window.api.scanDirectory).mockResolvedValue(mockError);
 
       const result = await tagRepository.loadTracksFromPaths(['/dir']);
@@ -64,7 +68,10 @@ describe('tag-repository', () => {
   describe('saveTracks', () => {
     it('全てのトラックに対して保存を試行すること', async () => {
       vi.mocked(window.api.writeMetadata).mockResolvedValue(success(undefined));
-      const tracks = [{ path: 'a.flac' }, { path: 'b.flac' }] as FlacTrack[];
+      const tracks: FlacTrack[] = [
+        { path: 'a.flac', metadata: {} },
+        { path: 'b.flac', metadata: {} }
+      ];
 
       const result = await tagRepository.saveTracks(tracks);
 
@@ -73,12 +80,18 @@ describe('tag-repository', () => {
     });
 
     it('途中で失敗した場合はエラーを返し、それ以降の保存を中断すること', async () => {
+      const error: TagError = {
+        type: 'WRITE_FAILED',
+        options: { path: 'b.flac' }
+      };
       vi.mocked(window.api.writeMetadata)
         .mockResolvedValueOnce(success(undefined))
-        .mockResolvedValueOnce(
-          failure({ type: 'WRITE_FAILED', options: { path: 'b.flac' } } as TagError)
-        );
-      const tracks = [{ path: 'a.flac' }, { path: 'b.flac' }, { path: 'c.flac' }] as FlacTrack[];
+        .mockResolvedValueOnce(failure(error));
+      const tracks: FlacTrack[] = [
+        { path: 'a.flac', metadata: {} },
+        { path: 'b.flac', metadata: {} },
+        { path: 'c.flac', metadata: {} }
+      ];
 
       const result = await tagRepository.saveTracks(tracks);
 
