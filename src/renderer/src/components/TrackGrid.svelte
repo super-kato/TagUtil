@@ -147,8 +147,7 @@
     position: relative;
   }
 
-  .track-row.selected .indicator-cell::after,
-  .track-row.modified .indicator-cell::after {
+  .indicator-cell::after {
     content: '';
     position: absolute;
     top: 0;
@@ -157,6 +156,14 @@
     width: 4px;
     background-color: var(--accent-primary);
     box-shadow: 2px 0 8px var(--selection-glow);
+    opacity: 0;
+    transition: all 0.1s ease;
+    pointer-events: none;
+  }
+
+  .track-row.selected .indicator-cell::after,
+  .track-row.modified .indicator-cell::after {
+    opacity: 1;
   }
 
   .track-row.modified .indicator-cell::after {
@@ -201,8 +208,9 @@
     color: var(--text-muted);
     margin-bottom: 0.5rem;
     border: 1px solid var(--border-primary);
-    /* 枠線に沿った静的なグロー効果 */
+    /* パルスするグロー効果 */
     box-shadow: 0 0 15px var(--selection-glow);
+    animation: glow-pulse 2s infinite ease-in-out;
     cursor: pointer;
     transition: all 0.2s ease;
     padding: 0;
@@ -210,6 +218,7 @@
   }
 
   .empty-icon:hover {
+    animation: none;
     background-color: var(--bg-secondary);
     box-shadow: 0 0 25px var(--selection-glow);
     color: var(--text-primary);

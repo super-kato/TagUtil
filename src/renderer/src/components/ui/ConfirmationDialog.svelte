@@ -81,19 +81,9 @@
     height: 32px;
   }
 
-  .btn:hover {
-    background-color: var(--bg-hover);
-    border-color: var(--border-secondary);
-    color: var(--text-primary);
-  }
-
   .btn.confirm {
     border-color: var(--accent-primary);
     color: var(--accent-primary);
-  }
-
-  .btn.confirm:hover {
-    background-color: var(--accent-primary-dim);
-    box-shadow: 0 0 8px var(--accent-primary-dim);
+    animation: glow-pulse 2s infinite ease-in-out;
   }
 </style>
