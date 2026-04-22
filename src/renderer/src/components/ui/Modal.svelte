@@ -22,14 +22,14 @@
 
   // isOpen の変更を監視して showModal / close を制御
   $effect(() => {
+    if (isOpen === dialog.open) {
+      return;
+    }
+
     if (isOpen) {
-      if (!dialog.open) {
-        dialog.showModal();
-      }
+      dialog.showModal();
     } else {
-      if (dialog.open) {
-        dialog.close();
-      }
+      dialog.close();
     }
   });
 
