@@ -52,7 +52,12 @@
       {#each values as val, i (i)}
         <span class="badge">
           {val}
-          <button type="button" class="remove-btn" onclick={() => onRemove(val)} title="Remove">
+          <button
+            type="button"
+            class="remove-btn no-hover-glow"
+            onclick={() => onRemove(val)}
+            title="Remove"
+          >
             <X size={UI_TOKENS.icons.sizeSmall} strokeWidth={UI_TOKENS.icons.strokeBold} />
           </button>
         </span>
