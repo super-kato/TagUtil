@@ -9,44 +9,8 @@ import { success, failure } from '@domain/common/result';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import type { FlacMetadata, FlacTrack, TagError } from '@domain/flac/types';
 
-vi.mock(import('../infrastructure/tag-repository'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    tagRepository: {
-      ...actual.tagRepository,
-      readMetadata: vi.fn()
-    }
-  };
-});
-
-vi.mock(import('../infrastructure/file-repository'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    fileRepository: {
-      ...actual.fileRepository,
-      renameFile: vi.fn()
-    }
-  };
-});
-
-vi.mock(import('../infrastructure/path-adapter'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    getDirectoryName: vi.fn(() => '/dir'),
-    joinPath: vi.fn((dir, file) => `${dir}/${file}`)
-  };
-});
-
-vi.mock(import('../../../domain/flac/filename-formatter'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    formatFlacFilename: vi.fn(() => success('new.flac'))
-  };
-});
+import * as pathAdapter from '@renderer/infrastructure/path-adapter';
+import * as formatter from '@domain/flac/filename-formatter';
 
 describe('fileActions', () => {
   beforeEach(() => {
@@ -54,6 +18,11 @@ describe('fileActions', () => {
     uiState.reset();
     trackStore.tracks = [];
     selectionState.items.clear();
+    vi.spyOn(tagRepository, 'readMetadata');
+    vi.spyOn(fileRepository, 'renameFile');
+    vi.spyOn(pathAdapter, 'getDirectoryName').mockReturnValue('/dir');
+    vi.spyOn(pathAdapter, 'joinPath').mockImplementation((dir, file) => `${dir}/${file}`);
+    vi.spyOn(formatter, 'formatFlacFilename').mockReturnValue(success('new.flac'));
   });
 
   describe('renameSelectedFiles', () => {

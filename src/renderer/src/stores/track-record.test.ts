@@ -1,17 +1,13 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TrackRecord } from './track-record.svelte';
 import type { FlacMetadata } from '@domain/flac/types';
 
-// createImageUrl はテスト環境では何もしないか、モックする
-vi.mock(import('../utils/image'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    createImageUrl: vi.fn((pic) => (pic ? 'blob:mock' : null))
-  };
-});
+import * as imageUtils from '@renderer/utils/image';
 
 describe('TrackRecord', () => {
+  beforeEach(() => {
+    vi.spyOn(imageUtils, 'createImageUrl').mockImplementation((pic) => (pic ? 'blob:mock' : null));
+  });
   const mockMetadata: FlacMetadata = {
     title: 'Test Title',
     artist: ['Test Artist'],

@@ -4,16 +4,11 @@ import { selectionState } from './selection-state.svelte';
 import { TrackRecord } from './track-record.svelte';
 import { DEFAULT_GENRES, type FlacMetadata } from '@domain/flac/types';
 
-vi.mock(import('../utils/image'), async (importOriginal) => {
-  const actual = await importOriginal();
-  return {
-    ...actual,
-    createImageUrl: vi.fn((pic) => (pic ? 'blob:mock' : null))
-  };
-});
+import * as imageUtils from '@renderer/utils/image';
 
 describe('TrackStore', () => {
   beforeEach(() => {
+    vi.spyOn(imageUtils, 'createImageUrl').mockImplementation((pic) => (pic ? 'blob:mock' : null));
     trackStore.tracks = [];
     selectionState.items.clear();
   });
