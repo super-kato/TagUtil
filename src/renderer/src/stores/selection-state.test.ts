@@ -56,4 +56,26 @@ describe('SelectionState', () => {
     selectionState.selectPrevious(mockTracks);
     expect(selectionState.lastSelectedIndex).toBe(2);
   });
+
+  it('selectRange で複数の項目が選択されること', () => {
+    selectionState.selectRange([mockTracks[0], mockTracks[2]]);
+    expect(selectionState.has(mockTracks[0])).toBe(true);
+    expect(selectionState.has(mockTracks[2])).toBe(true);
+    expect(selectionState.has(mockTracks[1])).toBe(false);
+  });
+
+  it('selectAll で全ての項目が選択され、最後のインデックスが更新されること', () => {
+    selectionState.selectAll(mockTracks);
+    expect(selectionState.paths.size).toBe(3);
+    expect(selectionState.has(mockTracks[0])).toBe(true);
+    expect(selectionState.has(mockTracks[1])).toBe(true);
+    expect(selectionState.has(mockTracks[2])).toBe(true);
+    expect(selectionState.lastSelectedIndex).toBe(2);
+  });
+
+  it('空配列で selectAll を呼んだ場合にインデックスが null になること', () => {
+    selectionState.selectAll([]);
+    expect(selectionState.paths.size).toBe(0);
+    expect(selectionState.lastSelectedIndex).toBe(null);
+  });
 });
