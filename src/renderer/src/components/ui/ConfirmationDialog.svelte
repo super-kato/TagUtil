@@ -1,27 +1,24 @@
 <script lang="ts">
-  import { modalStore } from '@renderer/stores/modal-store.svelte';
-  import Modal from './Modal.svelte';
   import { Check, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
-
-  // 非nullアサーションを避けるため、optionsをローカル変数に抽出
-  const options = $derived(modalStore.options);
+  import { modalStore } from '@renderer/stores/modal-store.svelte';
+  import Modal from './Modal.svelte';
 </script>
 
-{#if options}
-  <Modal isOpen={modalStore.isOpen} onClose={() => modalStore.handleCancel()} title={options.title}>
+{#if modalStore.options}
+  {@const { title, message, icon: ICON } = modalStore.options}
+  <Modal isOpen={modalStore.isOpen} onClose={() => modalStore.handleCancel()} {title}>
     {#snippet header()}
-      {@const ICON = options.icon}
       <div class="header-content">
         <div class="icon-wrapper">
           <ICON size={UI_TOKENS.icons.logoSize} strokeWidth={UI_TOKENS.icons.strokeBold} />
         </div>
-        <h2>{options.title}</h2>
+        <h2>{title}</h2>
       </div>
     {/snippet}
 
     <div class="message-container">
-      <p>{options.message}</p>
+      <p>{message}</p>
     </div>
 
     {#snippet footer()}

@@ -18,12 +18,26 @@ export type ModalOptions = {
  */
 class ModalStore {
   /** モーダルが開いているかどうか */
-  isOpen = $state(false);
+  #isOpen = $state(false);
 
   /** 現在のモーダル設定 */
-  options = $state<ModalOptions | null>(null);
+  #options = $state<ModalOptions | null>(null);
 
   #resolve: ((value: boolean) => void) | null = null;
+
+  /**
+   * モーダルが開いているかどうかを返します。
+   */
+  get isOpen(): boolean {
+    return this.#isOpen;
+  }
+
+  /**
+   * 現在のモーダル設定を返します。
+   */
+  get options(): ModalOptions | null {
+    return this.#options;
+  }
 
   /**
    * 確認ダイアログを表示し、ユーザーの入力を Promise で返します。
@@ -36,8 +50,8 @@ class ModalStore {
       this.#resolve(false);
     }
 
-    this.options = options;
-    this.isOpen = true;
+    this.#options = options;
+    this.#isOpen = true;
 
     return new Promise((resolve) => {
       this.#resolve = resolve;
@@ -48,7 +62,7 @@ class ModalStore {
    * 確認ボタンが押された時のハンドラ。
    */
   handleConfirm(): void {
-    this.isOpen = false;
+    this.#isOpen = false;
     this.#resolve?.(true);
     this.#resolve = null;
   }
@@ -57,7 +71,7 @@ class ModalStore {
    * キャンセルボタンが押された時、またはダイアログが閉じられた時のハンドラ。
    */
   handleCancel(): void {
-    this.isOpen = false;
+    this.#isOpen = false;
     this.#resolve?.(false);
     this.#resolve = null;
   }

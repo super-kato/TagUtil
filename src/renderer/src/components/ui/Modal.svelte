@@ -34,6 +34,7 @@
   });
 
   const handleCancel = (e: Event): void => {
+    // Escキー押下時など、ブラウザ標準のキャンセル動作をハンドル
     e.preventDefault();
     onClose();
   };
@@ -49,29 +50,9 @@
     }
     onClose();
   };
-
-  /**
-   * a11y のためのキーダウンハンドラ。
-   */
-  const handleKeyDown = (e: KeyboardEvent): void => {
-    // ネイティブの dialog は Escape で自動的に閉じられるが、
-    // クリックイベントと対になる操作として Enter/Space を定義。
-    if (e.key === 'Enter' || e.key === ' ') {
-      const target = e.target as HTMLElement;
-      if (target.tagName === 'DIALOG') {
-        onClose();
-      }
-    }
-  };
 </script>
 
-<dialog
-  bind:this={dialog}
-  oncancel={handleCancel}
-  onclick={handleBackdropClick}
-  onkeydown={handleKeyDown}
-  class="custom-modal"
->
+<dialog bind:this={dialog} oncancel={handleCancel} onclick={handleBackdropClick} class="custom-modal">
   <div class="modal-container" role="document">
     <header class="modal-header">
       {#if header}
