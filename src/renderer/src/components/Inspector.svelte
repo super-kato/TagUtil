@@ -10,13 +10,20 @@
   import TechnicalInfo from './inspector/TechnicalInfo.svelte';
   import DropZone from './DropZone.svelte';
   import DropZoneOverlay from './DropZoneOverlay.svelte';
+  import { hasExtension } from '@shared/utils/file-filter';
+  /** ドラッグ＆ドロップされたファイルから最初の画像を見つけて適用します */
+  const handleArtworkDrop = (paths: string[]): void => {
+    const imagePath = paths.find((p) => hasExtension(p, SUPPORTED_IMAGE_EXTENSIONS));
+    if (!imagePath) {
+      return;
+    }
+
+    tagActions.applyPictureFromPath(imagePath);
+  };
 </script>
 
 <aside class="inspector no-focus-glow" tabindex="-1">
-  <DropZone
-    accept={SUPPORTED_IMAGE_EXTENSIONS}
-    onDrop={(paths) => tagActions.applyPictureFromPath(paths[0])}
-  >
+  <DropZone onDrop={handleArtworkDrop}>
     {#snippet overlay()}
       <DropZoneOverlay
         icon={ImageIcon}

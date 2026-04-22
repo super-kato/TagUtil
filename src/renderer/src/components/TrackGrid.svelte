@@ -1,6 +1,6 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { SUPPORTED_AUDIO_EXTENSIONS } from '@domain/file-extensions';
+
   import { FolderOpen, Music } from '@lucide/svelte';
   import { tagActions } from '@renderer/services/tag-actions';
   import { selectionState } from '@renderer/stores/selection-state.svelte';
@@ -35,7 +35,7 @@
   };
 </script>
 
-<DropZone onDrop={(paths) => tagActions.loadFromPaths(paths)} accept={SUPPORTED_AUDIO_EXTENSIONS}>
+<DropZone onDrop={(paths) => tagActions.loadFromPaths(paths)}>
   {#snippet overlay()}
     <DropZoneOverlay icon={FolderOpen} title="Drop to scan FLAC files" sub="Release to open" />
   {/snippet}
@@ -74,7 +74,7 @@
       <div class="empty-state">
         <button
           class="empty-icon"
-          onclick={() => tagActions.openAndScanDirectory()}
+          onclick={tagActions.openAndScanDirectory}
           aria-label="Open Directory"
         >
           <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />

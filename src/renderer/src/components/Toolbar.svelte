@@ -36,7 +36,7 @@
   <div class="actions">
     <button
       class="btn secondary"
-      onclick={() => tagActions.openAndScanDirectory()}
+      onclick={tagActions.openAndScanDirectory}
       disabled={uiState.isLoading}
       title="Open Directory"
     >

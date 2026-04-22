@@ -2,16 +2,14 @@
   import type { Snippet } from 'svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
   import { getAllPathsFromDropEvent } from '@renderer/infrastructure/file-drop-adapter';
-  import { filterByExtensions } from '@shared/utils/file-filter';
 
   interface Props {
     children: Snippet;
     overlay: Snippet;
     onDrop: (paths: string[]) => void;
-    accept?: readonly string[];
   }
 
-  let { children, overlay, onDrop, accept = [] }: Props = $props();
+  let { children, overlay, onDrop }: Props = $props();
 
   let isDragging = $state(false);
 
@@ -40,11 +38,7 @@
       return;
     }
 
-    let paths = getAllPathsFromDropEvent(e);
-
-    if (accept.length > 0) {
-      paths = filterByExtensions(paths, accept);
-    }
+    const paths = getAllPathsFromDropEvent(e);
 
     if (paths.length > 0) {
       onDrop(paths);
