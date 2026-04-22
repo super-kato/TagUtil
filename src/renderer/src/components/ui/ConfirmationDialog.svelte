@@ -23,7 +23,7 @@
 
     {#snippet footer()}
       <button
-        class="btn cancel no-hover-glow"
+        class="btn cancel"
         onclick={() => modalStore.handleCancel()}
         title="Cancel"
         aria-label="Cancel"
