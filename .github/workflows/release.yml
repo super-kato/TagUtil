@@ -10,8 +10,10 @@ on:
 jobs:
   check-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
-      should_release: ${{ steps.check_release.outputs.exists != 'true' }}
+      should_release: ${{ steps.check_release.outputs.should_release }}
       tag: ${{ steps.get_version.outputs.tag }}
     steps:
       - name: リポジトリのチェックアウト
@@ -20,7 +22,11 @@ jobs:
       - name: バージョン取得
         id: get_version
         run: |
-          VERSION=$(node -p "require('./package.json').version")
+          VERSION=$(jq -r .version package.json)
+          if [[ -z "$VERSION" || "$VERSION" == "null" ]]; then
+            echo "Error: Version not found in package.json"
+            exit 1
+          fi
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
       - name: リリースの存在確認
@@ -28,12 +34,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          if gh release view "${{ steps.get_version.outputs.tag }}" >/dev/null 2>&1; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-            echo "Release ${{ steps.get_version.outputs.tag }} already exists. Skipping build."
+          TAG="${{ steps.get_version.outputs.tag }}"
+          if gh api "repos/${{ github.repository }}/releases/tags/$TAG" >/dev/null 2>&1; then
+            echo "should_release=false" >> $GITHUB_OUTPUT
+            echo "Release $TAG already exists. Skipping build."
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
-            echo "Release ${{ steps.get_version.outputs.tag }} does not exist. Proceeding with build."
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "Release $TAG does not exist. Proceeding with build."
           fi
 
   build-and-release:
