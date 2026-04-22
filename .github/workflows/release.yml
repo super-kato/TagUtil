@@ -23,10 +23,6 @@ jobs:
         id: get_version
         run: |
           VERSION=$(jq -r .version package.json)
-          if [[ -z "$VERSION" || "$VERSION" == "null" ]]; then
-            echo "Error: Version not found in package.json"
-            exit 1
-          fi
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
 
       - name: リリースの存在確認
