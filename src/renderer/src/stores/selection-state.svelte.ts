@@ -2,39 +2,38 @@ import { clamp } from '@shared/utils/number';
 import { SvelteSet } from 'svelte/reactivity';
 import { TrackRecord } from './track-record.svelte';
 
-/** 選択・移動の対象となる最小限のインターフェース */
-export type SelectionTarget = Pick<TrackRecord, 'path'>;
+/** 選択・移動の対象となるインターフェース */
+export type SelectionTarget = TrackRecord;
 
 /**
  * 複数ファイルの選択状態を管理する独立したストア。
- * 外部インターフェースには `SelectionTarget` を受け取り、
- * 内部的には一意となる `path` の文字列を SvelteSet で管理します。
+ * 内部的には TrackRecord インスタンスの参照を SvelteSet で管理します。
  */
 class SelectionState {
-  paths = new SvelteSet<string>();
+  items = new SvelteSet<TrackRecord>();
   /** 最後に選択（クリックやキー移動）されたトラックのインデックス */
   lastSelectedIndex = $state<number | null>(null);
 
   /** 特定のトラックが選択されているかどうかを返します */
   has(track: SelectionTarget): boolean {
-    return this.paths.has(track.path);
+    return this.items.has(track);
   }
 
   selectSingle(track: SelectionTarget, index: number): void {
-    this.paths.clear();
-    this.paths.add(track.path);
+    this.items.clear();
+    this.items.add(track);
     this.lastSelectedIndex = index;
   }
 
   selectRange(tracks: SelectionTarget[]): void {
     for (const track of tracks) {
-      this.paths.add(track.path);
+      this.items.add(track);
     }
   }
 
   selectAll(tracks: SelectionTarget[]): void {
     for (const track of tracks) {
-      this.paths.add(track.path);
+      this.items.add(track);
     }
     this.lastSelectedIndex = tracks.length > 0 ? tracks.length - 1 : null;
   }

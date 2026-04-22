@@ -11,7 +11,7 @@ vi.mock('@renderer/utils/image', () => ({
 describe('TrackStore', () => {
   beforeEach(() => {
     trackStore.tracks = [];
-    selectionState.paths.clear();
+    selectionState.items.clear();
   });
 
   it('初期状態では tracks が空であること', () => {
@@ -24,10 +24,10 @@ describe('TrackStore', () => {
     const t2 = new TrackRecord('p2', { title: 'T2' } as FlacMetadata);
     trackStore.tracks = [t1, t2];
 
-    selectionState.paths.add('p1');
+    selectionState.selectSingle(t1, 0);
     expect(trackStore.selectedTracks).toEqual([t1]);
 
-    selectionState.paths.add('p2');
+    selectionState.items.add(t2); // もしくは selectRange([t1, t2])
     expect(trackStore.selectedTracks).toEqual([t1, t2]);
   });
 
@@ -53,8 +53,7 @@ describe('TrackStore', () => {
     const t1 = new TrackRecord('p1', { title: 'T1', artist: ['Artist'] } as FlacMetadata);
     const t2 = new TrackRecord('p2', { title: 'T2', artist: ['Artist'] } as FlacMetadata);
     trackStore.tracks = [t1, t2];
-    selectionState.paths.add('p1');
-    selectionState.paths.add('p2');
+    selectionState.selectRange([t1, t2]);
 
     const artistState = trackStore.commonMetadata?.artist;
     expect(artistState?.type).toBe('uniform');

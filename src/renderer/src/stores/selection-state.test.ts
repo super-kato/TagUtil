@@ -1,16 +1,22 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { selectionState, type SelectionTarget } from './selection-state.svelte';
+import { selectionState } from './selection-state.svelte';
+import { TrackRecord } from './track-record.svelte';
+import type { FlacMetadata } from '@domain/flac/types';
 
 describe('SelectionState', () => {
-  const mockTracks: SelectionTarget[] = [{ path: 'path1' }, { path: 'path2' }, { path: 'path3' }];
+  const mockTracks = [
+    new TrackRecord('path1', { title: 'T1' } as FlacMetadata),
+    new TrackRecord('path2', { title: 'T2' } as FlacMetadata),
+    new TrackRecord('path3', { title: 'T3' } as FlacMetadata)
+  ];
 
   beforeEach(() => {
-    selectionState.paths.clear();
+    selectionState.items.clear();
     selectionState.lastSelectedIndex = null;
   });
 
   it('初期状態では選択がなく、インデックスも null であること', () => {
-    expect(selectionState.paths.size).toBe(0);
+    expect(selectionState.items.size).toBe(0);
     expect(selectionState.lastSelectedIndex).toBe(null);
   });
 
@@ -66,7 +72,7 @@ describe('SelectionState', () => {
 
   it('selectAll で全ての項目が選択され、最後のインデックスが更新されること', () => {
     selectionState.selectAll(mockTracks);
-    expect(selectionState.paths.size).toBe(3);
+    expect(selectionState.items.size).toBe(3);
     expect(selectionState.has(mockTracks[0])).toBe(true);
     expect(selectionState.has(mockTracks[1])).toBe(true);
     expect(selectionState.has(mockTracks[2])).toBe(true);
@@ -75,7 +81,7 @@ describe('SelectionState', () => {
 
   it('空配列で selectAll を呼んだ場合にインデックスが null になること', () => {
     selectionState.selectAll([]);
-    expect(selectionState.paths.size).toBe(0);
+    expect(selectionState.items.size).toBe(0);
     expect(selectionState.lastSelectedIndex).toBe(null);
   });
 });
