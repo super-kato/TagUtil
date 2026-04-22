@@ -3,9 +3,11 @@ import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { tagActions } from './tag-actions';
 import { tagEditor } from './tag-editor';
+import type { FlacMetadata } from '@domain/flac/types';
 
 describe('tagActions', () => {
-  const mockTracks = [{ path: 'file1.flac' }] as unknown as TrackRecord[];
+  const metadata: FlacMetadata = { title: 'T' };
+  const mockTracks = [new TrackRecord('file1.flac', metadata)];
 
   beforeEach(() => {
     vi.clearAllMocks();

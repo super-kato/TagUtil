@@ -25,7 +25,7 @@ const renameSelectedFiles = async (): Promise<void> => {
     // 成功したファイルがあればストアを差し替え
     if (renamedMap.size > 0) {
       trackStore.tracks = trackStore.tracks.map((t) => renamedMap.get(t.path) ?? t);
-      selectionState.paths.clear();
+      selectionState.items.clear();
     }
   } finally {
     uiState.stopLoading();

@@ -1,16 +1,25 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { selectionState, type SelectionTarget } from './selection-state.svelte';
+import { selectionState } from './selection-state.svelte';
+import { TrackRecord } from './track-record.svelte';
+import type { FlacMetadata } from '@domain/flac/types';
 
 describe('SelectionState', () => {
-  const mockTracks: SelectionTarget[] = [{ path: 'path1' }, { path: 'path2' }, { path: 'path3' }];
+  const m1: FlacMetadata = { title: 'T1' };
+  const m2: FlacMetadata = { title: 'T2' };
+  const m3: FlacMetadata = { title: 'T3' };
+  const mockTracks = [
+    new TrackRecord('path1', m1),
+    new TrackRecord('path2', m2),
+    new TrackRecord('path3', m3)
+  ];
 
   beforeEach(() => {
-    selectionState.paths.clear();
+    selectionState.items.clear();
     selectionState.lastSelectedIndex = null;
   });
 
   it('初期状態では選択がなく、インデックスも null であること', () => {
-    expect(selectionState.paths.size).toBe(0);
+    expect(selectionState.items.size).toBe(0);
     expect(selectionState.lastSelectedIndex).toBe(null);
   });
 
@@ -55,5 +64,27 @@ describe('SelectionState', () => {
   it('未選択状態で selectPrevious を呼ぶと末尾が選択されること', () => {
     selectionState.selectPrevious(mockTracks);
     expect(selectionState.lastSelectedIndex).toBe(2);
+  });
+
+  it('selectRange で複数の項目が選択されること', () => {
+    selectionState.selectRange([mockTracks[0], mockTracks[2]]);
+    expect(selectionState.has(mockTracks[0])).toBe(true);
+    expect(selectionState.has(mockTracks[2])).toBe(true);
+    expect(selectionState.has(mockTracks[1])).toBe(false);
+  });
+
+  it('selectAll で全ての項目が選択され、最後のインデックスが更新されること', () => {
+    selectionState.selectAll(mockTracks);
+    expect(selectionState.items.size).toBe(3);
+    expect(selectionState.has(mockTracks[0])).toBe(true);
+    expect(selectionState.has(mockTracks[1])).toBe(true);
+    expect(selectionState.has(mockTracks[2])).toBe(true);
+    expect(selectionState.lastSelectedIndex).toBe(2);
+  });
+
+  it('空配列で selectAll を呼んだ場合にインデックスが null になること', () => {
+    selectionState.selectAll([]);
+    expect(selectionState.items.size).toBe(0);
+    expect(selectionState.lastSelectedIndex).toBe(null);
   });
 });
