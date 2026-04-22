@@ -52,7 +52,12 @@
   };
 </script>
 
-<dialog bind:this={dialog} oncancel={handleCancel} onclick={handleBackdropClick} class="custom-modal">
+<dialog
+  bind:this={dialog}
+  oncancel={handleCancel}
+  onclick={handleBackdropClick}
+  class="custom-modal"
+>
   <div class="modal-container" role="document">
     <header class="modal-header">
       {#if header}
