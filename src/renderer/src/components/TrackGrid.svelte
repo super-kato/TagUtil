@@ -147,8 +147,7 @@
     position: relative;
   }
 
-  .track-row.selected .indicator-cell::after,
-  .track-row.modified .indicator-cell::after {
+  .indicator-cell::after {
     content: '';
     position: absolute;
     top: 0;
@@ -157,7 +156,14 @@
     width: 4px;
     background-color: var(--accent-primary);
     box-shadow: 2px 0 8px var(--selection-glow);
+    opacity: 0;
     transition: all 0.2s ease;
+    pointer-events: none;
+  }
+
+  .track-row.selected .indicator-cell::after,
+  .track-row.modified .indicator-cell::after {
+    opacity: 1;
   }
 
   .track-row.modified .indicator-cell::after {
