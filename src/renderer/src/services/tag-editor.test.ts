@@ -31,19 +31,19 @@ describe('tagEditor', () => {
     it('新しい値を複数値フィールドの末尾に追加すること', () => {
       const track = createMockTrack('file1.flac', ['Rock']);
       tagEditor.addMultiFieldValue([track], 'genre', 'Pop');
-      expect(track.metadata.genre).toEqual(['Rock', 'Pop']);
+      expect(track.metadata.genre).toStrictEqual(['Rock', 'Pop']);
     });
 
     it('既に存在する値は重複して追加しないこと', () => {
       const track = createMockTrack('file1.flac', ['Rock', 'Pop']);
       tagEditor.addMultiFieldValue([track], 'genre', 'Rock');
-      expect(track.metadata.genre).toEqual(['Rock', 'Pop']);
+      expect(track.metadata.genre).toStrictEqual(['Rock', 'Pop']);
     });
 
     it('空の配列に対しても正しく追加できること', () => {
       const track = createMockTrack('file1.flac', []);
       tagEditor.addMultiFieldValue([track], 'genre', 'Jazz');
-      expect(track.metadata.genre).toEqual(['Jazz']);
+      expect(track.metadata.genre).toStrictEqual(['Jazz']);
     });
   });
 
@@ -51,19 +51,19 @@ describe('tagEditor', () => {
     it('指定した値をフィールドから削除すること', () => {
       const track = createMockTrack('file1.flac', ['Rock', 'Pop', 'Jazz']);
       tagEditor.removeMultiFieldValue([track], 'genre', 'Pop');
-      expect(track.metadata.genre).toEqual(['Rock', 'Jazz']);
+      expect(track.metadata.genre).toStrictEqual(['Rock', 'Jazz']);
     });
 
     it('該当する値が複数ある場合、すべて削除すること', () => {
       const track = createMockTrack('file1.flac', ['Rock', 'Pop', 'Rock']);
       tagEditor.removeMultiFieldValue([track], 'genre', 'Rock');
-      expect(track.metadata.genre).toEqual(['Pop']);
+      expect(track.metadata.genre).toStrictEqual(['Pop']);
     });
 
     it('存在しない値を削除しようとしても変化がないこと', () => {
       const track = createMockTrack('file1.flac', ['Rock']);
       tagEditor.removeMultiFieldValue([track], 'genre', 'Pop');
-      expect(track.metadata.genre).toEqual(['Rock']);
+      expect(track.metadata.genre).toStrictEqual(['Rock']);
     });
   });
 

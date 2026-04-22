@@ -25,7 +25,7 @@ describe('tag-repository', () => {
 
       const result = await tagRepository.readMetadata('test.flac');
 
-      expect(result).toEqual(mockResult);
+      expect(result).toStrictEqual(mockResult);
       expect(window.api.readMetadata).toHaveBeenCalledWith('test.flac');
     });
   });
@@ -61,7 +61,7 @@ describe('tag-repository', () => {
 
       const result = await tagRepository.loadTracksFromPaths(['/dir']);
 
-      expect(result).toEqual(mockError);
+      expect(result).toStrictEqual(mockError);
     });
   });
 

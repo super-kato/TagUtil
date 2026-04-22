@@ -15,8 +15,8 @@ describe('TrackStore', () => {
   });
 
   it('初期状態では tracks が空であること', () => {
-    expect(trackStore.tracks).toEqual([]);
-    expect(trackStore.selectedTracks).toEqual([]);
+    expect(trackStore.tracks).toStrictEqual([]);
+    expect(trackStore.selectedTracks).toStrictEqual([]);
   });
 
   it('selectedTracks が選択状態に応じて正しくフィルタリングされること', () => {
@@ -27,10 +27,10 @@ describe('TrackStore', () => {
     trackStore.tracks = [t1, t2];
 
     selectionState.selectSingle(t1, 0);
-    expect(trackStore.selectedTracks).toEqual([t1]);
+    expect(trackStore.selectedTracks).toStrictEqual([t1]);
 
     selectionState.items.add(t2); // もしくは selectRange([t1, t2])
-    expect(trackStore.selectedTracks).toEqual([t1, t2]);
+    expect(trackStore.selectedTracks).toStrictEqual([t1, t2]);
   });
 
   it('allGenres がデフォルトジャンルとトラック内のジャンルをマージしてソートすること', () => {
@@ -50,7 +50,7 @@ describe('TrackStore', () => {
     expect(genres.length).toBe(uniqueGenres.length);
     // ソートされていること
     const sorted = [...genres].sort();
-    expect(genres).toEqual(sorted);
+    expect(genres).toStrictEqual(sorted);
   });
 
   it('commonMetadata が選択中のトラックから導出されること', () => {
@@ -64,7 +64,7 @@ describe('TrackStore', () => {
     const artistState = trackStore.commonMetadata?.artist;
     expect(artistState?.type).toBe('uniform');
     if (artistState?.type === 'uniform') {
-      expect(artistState.value).toEqual(['Artist']);
+      expect(artistState.value).toStrictEqual(['Artist']);
     }
     expect(trackStore.commonMetadata?.title.type).toBe('divergent');
   });

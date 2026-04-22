@@ -22,20 +22,20 @@ describe('getAllPathsFromDropEvent', () => {
 
     const paths = getAllPathsFromDropEvent(event);
 
-    expect(paths).toEqual(['/path/to/test1.flac', '/path/to/test2.flac']);
+    expect(paths).toStrictEqual(['/path/to/test1.flac', '/path/to/test2.flac']);
     expect(mockGetPathForFile).toHaveBeenCalledTimes(2);
   });
 
   it('dataTransfer がない場合は空配列を返すこと', () => {
     const event: DropEventLike = { dataTransfer: null };
     const paths = getAllPathsFromDropEvent(event);
-    expect(paths).toEqual([]);
+    expect(paths).toStrictEqual([]);
   });
 
   it('files が空の場合は空配列を返すこと', () => {
     const event: DropEventLike = { dataTransfer: { files: [] } };
     const paths = getAllPathsFromDropEvent(event);
-    expect(paths).toEqual([]);
+    expect(paths).toStrictEqual([]);
   });
 
   it('getPathForFile が null を返した場合はフィルタリングされること', () => {
@@ -47,6 +47,6 @@ describe('getAllPathsFromDropEvent', () => {
 
     const paths = getAllPathsFromDropEvent(event);
 
-    expect(paths).toEqual(['/path/to/test1.flac']);
+    expect(paths).toStrictEqual(['/path/to/test1.flac']);
   });
 });

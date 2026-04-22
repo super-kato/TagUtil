@@ -71,7 +71,7 @@ describe('fileActions', () => {
 
       expect(fileRepository.renameFile).toHaveBeenCalledWith('old.flac', '/dir/new.flac');
       expect(trackStore.tracks[0].path).toBe('/dir/new.flac');
-      expect(trackStore.tracks[0].metadata.artist).toEqual(['Artist']);
+      expect(trackStore.tracks[0].metadata.artist).toStrictEqual(['Artist']);
       expect(selectionState.items.size).toBe(0);
     });
 
