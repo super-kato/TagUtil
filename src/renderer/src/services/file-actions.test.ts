@@ -1,15 +1,13 @@
-// uiState のモック
-vi.mock('@renderer/stores/ui-state.svelte', () => ({
-  uiState: {
-    startLoading: vi.fn(),
-    stopLoading: vi.fn(),
-    clearError: vi.fn(),
-    setError: vi.fn(),
-    get error() {
-      return null;
-    }
-  }
-}));
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { fileActions } from './file-actions';
+import { trackStore } from '@renderer/stores/track-store.svelte';
+import { uiState } from '@renderer/stores/ui-state.svelte';
+import { selectionState } from '@renderer/stores/selection-state.svelte';
+import { tagRepository } from '@renderer/infrastructure/tag-repository';
+import { fileRepository } from '@renderer/infrastructure/file-repository';
+import { success, failure } from '@domain/common/result';
+import { TrackRecord } from '@renderer/stores/track-record.svelte';
+import type { FlacMetadata, FlacTrack, TagError } from '@domain/flac/types';
 
 vi.mock('@renderer/infrastructure/tag-repository', () => ({
   tagRepository: { readMetadata: vi.fn() }
@@ -28,21 +26,10 @@ vi.mock('@domain/flac/filename-formatter', () => ({
   formatFlacFilename: vi.fn(() => success('new.flac'))
 }));
 
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { fileActions } from './file-actions';
-import { trackStore } from '@renderer/stores/track-store.svelte';
-import { uiState } from '@renderer/stores/ui-state.svelte';
-import { selectionState } from '@renderer/stores/selection-state.svelte';
-import { tagRepository } from '@renderer/infrastructure/tag-repository';
-import { fileRepository } from '@renderer/infrastructure/file-repository';
-import { success, failure } from '@domain/common/result';
-import { TrackRecord } from '@renderer/stores/track-record.svelte';
-import type { FlacMetadata, FlacTrack, TagError } from '@domain/flac/types';
-
 describe('fileActions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(uiState, 'error', 'get').mockReturnValue(null);
+    uiState.reset();
     trackStore.tracks = [];
     selectionState.items.clear();
   });
@@ -50,7 +37,7 @@ describe('fileActions', () => {
   describe('renameSelectedFiles', () => {
     it('選択されたトラックがない場合は何もしないこと', async () => {
       await fileActions.renameSelectedFiles();
-      expect(uiState.startLoading).not.toHaveBeenCalled();
+      expect(uiState.isLoading).toBe(false);
     });
 
     it('トラックのリネームが成功した場合、ストアを更新すること', async () => {
@@ -88,14 +75,9 @@ describe('fileActions', () => {
       const mockError = failure(error);
       vi.mocked(fileRepository.renameFile).mockResolvedValue(mockError);
 
-      // uiState.error をシミュレート
-      vi.mocked(uiState.setError).mockImplementation(() => {
-        vi.spyOn(uiState, 'error', 'get').mockReturnValue('Error occurred');
-      });
-
       await fileActions.renameSelectedFiles();
 
-      expect(uiState.setError).toHaveBeenCalledWith(mockError);
+      expect(uiState.error).not.toBeNull();
     });
   });
 });

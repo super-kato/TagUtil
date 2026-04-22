@@ -2,9 +2,6 @@ import { clamp } from '@shared/utils/number';
 import { SvelteSet } from 'svelte/reactivity';
 import { TrackRecord } from './track-record.svelte';
 
-/** 選択・移動の対象となるインターフェース */
-export type SelectionTarget = TrackRecord;
-
 /**
  * 複数ファイルの選択状態を管理する独立したストア。
  * 内部的には TrackRecord インスタンスの参照を SvelteSet で管理します。
@@ -15,40 +12,40 @@ class SelectionState {
   lastSelectedIndex = $state<number | null>(null);
 
   /** 特定のトラックが選択されているかどうかを返します */
-  has(track: SelectionTarget): boolean {
+  has(track: TrackRecord): boolean {
     return this.items.has(track);
   }
 
-  selectSingle(track: SelectionTarget, index: number): void {
+  selectSingle(track: TrackRecord, index: number): void {
     this.items.clear();
     this.items.add(track);
     this.lastSelectedIndex = index;
   }
 
-  selectRange(tracks: SelectionTarget[]): void {
+  selectRange(tracks: TrackRecord[]): void {
     for (const track of tracks) {
       this.items.add(track);
     }
   }
 
-  selectAll(tracks: SelectionTarget[]): void {
+  selectAll(tracks: TrackRecord[]): void {
     for (const track of tracks) {
       this.items.add(track);
     }
     this.lastSelectedIndex = tracks.length > 0 ? tracks.length - 1 : null;
   }
 
-  selectNext(tracks: SelectionTarget[]): void {
+  selectNext(tracks: TrackRecord[]): void {
     const next = this.lastSelectedIndex === null ? 0 : this.lastSelectedIndex + 1;
     this.#selectIndex(next, tracks);
   }
 
-  selectPrevious(tracks: SelectionTarget[]): void {
+  selectPrevious(tracks: TrackRecord[]): void {
     const prev = this.lastSelectedIndex === null ? tracks.length - 1 : this.lastSelectedIndex - 1;
     this.#selectIndex(prev, tracks);
   }
 
-  #selectIndex(index: number, tracks: SelectionTarget[]): void {
+  #selectIndex(index: number, tracks: TrackRecord[]): void {
     if (tracks.length === 0) {
       return;
     }
