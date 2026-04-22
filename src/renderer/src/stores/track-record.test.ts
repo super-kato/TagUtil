@@ -3,9 +3,13 @@ import { TrackRecord } from './track-record.svelte';
 import type { FlacMetadata } from '@domain/flac/types';
 
 // createImageUrl はテスト環境では何もしないか、モックする
-vi.mock('@renderer/utils/image', () => ({
-  createImageUrl: vi.fn((pic) => (pic ? 'blob:mock' : null))
-}));
+vi.mock(import('../utils/image'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    createImageUrl: vi.fn((pic) => (pic ? 'blob:mock' : null))
+  };
+});
 
 describe('TrackRecord', () => {
   const mockMetadata: FlacMetadata = {

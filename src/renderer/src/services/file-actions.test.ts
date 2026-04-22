@@ -9,22 +9,44 @@ import { success, failure } from '@domain/common/result';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import type { FlacMetadata, FlacTrack, TagError } from '@domain/flac/types';
 
-vi.mock('@renderer/infrastructure/tag-repository', () => ({
-  tagRepository: { readMetadata: vi.fn() }
-}));
+vi.mock(import('../infrastructure/tag-repository'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    tagRepository: {
+      ...actual.tagRepository,
+      readMetadata: vi.fn()
+    }
+  };
+});
 
-vi.mock('@renderer/infrastructure/file-repository', () => ({
-  fileRepository: { renameFile: vi.fn() }
-}));
+vi.mock(import('../infrastructure/file-repository'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    fileRepository: {
+      ...actual.fileRepository,
+      renameFile: vi.fn()
+    }
+  };
+});
 
-vi.mock('@renderer/infrastructure/path-adapter', () => ({
-  getDirectoryName: vi.fn(() => '/dir'),
-  joinPath: vi.fn((dir, file) => `${dir}/${file}`)
-}));
+vi.mock(import('../infrastructure/path-adapter'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    getDirectoryName: vi.fn(() => '/dir'),
+    joinPath: vi.fn((dir, file) => `${dir}/${file}`)
+  };
+});
 
-vi.mock('@domain/flac/filename-formatter', () => ({
-  formatFlacFilename: vi.fn(() => success('new.flac'))
-}));
+vi.mock(import('../../../domain/flac/filename-formatter'), async (importOriginal) => {
+  const actual = await importOriginal();
+  return {
+    ...actual,
+    formatFlacFilename: vi.fn(() => success('new.flac'))
+  };
+});
 
 describe('fileActions', () => {
   beforeEach(() => {
