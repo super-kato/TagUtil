@@ -53,10 +53,12 @@
 :focus-visible {
   outline: none;
   box-shadow: var(--focus-ring), var(--focus-glow);
+  transition: box-shadow 0.2s ease;
 }
 
 button:hover:not(.no-hover-glow):not(:disabled) {
   box-shadow: var(--focus-ring), var(--focus-glow);
+  transition: box-shadow 0.2s ease;
 }
 
 .no-focus-glow:focus,
@@ -113,6 +115,16 @@ body {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes glow-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 5px var(--accent-primary-dim);
+  }
+  50% {
+    box-shadow: 0 0 15px var(--selection-glow);
   }
 }
 

@@ -157,6 +157,7 @@
     width: 4px;
     background-color: var(--accent-primary);
     box-shadow: 2px 0 8px var(--selection-glow);
+    transition: all 0.2s ease;
   }
 
   .track-row.modified .indicator-cell::after {
