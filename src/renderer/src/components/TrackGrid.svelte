@@ -157,7 +157,7 @@
     background-color: var(--accent-primary);
     box-shadow: 2px 0 8px var(--selection-glow);
     opacity: 0;
-    transition: all 0.1s ease;
+    transition: all 0.05s ease;
     pointer-events: none;
   }
 
