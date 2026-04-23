@@ -34,7 +34,7 @@
         <button class="genre-badge" onclick={() => applyGenre(g)}>
           {g}
         </button>
-      {#/each}
+      {/each}
     </div>
   </div>
 {/if}
