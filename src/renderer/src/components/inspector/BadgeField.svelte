@@ -6,14 +6,17 @@
     label: string;
     values: string[];
     isUniform: boolean;
-    placeholder?: string;
+    suggestions?: string[];
     onAdd: (value: string) => void;
     onRemove: (value: string) => void;
   }
 
-  let { label, values, isUniform, onAdd, onRemove }: Props = $props();
+  let { label, values, isUniform, suggestions = [], onAdd, onRemove }: Props = $props();
 
   let inputValue = $state('');
+  let inputElement: HTMLInputElement | undefined = $state();
+
+  const filteredSuggestions = $derived(suggestions.filter((s) => !values.includes(s)));
 
   const handleKeyDown = (e: KeyboardEvent): void => {
     if (e.key === 'Enter' || e.key === ',') {
@@ -24,17 +27,14 @@
         inputValue = '';
       }
     } else if (e.key === 'Backspace' && inputValue === '' && values.length > 0) {
-      // 入力欄が空の状態でバックスペースを押すと最後の項目を削除
       onRemove(values[values.length - 1]);
     }
   };
 
   const handleClickContainer = (e: MouseEvent): void => {
-    // コンテナクリックで中の入力欄にフォーカスを当てる
     const target = e.target as HTMLElement;
     if (target.classList.contains('badge-container')) {
-      const input = target.querySelector('input');
-      input?.focus();
+      inputElement?.focus();
     }
   };
 </script>
@@ -61,14 +61,23 @@
         </button>
       </span>
     {/each}
-    <input
-      id="badge-input-{label}"
-      type="text"
-      bind:value={inputValue}
-      onkeydown={handleKeyDown}
-      autocomplete="off"
-      placeholder={!isUniform && values.length === 0 ? 'Mixed Values' : ''}
-    />
+    <div class="input-wrapper">
+      <input
+        id="badge-input-{label}"
+        type="text"
+        list="suggestions-{label}"
+        bind:this={inputElement}
+        bind:value={inputValue}
+        onkeydown={handleKeyDown}
+        autocomplete="off"
+        placeholder={!isUniform && values.length === 0 ? 'Mixed Values' : ''}
+      />
+      <datalist id="suggestions-{label}">
+        {#each filteredSuggestions as suggestion (suggestion)}
+          <option value={suggestion}></option>
+        {/each}
+      </datalist>
+    </div>
   </div>
 </div>
 
@@ -155,9 +164,14 @@
     opacity: 1 !important;
   }
 
-  .badge-container input {
+  .input-wrapper {
     flex: 1;
-    min-width: 60px;
+    display: flex;
+    min-width: 120px;
+  }
+
+  .badge-container input {
+    width: 100%;
     background: transparent;
     border: none;
     color: var(--text-primary);
