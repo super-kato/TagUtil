@@ -4,8 +4,6 @@ publish:
   provider: github
   owner: super-kato
   repo: TagUtil
-directories:
-  buildResources: build
 files:
   - '!**/.vscode/*'
   - '!src/*'
@@ -17,9 +15,9 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: tag-util
+  executableName: TagUtil
 nsis:
-  artifactName: ${name}-${version}-setup.${ext}
+  artifactName: ${productName}-${version}-setup.${ext}
   shortcutName: ${productName}
   uninstallDisplayName: ${productName}
   createDesktopShortcut: always
@@ -29,19 +27,16 @@ mac:
   gatekeeperAssess: false
   notarize: true
   extendInfo:
-    - NSCameraUsageDescription: Application requests access to the device's camera.
-    - NSMicrophoneUsageDescription: Application requests access to the device's microphone.
     - NSDocumentsFolderUsageDescription: Application requests access to the user's Documents folder.
     - NSDownloadsFolderUsageDescription: Application requests access to the user's Downloads folder.
 dmg:
-  artifactName: ${name}.${ext}
+  artifactName: ${productName}-${version}.${ext}
 linux:
   target:
     - AppImage
     - snap
     - deb
-  maintainer: electronjs.org
+  maintainer: super-kato
   category: Utility
 appImage:
-  artifactName: ${name}-${version}.${ext}
-npmRebuild: false
+  artifactName: ${productName}-${version}.${ext}
