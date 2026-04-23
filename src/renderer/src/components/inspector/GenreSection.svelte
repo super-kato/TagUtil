@@ -24,6 +24,7 @@
       label="Genre"
       values={getMultiFieldValues(genreState)}
       isUniform={genreState.type === 'uniform'}
+      suggestions={trackStore.allGenres}
       onAdd={(v) => applyGenre(v)}
       onRemove={(v) => tagActions.removeSelectedMultiFieldValue('genre', v)}
     />
@@ -33,7 +34,7 @@
         <button class="genre-badge" onclick={() => applyGenre(g)}>
           {g}
         </button>
-      {/each}
+      {#/each}
     </div>
   </div>
 {/if}
