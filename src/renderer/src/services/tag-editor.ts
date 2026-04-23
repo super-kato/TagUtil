@@ -81,11 +81,14 @@ const removePicture = (tracks: TrackRecord[]): void => {
 
 /**
  * トラック番号の自動採番（1, 2, 3...）を適用します。
+ * 同時に総トラック数も選択数に合わせて更新します。
  */
 const applyAutoNumbering = (tracks: TrackRecord[]): void => {
+  const total = tracks.length;
   tracks.forEach((track, index) => {
     const num = index + 1;
     track.metadata.trackNumber = num.toString();
+    track.metadata.trackTotal = total.toString();
   });
 };
 
