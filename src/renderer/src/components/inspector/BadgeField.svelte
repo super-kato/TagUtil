@@ -48,30 +48,27 @@
     onclick={handleClickContainer}
     role="presentation"
   >
-    {#if isUniform}
-      {#each values as val, i (i)}
-        <span class="badge">
-          {val}
-          <button
-            type="button"
-            class="remove-btn no-hover-glow"
-            onclick={() => onRemove(val)}
-            title="Remove"
-          >
-            <X size={UI_TOKENS.icons.sizeSmall} strokeWidth={UI_TOKENS.icons.strokeBold} />
-          </button>
-        </span>
-      {/each}
-      <input
-        id="badge-input-{label}"
-        type="text"
-        bind:value={inputValue}
-        onkeydown={handleKeyDown}
-        autocomplete="off"
-      />
-    {:else}
-      <div class="mixed-placeholder">Mixed Values (Click to unify)</div>
-    {/if}
+    {#each values as val, i (i)}
+      <span class="badge" class:divergent-badge={!isUniform}>
+        {val}
+        <button
+          type="button"
+          class="remove-btn no-hover-glow"
+          onclick={() => onRemove(val)}
+          title={isUniform ? 'Remove' : 'Remove from all tracks'}
+        >
+          <X size={UI_TOKENS.icons.sizeSmall} strokeWidth={UI_TOKENS.icons.strokeBold} />
+        </button>
+      </span>
+    {/each}
+    <input
+      id="badge-input-{label}"
+      type="text"
+      bind:value={inputValue}
+      onkeydown={handleKeyDown}
+      autocomplete="off"
+      placeholder={!isUniform && values.length === 0 ? 'Mixed Values' : ''}
+    />
   </div>
 </div>
 
@@ -96,13 +93,8 @@
   }
 
   .badge-container.divergent {
-    opacity: 0.6;
     background-color: var(--bg-header);
-    cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    font-style: italic;
-    color: var(--text-muted);
+    cursor: text;
   }
 
   .badge {
@@ -116,6 +108,13 @@
     font-size: 0.8rem;
     border: 1px solid var(--border-secondary);
     animation: badge-in 0.2s ease-out;
+  }
+
+  .badge.divergent-badge {
+    opacity: 0.8;
+    border-style: dashed;
+    font-style: italic;
+    color: var(--text-dim);
   }
 
   @keyframes badge-in {

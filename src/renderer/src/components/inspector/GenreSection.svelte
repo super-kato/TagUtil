@@ -3,6 +3,7 @@
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { tagActions } from '@renderer/services/tag-actions';
   import BadgeField from './BadgeField.svelte';
+  import { getMultiFieldValues } from './tag-field-handlers';
 
   const MAX_QUICK_GENRES = 4;
   const QUICK_GENRES = DEFAULT_GENRES.slice(0, MAX_QUICK_GENRES);
@@ -21,7 +22,7 @@
   <div class="genre-section">
     <BadgeField
       label="Genre"
-      values={genreState.type === 'uniform' ? (genreState.value ?? []) : []}
+      values={getMultiFieldValues(genreState)}
       isUniform={genreState.type === 'uniform'}
       onAdd={(v) => applyGenre(v)}
       onRemove={(v) => tagActions.removeSelectedMultiFieldValue('genre', v)}
