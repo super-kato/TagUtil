@@ -31,5 +31,12 @@ export const getSingleFieldValue = (key: EditableSingleKey): string => {
  * 複数値フィールドの表示用の実効値リストを取得します。
  * Uniform の場合はその値を、Divergent の場合は和（union）を返します。
  */
-export const getMultiFieldValues = (state: FieldState<string[] | undefined>): string[] =>
-  (state.type === 'uniform' ? state.value : state.values) ?? [];
+export const getMultiFieldValues = (state: FieldState<string[] | undefined>): string[] => {
+  if (state.type === 'uniform') {
+    return state.value ?? [];
+  }
+  if (state.type === 'divergent') {
+    return state.values ?? [];
+  }
+  return [];
+};
