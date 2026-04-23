@@ -1,19 +1,13 @@
 <script lang="ts">
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { tagActions } from '@renderer/services/tag-actions';
-  import type { FieldState } from '@domain/editor/batch-metadata';
-  import MultiValueField from './MultiValueField.svelte';
-  import { getSingleFieldValue, handleSingleInput } from './tag-field-handlers';
 
-  const getMultiFieldValues = (state: FieldState<string[] | undefined>): string[] => {
-    if (state.type === 'uniform') {
-      return state.value ?? [];
-    }
-    if (state.type === 'divergent') {
-      return state.values ?? [];
-    }
-    return [];
-  };
+  import MultiValueField from './MultiValueField.svelte';
+  import {
+    getSingleFieldValue,
+    handleSingleInput,
+    getMultiFieldValues
+  } from './tag-field-handlers';
 </script>
 
 {#if trackStore.commonMetadata}
