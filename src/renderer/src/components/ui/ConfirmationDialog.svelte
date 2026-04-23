@@ -31,7 +31,7 @@
         <X size={UI_TOKENS.icons.size} />
       </button>
       <button
-        class="btn confirm"
+        class="btn confirm glow-pulse"
         onclick={() => modalStore.handleConfirm()}
         title="Confirm"
         aria-label="Confirm"
@@ -84,6 +84,5 @@
   .btn.confirm {
     border-color: var(--accent-primary);
     color: var(--accent-primary);
-    animation: glow-pulse 2s infinite ease-in-out;
   }
 </style>

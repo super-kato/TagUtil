@@ -61,6 +61,7 @@
     </button>
     <button
       class="btn primary"
+      class:glow-pulse={!uiState.isLoading && trackStore.tracks.some((t) => t.isModified)}
       onclick={() => tagActions.saveAllModified()}
       disabled={uiState.isLoading || !trackStore.tracks.some((t) => t.isModified)}
       title="Save Changes"
