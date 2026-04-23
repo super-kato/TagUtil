@@ -13,72 +13,25 @@
 
   let { label, values, isUniform, suggestions = [], onAdd, onRemove }: Props = $props();
 
-  const NO_SELECTION = -1;
-  const MAX_SUGGESTIONS = 10;
-  const BLUR_TIMEOUT_MS = 200;
-
   let inputValue = $state('');
-  let selectedIndex = $state(NO_SELECTION);
-  let showSuggestions = $state(false);
   let inputElement: HTMLInputElement | undefined = $state();
 
   const filteredSuggestions = $derived.by(() => {
-    const query = inputValue.trim().toLowerCase();
-    if (!query) {
-      return [];
-    }
-    return suggestions
-      .filter((s) => s.toLowerCase().includes(query) && !values.includes(s))
-      .slice(0, MAX_SUGGESTIONS);
+    // 既に追加されている値はサジェストから除外
+    return suggestions.filter((s) => !values.includes(s));
   });
 
-  const selectSuggestion = (suggestion: string): void => {
-    onAdd(suggestion);
-    inputValue = '';
-    showSuggestions = false;
-    selectedIndex = NO_SELECTION;
-    inputElement?.focus();
-  };
-
   const handleKeyDown = (e: KeyboardEvent): void => {
-    if (e.key === 'ArrowDown') {
-      if (filteredSuggestions.length > 0) {
-        e.preventDefault();
-        showSuggestions = true;
-        selectedIndex = Math.min(selectedIndex + 1, filteredSuggestions.length - 1);
-      }
-    } else if (e.key === 'ArrowUp') {
-      if (showSuggestions && filteredSuggestions.length > 0) {
-        e.preventDefault();
-        selectedIndex = Math.max(selectedIndex - 1, NO_SELECTION);
-      }
-    } else if (e.key === 'Enter' || e.key === ',') {
+    if (e.key === 'Enter' || e.key === ',') {
       e.preventDefault();
-      if (selectedIndex >= 0 && filteredSuggestions[selectedIndex]) {
-        selectSuggestion(filteredSuggestions[selectedIndex]);
-      } else {
-        const val = inputValue.trim();
-        if (val) {
-          onAdd(val);
-          inputValue = '';
-          showSuggestions = false;
-          selectedIndex = NO_SELECTION;
-        }
+      const val = inputValue.trim();
+      if (val) {
+        onAdd(val);
+        inputValue = '';
       }
-    } else if (e.key === 'Escape') {
-      showSuggestions = false;
-      selectedIndex = NO_SELECTION;
     } else if (e.key === 'Backspace' && inputValue === '' && values.length > 0) {
       onRemove(values[values.length - 1]);
     }
-  };
-
-  const handleBlur = (): void => {
-    // クリックイベントが先に発生するように少し遅らせる
-    setTimeout(() => {
-      showSuggestions = false;
-      selectedIndex = NO_SELECTION;
-    }, BLUR_TIMEOUT_MS);
   };
 
   const handleClickContainer = (e: MouseEvent): void => {
@@ -115,33 +68,18 @@
       <input
         id="badge-input-{label}"
         type="text"
+        list="suggestions-{label}"
         bind:this={inputElement}
         bind:value={inputValue}
         onkeydown={handleKeyDown}
-        onfocus={() => (showSuggestions = true)}
-        onblur={handleBlur}
-        oninput={() => (selectedIndex = NO_SELECTION)}
         autocomplete="off"
         placeholder={!isUniform && values.length === 0 ? 'Mixed Values' : ''}
       />
-
-      {#if showSuggestions && filteredSuggestions.length > 0}
-        <ul class="suggestions-list">
-          {#each filteredSuggestions as suggestion, i (suggestion)}
-            <li class:selected={i === selectedIndex}>
-              <button
-                type="button"
-                onmousedown={(e) => {
-                  e.preventDefault(); // blurを防ぐ
-                  selectSuggestion(suggestion);
-                }}
-              >
-                {suggestion}
-              </button>
-            </li>
-          {/each}
-        </ul>
-      {/if}
+      <datalist id="suggestions-{label}">
+        {#each filteredSuggestions as suggestion (suggestion)}
+          <option value={suggestion}></option>
+        {/each}
+      </datalist>
     </div>
   </div>
 </div>
@@ -230,7 +168,6 @@
   }
 
   .input-wrapper {
-    position: relative;
     flex: 1;
     display: flex;
     min-width: 120px;
@@ -248,42 +185,5 @@
 
   .badge-container input::placeholder {
     color: var(--text-dim);
-  }
-
-  .suggestions-list {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    left: 0;
-    right: 0;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-primary);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-lg);
-    z-index: 100;
-    list-style: none;
-    padding: 0.25rem;
-    margin: 0;
-    min-width: 200px;
-    max-height: 250px;
-    overflow-y: auto;
-  }
-
-  .suggestions-list li button {
-    width: 100%;
-    text-align: left;
-    padding: 0.5rem 0.75rem;
-    border: none;
-    background: none;
-    color: var(--text-primary);
-    font-size: 0.85rem;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .suggestions-list li.selected button,
-  .suggestions-list li button:hover {
-    background: var(--bg-hover);
-    color: var(--accent-primary);
   }
 </style>
