@@ -74,4 +74,23 @@ describe('tagEditor', () => {
       expect(track.metadata.album).toBe('New Album');
     });
   });
+
+  describe('applyAutoNumbering', () => {
+    it('選択されたトラックに連番と総数を設定すること', () => {
+      const tracks = [
+        createMockTrack('file1.flac'),
+        createMockTrack('file2.flac'),
+        createMockTrack('file3.flac')
+      ];
+
+      tagEditor.applyAutoNumbering(tracks);
+
+      expect(tracks[0].metadata.trackNumber).toBe('1');
+      expect(tracks[0].metadata.trackTotal).toBe('3');
+      expect(tracks[1].metadata.trackNumber).toBe('2');
+      expect(tracks[1].metadata.trackTotal).toBe('3');
+      expect(tracks[2].metadata.trackNumber).toBe('3');
+      expect(tracks[2].metadata.trackTotal).toBe('3');
+    });
+  });
 });
