@@ -21,7 +21,7 @@
   <div class="genre-section">
     <BadgeField
       label="Genre"
-      values={genreState.type === 'uniform' ? (genreState.value ?? []) : []}
+      values={genreState.type === 'uniform' ? (genreState.value ?? []) : (genreState.values ?? [])}
       isUniform={genreState.type === 'uniform'}
       onAdd={(v) => applyGenre(v)}
       onRemove={(v) => tagActions.removeSelectedMultiFieldValue('genre', v)}
