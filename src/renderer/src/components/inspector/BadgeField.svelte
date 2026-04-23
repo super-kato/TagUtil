@@ -16,10 +16,7 @@
   let inputValue = $state('');
   let inputElement: HTMLInputElement | undefined = $state();
 
-  const filteredSuggestions = $derived.by(() => {
-    // 既に追加されている値はサジェストから除外
-    return suggestions.filter((s) => !values.includes(s));
-  });
+  const filteredSuggestions = $derived(suggestions.filter((s) => !values.includes(s)));
 
   const handleKeyDown = (e: KeyboardEvent): void => {
     if (e.key === 'Enter' || e.key === ',') {
