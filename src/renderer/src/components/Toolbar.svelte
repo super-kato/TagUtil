@@ -21,6 +21,12 @@
 
     fileActions.renameSelectedFiles();
   };
+
+  const canRename = $derived(!uiState.isLoading && trackStore.selectedTracks.length > 0);
+  const canRevert = $derived(
+    !uiState.isLoading && trackStore.selectedTracks.some((t) => t.isModified)
+  );
+  const canSave = $derived(!uiState.isLoading && trackStore.tracks.some((t) => t.isModified));
 </script>
 
 <header class="toolbar">
@@ -46,7 +52,7 @@
     <button
       class="btn secondary"
       onclick={handleRenameClick}
-      disabled={uiState.isLoading || trackStore.selectedTracks.length === 0}
+      disabled={!canRename}
       title="Rename Files from Metadata"
     >
       <FilePen size={UI_TOKENS.icons.size} />
@@ -54,15 +60,16 @@
     <button
       class="btn revert"
       onclick={() => tagActions.revertSelected()}
-      disabled={uiState.isLoading || !trackStore.selectedTracks.some((t) => t.isModified)}
+      disabled={!canRevert}
       title="Revert Changes"
     >
       <RotateCcw size={UI_TOKENS.icons.size} />
     </button>
     <button
       class="btn primary"
+      class:glow-pulse={canSave}
       onclick={() => tagActions.saveAllModified()}
-      disabled={uiState.isLoading || !trackStore.tracks.some((t) => t.isModified)}
+      disabled={!canSave}
       title="Save Changes"
     >
       {#if uiState.isLoading}

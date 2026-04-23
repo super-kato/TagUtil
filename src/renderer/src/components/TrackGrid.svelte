@@ -73,7 +73,7 @@
     {:else}
       <div class="empty-state">
         <button
-          class="empty-icon"
+          class="empty-icon glow-pulse"
           onclick={tagActions.openAndScanDirectory}
           aria-label="Open Directory"
         >
@@ -210,7 +210,6 @@
     border: 1px solid var(--border-primary);
     /* パルスするグロー効果 */
     box-shadow: 0 0 15px var(--selection-glow);
-    animation: glow-pulse 2s infinite ease-in-out;
     cursor: pointer;
     transition: all 0.2s ease;
     padding: 0;
