@@ -15,14 +15,15 @@
     },
     {
       combo: { key: 's', ctrl: true },
-      handler: () => tagActions.saveAllModified()
+      handler: () => tagActions.saveAllModified(),
+      enabled: () => !uiState.isLoading
     },
     {
-      combo: { key: 'ArrowUp', alt: true },
+      combo: { key: 'ArrowUp' },
       handler: () => selectionState.selectPrevious(trackStore.tracks)
     },
     {
-      combo: { key: 'ArrowDown', alt: true },
+      combo: { key: 'ArrowDown' },
       handler: () => selectionState.selectNext(trackStore.tracks)
     }
   ];
@@ -30,9 +31,9 @@
   const handler = new KeyboardHandler(
     IS_MAC,
     rawActions.map((action) => ({
-      ...action,
       preventDefault: true,
-      enabled: () => !isInputFocused() && !uiState.isLoading
+      ...action,
+      enabled: action.enabled ?? (() => !isInputFocused() && !uiState.isLoading)
     }))
   );
 </script>
