@@ -1,6 +1,6 @@
 /**
- * アプリケーションが動作するプラットフォームの情報。
+ * アプリケーションが動作するプラットフォーム。
  */
-export interface PlatformInfo {
+export interface Platform {
   isMac: boolean;
 }

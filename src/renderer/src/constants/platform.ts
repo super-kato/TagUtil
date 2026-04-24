@@ -1,4 +1,4 @@
-import { getPlatformInfo } from '@renderer/infrastructure/platform-adapter';
+import { getPlatform } from '@renderer/infrastructure/platform-adapter';
 
 let isMacInternal = false;
 
@@ -14,6 +14,6 @@ export { isMacInternal as IS_MAC };
  * 外部環境から情報を取得するため、非同期で実行されます。
  */
 export const initializePlatform = async (): Promise<void> => {
-  const info = await getPlatformInfo();
-  isMacInternal = info.isMac;
+  const platform = await getPlatform();
+  isMacInternal = platform.isMac;
 };
