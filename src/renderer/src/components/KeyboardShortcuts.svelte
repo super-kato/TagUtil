@@ -35,8 +35,7 @@
     IS_MAC,
     rawActions.map((action) => ({
       ...action,
-      enabled: (e) =>
-        (action.enabled ? action.enabled(e) : true) && !isFocusedOnInput() && !uiState.isLoading
+      enabled: () => !isFocusedOnInput() && !uiState.isLoading
     }))
   );
 
