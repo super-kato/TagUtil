@@ -31,14 +31,10 @@
     return 'No Artwork';
   };
 
-  const handlePickArtwork = (): void => {
-    tagActions.pickAndApplyPicture();
-  };
-
   const handler = new KeyboardHandler(IS_MAC, [
     {
       combo: { key: 'Enter' },
-      handler: handlePickArtwork
+      handler: () => tagActions.pickAndApplyPicture()
     }
   ]);
 </script>
