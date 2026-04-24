@@ -7,9 +7,6 @@ export class PlatformAdapter {
    * 現在の OS が macOS かどうかを判定します。
    */
   async isMac(): Promise<boolean> {
-    if (typeof window === 'undefined' || !window.api) {
-      return false;
-    }
     const platform = await window.api.getPlatform();
     return platform.isMac;
   }
