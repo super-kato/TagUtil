@@ -1,4 +1,5 @@
 import type { FlacTrack, Picture, ScanResult, TagResult } from '@domain/flac/types';
+import type { PlatformInfo } from './types';
 
 /**
  * カスタムプロトコルのスキーム名。
@@ -54,6 +55,6 @@ export interface IpcApi {
     dirname: (path: string) => string;
     join: (...paths: string[]) => string;
   };
-  /** 実行環境のプラットフォーム識別子 ('darwin', 'win32', 'linux' など) を取得します */
-  getPlatform: () => Promise<string>;
+  /** 実行環境のプラットフォーム情報を取得します */
+  getPlatform: () => Promise<PlatformInfo>;
 }
