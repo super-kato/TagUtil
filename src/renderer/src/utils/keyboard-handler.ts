@@ -1,13 +1,6 @@
 import type { KeyboardKey } from './keyboard-types';
 
 /**
- * キーボードハンドラーの動作オプションです。
- */
-export interface KeyboardHandlerOptions {
-  // 現在オプションはありませんが、将来の拡張のために残しています
-}
-
-/**
  * キーボードショートカットの組み合わせを定義します。
  */
 export interface KeyCombo {
@@ -19,8 +12,6 @@ export interface KeyCombo {
   shift?: boolean;
   /** Altキーが必要かどうか。 */
   alt?: boolean;
-  /** Metaキーが必要かどうか（Mac以外でのWinキーなど）。明示的に使用したい場合のみ指定します。 */
-  meta?: boolean;
 }
 
 /**
@@ -46,25 +37,18 @@ export interface KeyboardAction {
  */
 export class KeyboardHandler {
   /**
-   * @param useMetaAsMod mod 指定がある場合に、Meta キーを優先して判定するかどうか。
+   * @param isMac macOS として動作するかどうか。true の場合、ctrl 指定を Command キーとして判定します。
    * @param actions 登録するアクションの一覧。
-   * @param isFocusedOnInput 入力要素にフォーカスがあるかどうかを判定する関数。
    */
   constructor(
-    private readonly useMetaAsMod: boolean,
-    private readonly actions: KeyboardAction[],
-    private readonly isFocusedOnInput: () => boolean
+    private readonly isMac: boolean,
+    private readonly actions: KeyboardAction[]
   ) {}
 
   /**
    * キーボードイベントを処理します。
    */
   async handle(e: KeyboardEvent): Promise<void> {
-    // 入力要素にフォーカスがある場合はアクションをスキップ
-    if (this.isFocusedOnInput()) {
-      return;
-    }
-
     const action = this.actions.find((a) => this.matches(e, a.combo));
     if (!action) {
       return;
@@ -89,14 +73,14 @@ export class KeyboardHandler {
     const shiftMatch = !!e.shiftKey === !!combo.shift;
     const altMatch = !!e.altKey === !!combo.alt;
 
-    // 修飾キーの判定（Macでは meta と ctrl を入れ替えて、ctrl を Command キーとして扱う）
-    const isMac = this.useMetaAsMod;
-    const expectedCtrl = isMac ? !!combo.meta : !!combo.ctrl;
-    const expectedMeta = isMac ? !!combo.ctrl : !!combo.meta;
+    // 修飾キーの判定（Macでは Command(Meta) キー、それ以外では Control キーを主修飾キーとする）
+    const isModPressed = this.isMac ? !!e.metaKey : !!e.ctrlKey;
+    const isOtherModPressed = this.isMac ? !!e.ctrlKey : !!e.metaKey;
 
-    const ctrlMatch = !!e.ctrlKey === expectedCtrl;
-    const metaMatch = !!e.metaKey === expectedMeta;
+    const modMatch = isModPressed === !!combo.ctrl;
+    // 副修飾キー（MacでのCtrl、それ以外でのMeta/Win）は押されていないことを期待する
+    const otherModMatch = !isOtherModPressed;
 
-    return keyMatch && ctrlMatch && metaMatch && shiftMatch && altMatch;
+    return keyMatch && modMatch && otherModMatch && shiftMatch && altMatch;
   }
 }

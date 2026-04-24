@@ -3,7 +3,8 @@
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
   import { tagActions } from '@renderer/services/tag-actions';
-  import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
+  import { KeyboardHandler, type KeyboardAction } from '@renderer/utils/keyboard-handler';
+
   import { isFocusedOnInput } from '@renderer/utils/dom-utils';
   import { IS_MAC } from '@renderer/constants/platform';
 
@@ -20,31 +21,35 @@
     selectionState.selectNext(trackStore.tracks);
   };
 
+  const rawActions: KeyboardAction[] = [
+    {
+      combo: { key: 'a', ctrl: true },
+      handler: handleSelectAll,
+      preventDefault: true
+    },
+    {
+      combo: { key: 's', ctrl: true },
+      handler: handleSaveAll,
+      preventDefault: true
+    },
+    {
+      combo: { key: 'ArrowUp', alt: true },
+      handler: handleSelectPrevious,
+      preventDefault: true
+    },
+    {
+      combo: { key: 'ArrowDown', alt: true },
+      handler: handleSelectNext,
+      preventDefault: true
+    }
+  ];
+
   const handler = new KeyboardHandler(
     IS_MAC,
-    [
-      {
-        combo: { key: 'a', ctrl: true },
-        handler: handleSelectAll,
-        preventDefault: true
-      },
-      {
-        combo: { key: 's', ctrl: true },
-        handler: handleSaveAll,
-        preventDefault: true
-      },
-      {
-        combo: { key: 'ArrowUp', alt: true },
-        handler: handleSelectPrevious,
-        preventDefault: true
-      },
-      {
-        combo: { key: 'ArrowDown', alt: true },
-        handler: handleSelectNext,
-        preventDefault: true
-      }
-    ],
-    isFocusedOnInput
+    rawActions.map((action) => ({
+      ...action,
+      enabled: (e) => (action.enabled ? action.enabled(e) : true) && !isFocusedOnInput()
+    }))
   );
 
   const onKeyDown = (e: KeyboardEvent): void => {
