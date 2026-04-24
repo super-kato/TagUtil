@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { X } from '@lucide/svelte';
+  import { X, ChevronDown } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
@@ -92,6 +92,9 @@
         autocomplete="off"
         placeholder={!isUniform && values.length === 0 ? 'Mixed Values' : ''}
       />
+      <div class="dropdown-indicator">
+        <ChevronDown size={UI_TOKENS.icons.sizeSmall} strokeWidth={UI_TOKENS.icons.strokeBold} />
+      </div>
 
       <datalist id="suggestions-{label}">
         {#each filteredSuggestions as suggestion (suggestion)}
@@ -106,10 +109,11 @@
   .badge-container {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 0.4rem;
     background-color: var(--bg-hover);
     border: 1px solid var(--border-primary);
-    padding: 0.4rem;
+    padding: 0.3rem 0.5rem;
     border-radius: var(--radius-md);
     min-height: 2.4rem;
     cursor: text;
@@ -188,6 +192,8 @@
   .input-wrapper {
     flex: 1;
     display: flex;
+    align-items: center;
+    position: relative;
     min-width: 120px;
   }
 
@@ -197,8 +203,39 @@
     border: none;
     color: var(--text-primary);
     font-size: 0.85rem;
-    padding: 0.1rem 0.2rem;
+    padding: 0.2rem 1.5rem 0.2rem 0.2rem;
     outline: none;
+    box-shadow: none !important;
+  }
+
+  /* datalistのデフォルトインジケーターを無効化 */
+  .badge-container input::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1.5rem;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  .dropdown-indicator {
+    position: absolute;
+    right: 0.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    pointer-events: none;
+    transition: color 0.2s;
+    z-index: 1;
+  }
+
+  .badge-container:focus-within .dropdown-indicator {
+    color: var(--accent-primary);
   }
 
   .badge-container input::placeholder {
