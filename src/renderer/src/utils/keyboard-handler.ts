@@ -61,7 +61,7 @@ export class KeyboardHandler {
   /**
    * キーボードイベントを処理します。
    */
-  handle(e: KeyboardEvent): void {
+  async handle(e: KeyboardEvent): Promise<void> {
     // 入力要素にフォーカスがある場合はアクションをスキップ
     if (this.isFocusedOnInput()) {
       return;
@@ -80,10 +80,7 @@ export class KeyboardHandler {
       e.preventDefault();
     }
 
-    const result = action.handler(e);
-    if (result instanceof Promise) {
-      result.catch(console.error);
-    }
+    await action.handler(e);
   }
 
   /**
