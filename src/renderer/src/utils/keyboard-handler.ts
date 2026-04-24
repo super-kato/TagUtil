@@ -1,6 +1,13 @@
 import type { KeyboardKey } from './keyboard-types';
 
 /**
+ * キーボードハンドラーの動作オプションです。
+ */
+export interface KeyboardHandlerOptions {
+  // 現在オプションはありませんが、将来の拡張のために残しています
+}
+
+/**
  * キーボードショートカットの組み合わせを定義します。
  */
 export interface KeyCombo {
@@ -12,9 +19,9 @@ export interface KeyCombo {
   shift?: boolean;
   /** Altキーが必要かどうか。 */
   alt?: boolean;
-  /** Metaキー (MacのCmd) が必要かどうか。 */
+  /** Metaキーが必要かどうか。 */
   meta?: boolean;
-  /** MacならMeta, Windows/LinuxならCtrlとして扱いたい場合に指定します。 */
+  /** 実行環境に応じた修飾キー（特定の環境で Meta, それ以外で Ctrl）を自動選択したい場合に指定します。 */
   mod?: boolean;
 }
 
@@ -37,21 +44,29 @@ export interface KeyboardAction {
 
 /**
  * キーボードイベントの判定と実行を管理するクラスです。
+ * 実行環境や DOM 状態に直接依存せず、注入された設定と判定関数に基づいて処理を行います。
  */
 export class KeyboardHandler {
   /**
-   * @param isMac 現在のプラットフォームが Mac かどうか。
+   * @param useMetaAsMod mod 指定がある場合に、Meta キーを優先して判定するかどうか。
    * @param actions 登録するアクションの一覧。
+   * @param isFocusedOnInput 入力要素にフォーカスがあるかどうかを判定する関数。
    */
   constructor(
-    private readonly isMac: boolean,
-    private readonly actions: KeyboardAction[]
+    private readonly useMetaAsMod: boolean,
+    private readonly actions: KeyboardAction[],
+    private readonly isFocusedOnInput: () => boolean
   ) {}
 
   /**
    * キーボードイベントを処理します。
    */
   handle(e: KeyboardEvent): void {
+    // 入力要素にフォーカスがある場合はアクションをスキップ
+    if (this.isFocusedOnInput()) {
+      return;
+    }
+
     const action = this.actions.find((a) => this.matches(e, a.combo));
     if (!action) {
       return;
@@ -79,9 +94,9 @@ export class KeyboardHandler {
     const shiftMatch = !!e.shiftKey === !!combo.shift;
     const altMatch = !!e.altKey === !!combo.alt;
 
-    // mod キー（MacならMeta, 他ならCtrl）の判定
-    const expectedCtrl = combo.mod ? !this.isMac : !!combo.ctrl;
-    const expectedMeta = combo.mod ? this.isMac : !!combo.meta;
+    // mod キー（特定の環境で Meta、それ以外で Ctrl として扱われるキー）の判定
+    const expectedCtrl = combo.mod ? !this.useMetaAsMod : !!combo.ctrl;
+    const expectedMeta = combo.mod ? this.useMetaAsMod : !!combo.meta;
 
     const ctrlMatch = !!e.ctrlKey === expectedCtrl;
     const metaMatch = !!e.metaKey === expectedMeta;

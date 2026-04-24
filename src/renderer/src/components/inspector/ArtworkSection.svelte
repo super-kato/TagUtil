@@ -36,15 +36,16 @@
     tagActions.pickAndApplyPicture();
   };
 
-  const isNotEditing = (): boolean => !isFocusedOnInput();
-
-  const handler = new KeyboardHandler(IS_MAC, [
-    {
-      combo: { key: 'Enter' },
-      handler: handlePickArtwork,
-      enabled: isNotEditing
-    }
-  ]);
+  const handler = new KeyboardHandler(
+    IS_MAC,
+    [
+      {
+        combo: { key: 'Enter' },
+        handler: handlePickArtwork
+      }
+    ],
+    isFocusedOnInput
+  );
 
   const onKeyDown = (e: KeyboardEvent): void => handler.handle(e);
 </script>

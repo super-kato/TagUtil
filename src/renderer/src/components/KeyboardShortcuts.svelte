@@ -7,8 +7,6 @@
   import { isFocusedOnInput } from '@renderer/utils/dom-utils';
   import { IS_MAC } from '@renderer/constants/platform';
 
-  const isNotEditing = (): boolean => !isFocusedOnInput();
-
   const handleSelectAll = (): void => {
     selectionState.selectAll(trackStore.tracks);
   };
@@ -22,32 +20,32 @@
     selectionState.selectNext(trackStore.tracks);
   };
 
-  const handler = new KeyboardHandler(IS_MAC, [
-    {
-      combo: { key: 'a', mod: true },
-      handler: handleSelectAll,
-      preventDefault: true,
-      enabled: isNotEditing
-    },
-    {
-      combo: { key: 's', mod: true },
-      handler: handleSaveAll,
-      preventDefault: true,
-      enabled: isNotEditing
-    },
-    {
-      combo: { key: 'ArrowUp' },
-      handler: handleSelectPrevious,
-      preventDefault: true,
-      enabled: isNotEditing
-    },
-    {
-      combo: { key: 'ArrowDown' },
-      handler: handleSelectNext,
-      preventDefault: true,
-      enabled: isNotEditing
-    }
-  ]);
+  const handler = new KeyboardHandler(
+    IS_MAC,
+    [
+      {
+        combo: { key: 'a', mod: true },
+        handler: handleSelectAll,
+        preventDefault: true
+      },
+      {
+        combo: { key: 's', mod: true },
+        handler: handleSaveAll,
+        preventDefault: true
+      },
+      {
+        combo: { key: 'ArrowUp', alt: true },
+        handler: handleSelectPrevious,
+        preventDefault: true
+      },
+      {
+        combo: { key: 'ArrowDown', alt: true },
+        handler: handleSelectNext,
+        preventDefault: true
+      }
+    ],
+    isFocusedOnInput
+  );
 
   const onKeyDown = (e: KeyboardEvent): void => {
     if (uiState.isLoading) {

@@ -8,6 +8,14 @@ export let IS_MAC = false;
  * プラットフォーム情報を初期化します。
  */
 export const initPlatform = async (): Promise<void> => {
-  const platform = await window.api.getPlatform();
-  IS_MAC = platform === 'darwin';
+  if (typeof window === 'undefined' || !window.api) {
+    return;
+  }
+
+  try {
+    const platform = await window.api.getPlatform();
+    IS_MAC = platform === 'darwin';
+  } catch (error) {
+    console.error('Failed to initialize platform:', error);
+  }
 };

@@ -2,7 +2,6 @@
   import { X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
-  import { isFocusedOnInput } from '@renderer/utils/dom-utils';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
   interface Props {
@@ -35,15 +34,17 @@
     }
   };
 
-  const isNotEditing = (): boolean => !isFocusedOnInput();
-
   const onKeyDown = (e: KeyboardEvent): void => handler.handle(e);
 
-  const handler = new KeyboardHandler(IS_MAC, [
-    { combo: { key: 'Enter' }, handler: handleAdd, preventDefault: true, enabled: isNotEditing },
-    { combo: { key: ',' }, handler: handleAdd, preventDefault: true, enabled: isNotEditing },
-    { combo: { key: 'Backspace' }, handler: handleBackspace, enabled: isNotEditing }
-  ]);
+  const handler = new KeyboardHandler(
+    IS_MAC,
+    [
+      { combo: { key: 'Enter' }, handler: handleAdd, preventDefault: true },
+      { combo: { key: ',' }, handler: handleAdd, preventDefault: true },
+      { combo: { key: 'Backspace' }, handler: handleBackspace }
+    ],
+    () => false
+  );
 
   const handleClickContainer = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;
