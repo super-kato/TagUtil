@@ -1,5 +1,5 @@
 import type { FlacTrack, Picture, ScanResult, TagResult } from '@domain/flac/types';
-import type { PlatformInfo } from './types';
+import type { PlatformInfo } from '@domain/common/system';
 
 /**
  * カスタムプロトコルのスキーム名。

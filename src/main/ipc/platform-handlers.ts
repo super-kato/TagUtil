@@ -1,6 +1,7 @@
 import { selectDirectory } from '@services/platform/dialog';
 import { IPC_CHANNELS } from '@shared/ipc';
-import { type PlatformInfo } from '@shared/types';
+import { type PlatformInfo } from '@domain/common/system';
+
 import { ipcMain } from 'electron';
 
 /**

@@ -3,12 +3,3 @@
  */
 export type ElementType<T> =
   NonNullable<T> extends Array<infer U> ? NonNullable<U> : NonNullable<T>;
-
-/**
- * アプリケーションが動作するプラットフォームの情報。
- */
-export interface PlatformInfo {
-  isMac: boolean;
-  isWindows: boolean;
-  isLinux: boolean;
-}
