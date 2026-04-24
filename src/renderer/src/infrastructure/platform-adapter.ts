@@ -1,13 +1,9 @@
+import { type PlatformInfo } from '@shared/platform';
+
 /**
- * 実行環境（プラットフォーム）に関する情報にアクセスするためのアダプター。
+ * 実行環境（プラットフォーム）に関する情報を取得します。
  * Electron の IPC 通信を使用して情報を取得します。
  */
-export class PlatformAdapter {
-  /**
-   * 現在の OS が macOS かどうかを判定します。
-   */
-  async isMac(): Promise<boolean> {
-    const platform = await window.api.getPlatform();
-    return platform.isMac;
-  }
-}
+export const getPlatformInfo = async (): Promise<PlatformInfo> => {
+  return await window.api.getPlatform();
+};

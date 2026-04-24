@@ -10,12 +10,3 @@ export interface ResolvedPath {
   path: string;
   type: PathType;
 }
-
-/**
- * アプリケーションが動作するプラットフォームの情報。
- */
-export interface PlatformInfo {
-  isMac: boolean;
-  isWindows: boolean;
-  isLinux: boolean;
-}

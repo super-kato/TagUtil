@@ -1,6 +1,6 @@
 import { selectDirectory } from '@services/platform/dialog';
 import { IPC_CHANNELS } from '@shared/ipc';
-import { type PlatformInfo } from '@domain/common/system';
+import { type PlatformInfo } from '@shared/platform';
 
 import { ipcMain } from 'electron';
 
@@ -16,9 +16,7 @@ export const registerPlatformHandlers = (): void => {
   // プラットフォーム情報を取得
   ipcMain.handle(IPC_CHANNELS.GET_PLATFORM, (): PlatformInfo => {
     return {
-      isMac: process.platform === 'darwin',
-      isWindows: process.platform === 'win32',
-      isLinux: process.platform === 'linux'
+      isMac: process.platform === 'darwin'
     };
   });
 };
