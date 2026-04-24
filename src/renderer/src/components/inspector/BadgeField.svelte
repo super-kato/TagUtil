@@ -22,16 +22,25 @@
 
   const handleAdd = (): void => {
     const val = inputValue.trim();
-    if (val) {
-      onAdd(val);
-      inputValue = '';
+    if (!val) {
+      return;
     }
+
+    onAdd(val);
+    inputValue = '';
   };
 
-  const handleBackspace = async (): Promise<void> => {
-    if (inputValue === '' && values.length > 0) {
-      await onRemove(values[values.length - 1]);
+  const handleBackspace = (): void => {
+    if (inputValue !== '' || values.length === 0) {
+      return;
     }
+
+    const lastValue = values[values.length - 1];
+    if (lastValue === undefined) {
+      return;
+    }
+
+    onRemove(lastValue);
   };
 
   const onKeyDown = (e: KeyboardEvent): void => {
@@ -46,9 +55,11 @@
 
   const handleClickContainer = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;
-    if (target.classList.contains('badge-container')) {
-      inputElement?.focus();
+    if (!target.classList.contains('badge-container')) {
+      return;
     }
+
+    inputElement?.focus();
   };
 </script>
 
