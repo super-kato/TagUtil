@@ -35,10 +35,6 @@
       enabled: () => !isFocusedOnInput() && !uiState.isLoading
     }))
   );
-
-  const onKeyDown = (e: KeyboardEvent): void => {
-    handler.handle(e);
-  };
 </script>
 
-<svelte:window onkeydown={onKeyDown} />
+<svelte:window onkeydown={(e) => handler.handle(e)} />
