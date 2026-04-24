@@ -1,21 +1,19 @@
+import { PlatformAdapter } from '@renderer/infrastructure/platform-adapter';
+
 /**
- * 実行環境が Mac (macOS) かどうかを管理します。
- * アプリケーションの初期化時に一度だけ設定されます。
+ * アプリケーションが macOS 上で動作しているかどうか。
+ * 初期化前は false です。初期化には initializePlatform() を呼び出す必要があります。
  */
 export let IS_MAC = false;
 
 /**
  * プラットフォーム情報を初期化します。
+ * 外部環境から情報を取得するため、非同期で実行されます。
+ *
+ * @param adapter プラットフォーム情報を取得するためのアダプター。デフォルトは PlatformAdapter。
  */
-export const initPlatform = async (): Promise<void> => {
-  if (typeof window === 'undefined' || !window.api) {
-    return;
-  }
-
-  try {
-    const platform = await window.api.getPlatform();
-    IS_MAC = platform === 'darwin';
-  } catch (error) {
-    console.error('Failed to initialize platform:', error);
-  }
+export const initializePlatform = async (
+  adapter: PlatformAdapter = new PlatformAdapter()
+): Promise<void> => {
+  IS_MAC = await adapter.isMac();
 };
