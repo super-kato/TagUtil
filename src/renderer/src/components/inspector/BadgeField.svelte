@@ -1,6 +1,8 @@
 <script lang="ts">
   import { X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
+  import { IS_MAC } from '@renderer/constants/platform';
+  import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
   interface Props {
     label: string;
@@ -18,24 +20,42 @@
 
   const filteredSuggestions = $derived(suggestions.filter((s) => !values.includes(s)));
 
-  const handleKeyDown = (e: KeyboardEvent): void => {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      const val = inputValue.trim();
-      if (val) {
-        onAdd(val);
-        inputValue = '';
-      }
-    } else if (e.key === 'Backspace' && inputValue === '' && values.length > 0) {
-      onRemove(values[values.length - 1]);
+  const handleAdd = (): void => {
+    const val = inputValue.trim();
+    if (!val) {
+      return;
     }
+
+    onAdd(val);
+    inputValue = '';
   };
+
+  const handleBackspace = (): void => {
+    if (inputValue !== '' || values.length === 0) {
+      return;
+    }
+
+    const lastValue = values[values.length - 1];
+    if (lastValue === undefined) {
+      return;
+    }
+
+    onRemove(lastValue);
+  };
+
+  const handler = new KeyboardHandler(IS_MAC, [
+    { combo: { key: 'Enter' }, handler: handleAdd, preventDefault: true },
+    { combo: { key: ',' }, handler: handleAdd, preventDefault: true },
+    { combo: { key: 'Backspace' }, handler: handleBackspace }
+  ]);
 
   const handleClickContainer = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;
-    if (target.classList.contains('badge-container')) {
-      inputElement?.focus();
+    if (!target.classList.contains('badge-container')) {
+      return;
     }
+
+    inputElement?.focus();
   };
 </script>
 
@@ -68,10 +88,11 @@
         list="suggestions-{label}"
         bind:this={inputElement}
         bind:value={inputValue}
-        onkeydown={handleKeyDown}
+        onkeydown={(e) => handler.handle(e)}
         autocomplete="off"
         placeholder={!isUniform && values.length === 0 ? 'Mixed Values' : ''}
       />
+
       <datalist id="suggestions-{label}">
         {#each filteredSuggestions as suggestion (suggestion)}
           <option value={suggestion}></option>

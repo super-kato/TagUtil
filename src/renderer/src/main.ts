@@ -2,9 +2,14 @@ import { mount } from 'svelte';
 import './index.css';
 
 import App from './App.svelte';
+import { initializePlatform } from './constants/platform';
 
-const app = mount(App, {
-  target: document.getElementById('app')!
-});
+const init = async (): Promise<void> => {
+  await initializePlatform();
 
-export default app;
+  mount(App, {
+    target: document.getElementById('app')!
+  });
+};
+
+init();

@@ -1,5 +1,8 @@
 import { selectDirectory } from '@services/platform/dialog';
+import { getPlatform } from '@services/platform/platform';
 import { IPC_CHANNELS } from '@shared/ipc';
+import { type Platform } from '@shared/platform';
+
 import { ipcMain } from 'electron';
 
 /**
@@ -9,5 +12,10 @@ export const registerPlatformHandlers = (): void => {
   // フォルダ選択ダイアログを表示
   ipcMain.handle(IPC_CHANNELS.SELECT_DIRECTORY, async () => {
     return await selectDirectory();
+  });
+
+  // プラットフォームを取得
+  ipcMain.handle(IPC_CHANNELS.GET_PLATFORM, (): Platform => {
+    return getPlatform();
   });
 };
