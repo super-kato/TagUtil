@@ -13,16 +13,14 @@ export interface KeyboardHandlerOptions {
 export interface KeyCombo {
   /** キー名。 */
   key: KeyboardKey;
-  /** Ctrlキーが必要かどうか。 */
+  /** 修飾キー（MacではCommand、それ以外ではControl）。 */
   ctrl?: boolean;
   /** Shiftキーが必要かどうか。 */
   shift?: boolean;
   /** Altキーが必要かどうか。 */
   alt?: boolean;
-  /** Metaキーが必要かどうか。 */
+  /** Metaキーが必要かどうか（Mac以外でのWinキーなど）。明示的に使用したい場合のみ指定します。 */
   meta?: boolean;
-  /** 実行環境に応じた修飾キー（特定の環境で Meta, それ以外で Ctrl）を自動選択したい場合に指定します。 */
-  mod?: boolean;
 }
 
 /**
@@ -91,9 +89,10 @@ export class KeyboardHandler {
     const shiftMatch = !!e.shiftKey === !!combo.shift;
     const altMatch = !!e.altKey === !!combo.alt;
 
-    // mod キー（特定の環境で Meta、それ以外で Ctrl として扱われるキー）の判定
-    const expectedCtrl = combo.mod ? !this.useMetaAsMod : !!combo.ctrl;
-    const expectedMeta = combo.mod ? this.useMetaAsMod : !!combo.meta;
+    // 修飾キーの判定（Macでは meta と ctrl を入れ替えて、ctrl を Command キーとして扱う）
+    const isMac = this.useMetaAsMod;
+    const expectedCtrl = isMac ? !!combo.meta : !!combo.ctrl;
+    const expectedMeta = isMac ? !!combo.ctrl : !!combo.meta;
 
     const ctrlMatch = !!e.ctrlKey === expectedCtrl;
     const metaMatch = !!e.metaKey === expectedMeta;

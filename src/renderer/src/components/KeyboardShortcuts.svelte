@@ -24,12 +24,12 @@
     IS_MAC,
     [
       {
-        combo: { key: 'a', mod: true },
+        combo: { key: 'a', ctrl: true },
         handler: handleSelectAll,
         preventDefault: true
       },
       {
-        combo: { key: 's', mod: true },
+        combo: { key: 's', ctrl: true },
         handler: handleSaveAll,
         preventDefault: true
       },

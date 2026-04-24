@@ -40,36 +40,36 @@ describe('KeyboardHandler', () => {
     expect(callback).toHaveBeenCalled();
   });
 
-  describe('modキーの判定', () => {
-    it('useMetaAsMod が true の環境では mod は Meta キーとして扱われること', async () => {
+  describe('修飾キー（ctrl）の判定', () => {
+    it('useMetaAsMod が true の環境では ctrl は Meta キーとして扱われること', async () => {
       const callback = vi.fn();
       const handler = new KeyboardHandler(
         true,
         [
           {
-            combo: { key: 's', mod: true },
+            combo: { key: 's', ctrl: true },
             handler: callback
           }
         ],
         () => false
       );
 
-      // Meta+S
+      // Meta+S (MacのCommand+Sに相当)
       await handler.handle({ key: 's', metaKey: true, ctrlKey: false } as KeyboardEvent);
       expect(callback).toHaveBeenCalledTimes(1);
 
-      // Ctrl+S (不一致)
+      // Ctrl+S (Macでは不一致)
       await handler.handle({ key: 's', metaKey: false, ctrlKey: true } as KeyboardEvent);
       expect(callback).toHaveBeenCalledTimes(1);
     });
 
-    it('useMetaAsMod が false の環境では mod は Ctrl キーとして扱われること', async () => {
+    it('useMetaAsMod が false の環境では ctrl は Control キーとして扱われること', async () => {
       const callback = vi.fn();
       const handler = new KeyboardHandler(
         false,
         [
           {
-            combo: { key: 's', mod: true },
+            combo: { key: 's', ctrl: true },
             handler: callback
           }
         ],
