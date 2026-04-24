@@ -1,4 +1,5 @@
 import { selectDirectory } from '@services/platform/dialog';
+import { getPlatformInfo } from '@services/platform/info';
 import { IPC_CHANNELS } from '@shared/ipc';
 import { type PlatformInfo } from '@shared/platform';
 
@@ -15,8 +16,6 @@ export const registerPlatformHandlers = (): void => {
 
   // プラットフォーム情報を取得
   ipcMain.handle(IPC_CHANNELS.GET_PLATFORM, (): PlatformInfo => {
-    return {
-      isMac: process.platform === 'darwin'
-    };
+    return getPlatformInfo();
   });
 };
