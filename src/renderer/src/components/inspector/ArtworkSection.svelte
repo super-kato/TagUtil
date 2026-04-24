@@ -41,17 +41,13 @@
       handler: handlePickArtwork
     }
   ]);
-
-  const onKeyDown = (e: KeyboardEvent): void => {
-    handler.handle(e);
-  };
 </script>
 
 <div class="artwork-container">
   <div
     class="artwork-section"
     onclick={() => tagActions.pickAndApplyPicture()}
-    onkeydown={onKeyDown}
+    onkeydown={(e) => handler.handle(e)}
     role="button"
     tabindex="0"
     title="Click to change artwork"

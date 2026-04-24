@@ -43,10 +43,6 @@
     onRemove(lastValue);
   };
 
-  const onKeyDown = (e: KeyboardEvent): void => {
-    handler.handle(e);
-  };
-
   const handler = new KeyboardHandler(IS_MAC, [
     { combo: { key: 'Enter' }, handler: handleAdd, preventDefault: true },
     { combo: { key: ',' }, handler: handleAdd, preventDefault: true },
@@ -92,10 +88,11 @@
         list="suggestions-{label}"
         bind:this={inputElement}
         bind:value={inputValue}
-        onkeydown={onKeyDown}
+        onkeydown={(e) => handler.handle(e)}
         autocomplete="off"
         placeholder={!isUniform && values.length === 0 ? 'Mixed Values' : ''}
       />
+
       <datalist id="suggestions-{label}">
         {#each filteredSuggestions as suggestion (suggestion)}
           <option value={suggestion}></option>

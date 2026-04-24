@@ -34,7 +34,7 @@ export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
  * プロジェクト全体の IPC 通信の「契約」を定義するインターフェース。
  */
 export interface IpcApi {
-  /** 指定されたパス의 FLAC メタデータを読み取ります */
+  /** 指定されたパスの FLAC メタデータを読み取ります */
   readMetadata: (filePath: string) => Promise<TagResult<FlacTrack>>;
   /** 指定されたパスの FLAC メタデータを書き込みます */
   writeMetadata: (track: FlacTrack) => Promise<TagResult<void>>;
