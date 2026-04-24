@@ -9,7 +9,7 @@ export const isInputFocused = (): boolean => {
 
   const isInput = active.tagName === 'INPUT';
   const isTextArea = active.tagName === 'TEXTAREA';
-  const isContentEditable = (active as HTMLElement).isContentEditable;
+  const isContentEditable = !!(active as HTMLElement).isContentEditable;
 
   return isInput || isTextArea || isContentEditable;
 };

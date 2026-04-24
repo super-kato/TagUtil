@@ -2,10 +2,11 @@ import { mount } from 'svelte';
 import './index.css';
 
 import App from './App.svelte';
-import { initPlatform } from './constants/platform';
+import { initializePlatform } from './constants/platform';
 
 const init = async (): Promise<void> => {
-  await initPlatform();
+  await initializePlatform();
+
   mount(App, {
     target: document.getElementById('app')!
   });
