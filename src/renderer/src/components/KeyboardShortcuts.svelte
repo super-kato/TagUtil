@@ -11,23 +11,19 @@
   const rawActions: KeyboardAction[] = [
     {
       combo: { key: 'a', ctrl: true },
-      handler: () => selectionState.selectAll(trackStore.tracks),
-      preventDefault: true
+      handler: () => selectionState.selectAll(trackStore.tracks)
     },
     {
       combo: { key: 's', ctrl: true },
-      handler: () => tagActions.saveAllModified(),
-      preventDefault: true
+      handler: () => tagActions.saveAllModified()
     },
     {
       combo: { key: 'ArrowUp', alt: true },
-      handler: () => selectionState.selectPrevious(trackStore.tracks),
-      preventDefault: true
+      handler: () => selectionState.selectPrevious(trackStore.tracks)
     },
     {
       combo: { key: 'ArrowDown', alt: true },
-      handler: () => selectionState.selectNext(trackStore.tracks),
-      preventDefault: true
+      handler: () => selectionState.selectNext(trackStore.tracks)
     }
   ];
 
@@ -35,6 +31,7 @@
     IS_MAC,
     rawActions.map((action) => ({
       ...action,
+      preventDefault: true,
       enabled: () => !isFocusedOnInput() && !uiState.isLoading
     }))
   );
