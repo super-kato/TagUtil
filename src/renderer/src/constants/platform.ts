@@ -12,10 +12,8 @@ export { isMacInternal as IS_MAC };
 /**
  * プラットフォーム情報を初期化します。
  * 外部環境から情報を取得するため、非同期で実行されます。
- *
- * @param fetchInfo プラットフォーム情報を取得するための関数。デフォルトは getPlatformInfo。
  */
-export const initializePlatform = async (fetchInfo = getPlatformInfo): Promise<void> => {
-  const info = await fetchInfo();
+export const initializePlatform = async (): Promise<void> => {
+  const info = await getPlatformInfo();
   isMacInternal = info.isMac;
 };
