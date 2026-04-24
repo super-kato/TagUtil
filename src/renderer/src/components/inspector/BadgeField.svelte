@@ -34,17 +34,15 @@
     }
   };
 
-  const onKeyDown = (e: KeyboardEvent): void => handler.handle(e);
+  const onKeyDown = (e: KeyboardEvent): void => {
+    handler.handle(e);
+  };
 
-  const handler = new KeyboardHandler(
-    IS_MAC,
-    [
-      { combo: { key: 'Enter' }, handler: handleAdd, preventDefault: true },
-      { combo: { key: ',' }, handler: handleAdd, preventDefault: true },
-      { combo: { key: 'Backspace' }, handler: handleBackspace }
-    ],
-    () => false
-  );
+  const handler = new KeyboardHandler(IS_MAC, [
+    { combo: { key: 'Enter' }, handler: handleAdd, preventDefault: true },
+    { combo: { key: ',' }, handler: handleAdd, preventDefault: true },
+    { combo: { key: 'Backspace' }, handler: handleBackspace }
+  ]);
 
   const handleClickContainer = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;

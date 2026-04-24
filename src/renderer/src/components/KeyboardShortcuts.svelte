@@ -8,38 +8,25 @@
   import { isFocusedOnInput } from '@renderer/utils/dom-utils';
   import { IS_MAC } from '@renderer/constants/platform';
 
-  const handleSelectAll = (): void => {
-    selectionState.selectAll(trackStore.tracks);
-  };
-  const handleSaveAll = async (): Promise<void> => {
-    await tagActions.saveAllModified();
-  };
-  const handleSelectPrevious = (): void => {
-    selectionState.selectPrevious(trackStore.tracks);
-  };
-  const handleSelectNext = (): void => {
-    selectionState.selectNext(trackStore.tracks);
-  };
-
   const rawActions: KeyboardAction[] = [
     {
       combo: { key: 'a', ctrl: true },
-      handler: handleSelectAll,
+      handler: () => selectionState.selectAll(trackStore.tracks),
       preventDefault: true
     },
     {
       combo: { key: 's', ctrl: true },
-      handler: handleSaveAll,
+      handler: () => tagActions.saveAllModified(),
       preventDefault: true
     },
     {
       combo: { key: 'ArrowUp', alt: true },
-      handler: handleSelectPrevious,
+      handler: () => selectionState.selectPrevious(trackStore.tracks),
       preventDefault: true
     },
     {
       combo: { key: 'ArrowDown', alt: true },
-      handler: handleSelectNext,
+      handler: () => selectionState.selectNext(trackStore.tracks),
       preventDefault: true
     }
   ];
@@ -48,14 +35,12 @@
     IS_MAC,
     rawActions.map((action) => ({
       ...action,
-      enabled: (e) => (action.enabled ? action.enabled(e) : true) && !isFocusedOnInput()
+      enabled: (e) =>
+        (action.enabled ? action.enabled(e) : true) && !isFocusedOnInput() && !uiState.isLoading
     }))
   );
 
   const onKeyDown = (e: KeyboardEvent): void => {
-    if (uiState.isLoading) {
-      return;
-    }
     handler.handle(e);
   };
 </script>

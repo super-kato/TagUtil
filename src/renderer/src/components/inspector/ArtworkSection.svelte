@@ -3,7 +3,6 @@
   import { Music, X } from '@lucide/svelte';
   import { tagActions } from '@renderer/services/tag-actions';
   import { trackStore } from '@renderer/stores/track-store.svelte';
-  import { isFocusedOnInput } from '@renderer/utils/dom-utils';
   import { IS_MAC } from '@renderer/constants/platform';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
@@ -36,18 +35,16 @@
     tagActions.pickAndApplyPicture();
   };
 
-  const handler = new KeyboardHandler(
-    IS_MAC,
-    [
-      {
-        combo: { key: 'Enter' },
-        handler: handlePickArtwork
-      }
-    ],
-    isFocusedOnInput
-  );
+  const handler = new KeyboardHandler(IS_MAC, [
+    {
+      combo: { key: 'Enter' },
+      handler: handlePickArtwork
+    }
+  ]);
 
-  const onKeyDown = (e: KeyboardEvent): void => handler.handle(e);
+  const onKeyDown = (e: KeyboardEvent): void => {
+    handler.handle(e);
+  };
 </script>
 
 <div class="artwork-container">
