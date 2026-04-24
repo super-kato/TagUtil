@@ -5,7 +5,7 @@
   import { tagActions } from '@renderer/services/tag-actions';
   import { KeyboardHandler, type KeyboardAction } from '@renderer/utils/keyboard-handler';
 
-  import { isFocusedOnInput } from '@renderer/utils/dom-utils';
+  import { isInputFocused } from '@renderer/utils/dom-utils';
   import { IS_MAC } from '@renderer/constants/platform';
 
   const rawActions: KeyboardAction[] = [
@@ -32,7 +32,7 @@
     rawActions.map((action) => ({
       ...action,
       preventDefault: true,
-      enabled: () => !isFocusedOnInput() && !uiState.isLoading
+      enabled: () => !isInputFocused() && !uiState.isLoading
     }))
   );
 </script>

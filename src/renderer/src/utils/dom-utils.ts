@@ -1,7 +1,7 @@
 /**
- * 現在のフォーカスが入力要素（INPUT, TEXTAREA, contenteditable）にあるかどうかを判定します。
+ * 現在のフォーカスが入力可能な要素（INPUT, TEXTAREA, contenteditable）にあるかどうかを判定します。
  */
-export const isFocusedOnInput = (): boolean => {
+export const isInputFocused = (): boolean => {
   const active = document.activeElement;
   if (!active) {
     return false;
