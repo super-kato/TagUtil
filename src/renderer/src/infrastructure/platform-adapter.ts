@@ -11,6 +11,6 @@ export class PlatformAdapter {
       return false;
     }
     const platform = await window.api.getPlatform();
-    return platform === 'darwin';
+    return platform === 'mac';
   }
 }
