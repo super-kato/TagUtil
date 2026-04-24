@@ -1,10 +1,13 @@
 import { PlatformAdapter } from '@renderer/infrastructure/platform-adapter';
 
+let isMacInternal = false;
+
 /**
  * アプリケーションが macOS 上で動作しているかどうか。
  * 初期化前は false です。初期化には initializePlatform() を呼び出す必要があります。
+ * 外部からは読み取り専用です。
  */
-export let IS_MAC = false;
+export { isMacInternal as IS_MAC };
 
 /**
  * プラットフォーム情報を初期化します。
@@ -15,5 +18,5 @@ export let IS_MAC = false;
 export const initializePlatform = async (
   adapter: PlatformAdapter = new PlatformAdapter()
 ): Promise<void> => {
-  IS_MAC = await adapter.isMac();
+  isMacInternal = await adapter.isMac();
 };
