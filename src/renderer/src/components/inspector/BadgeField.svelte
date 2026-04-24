@@ -1,6 +1,9 @@
 <script lang="ts">
   import { X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
+  import { IS_MAC } from '@renderer/constants/platform';
+  import { isFocusedOnInput } from '@renderer/utils/dom-utils';
+  import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
   interface Props {
     label: string;
@@ -18,18 +21,29 @@
 
   const filteredSuggestions = $derived(suggestions.filter((s) => !values.includes(s)));
 
-  const handleKeyDown = (e: KeyboardEvent): void => {
-    if (e.key === 'Enter' || e.key === ',') {
-      e.preventDefault();
-      const val = inputValue.trim();
-      if (val) {
-        onAdd(val);
-        inputValue = '';
-      }
-    } else if (e.key === 'Backspace' && inputValue === '' && values.length > 0) {
-      onRemove(values[values.length - 1]);
+  const handleAdd = (): void => {
+    const val = inputValue.trim();
+    if (val) {
+      onAdd(val);
+      inputValue = '';
     }
   };
+
+  const handleBackspace = async (): Promise<void> => {
+    if (inputValue === '' && values.length > 0) {
+      await onRemove(values[values.length - 1]);
+    }
+  };
+
+  const isNotEditing = (): boolean => !isFocusedOnInput();
+
+  const onKeyDown = (e: KeyboardEvent): void => handler.handle(e);
+
+  const handler = new KeyboardHandler(IS_MAC, [
+    { combo: { key: 'Enter' }, handler: handleAdd, preventDefault: true, enabled: isNotEditing },
+    { combo: { key: ',' }, handler: handleAdd, preventDefault: true, enabled: isNotEditing },
+    { combo: { key: 'Backspace' }, handler: handleBackspace, enabled: isNotEditing }
+  ]);
 
   const handleClickContainer = (e: MouseEvent): void => {
     const target = e.target as HTMLElement;
@@ -68,7 +82,7 @@
         list="suggestions-{label}"
         bind:this={inputElement}
         bind:value={inputValue}
-        onkeydown={handleKeyDown}
+        onkeydown={onKeyDown}
         autocomplete="off"
         placeholder={!isUniform && values.length === 0 ? 'Mixed Values' : ''}
       />

@@ -3,79 +3,58 @@
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
   import { tagActions } from '@renderer/services/tag-actions';
+  import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
+  import { isFocusedOnInput } from '@renderer/utils/dom-utils';
+  import { IS_MAC } from '@renderer/constants/platform';
 
-  /**
-   * 編集中の要素（INPUT等）にフォーカスがあるか判定します。
-   */
-  const isEditing = (): boolean => {
-    const active = document.activeElement;
-    return !!(active && (active.tagName === 'INPUT' || (active as HTMLElement).isContentEditable));
-  };
+  const isNotEditing = (): boolean => !isFocusedOnInput();
 
-  /**
-   * 全選択アクションを実行します。
-   */
-  const handleSelectAll = (e: KeyboardEvent): void => {
-    if (isEditing()) {
-      return;
-    }
-    e.preventDefault();
+  const handleSelectAll = (): void => {
     selectionState.selectAll(trackStore.tracks);
   };
-
-  /**
-   * 全修正の保存アクションを実行します。
-   */
-  const handleSave = (e: KeyboardEvent): void => {
-    e.preventDefault();
-    tagActions.saveAllModified();
+  const handleSaveAll = async (): Promise<void> => {
+    await tagActions.saveAllModified();
+  };
+  const handleSelectPrevious = (): void => {
+    selectionState.selectPrevious(trackStore.tracks);
+  };
+  const handleSelectNext = (): void => {
+    selectionState.selectNext(trackStore.tracks);
   };
 
-  /**
-   * Modifier (Ctrl/Cmd) 系ショートカット（Save, SelectAll など）を処理します。
-   */
-  const handleModifierShortcuts = (e: KeyboardEvent): void => {
+  const handler = new KeyboardHandler(IS_MAC, [
+    {
+      combo: { key: 'a', mod: true },
+      handler: handleSelectAll,
+      preventDefault: true,
+      enabled: isNotEditing
+    },
+    {
+      combo: { key: 's', mod: true },
+      handler: handleSaveAll,
+      preventDefault: true,
+      enabled: isNotEditing
+    },
+    {
+      combo: { key: 'ArrowUp' },
+      handler: handleSelectPrevious,
+      preventDefault: true,
+      enabled: isNotEditing
+    },
+    {
+      combo: { key: 'ArrowDown' },
+      handler: handleSelectNext,
+      preventDefault: true,
+      enabled: isNotEditing
+    }
+  ]);
+
+  const onKeyDown = (e: KeyboardEvent): void => {
     if (uiState.isLoading) {
       return;
     }
-
-    switch (e.key.toLowerCase()) {
-      case 'a':
-        handleSelectAll(e);
-        break;
-      case 's':
-        handleSave(e);
-        break;
-    }
-  };
-
-  /**
-   * ナビゲーション（上下移動）系ショートカットを処理します。
-   */
-  const handleNavigation = (e: KeyboardEvent): void => {
-    if (isEditing()) {
-      return;
-    }
-
-    switch (e.key) {
-      case 'ArrowUp':
-        e.preventDefault();
-        selectionState.selectPrevious(trackStore.tracks);
-        break;
-      case 'ArrowDown':
-        e.preventDefault();
-        selectionState.selectNext(trackStore.tracks);
-        break;
-    }
-  };
-
-  const handleKeydown = (e: KeyboardEvent): void => {
-    if (e.ctrlKey || e.metaKey) {
-      handleModifierShortcuts(e);
-    } else {
-      handleNavigation(e);
-    }
+    handler.handle(e);
   };
 </script>
 
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window onkeydown={onKeyDown} />

@@ -22,7 +22,9 @@ export const IPC_CHANNELS = {
   /** 指定したパスの画像情報を取得 */
   GET_IMAGE_INFO: 'flac:get-image-info',
   /** ファイルのリネーム */
-  RENAME_FILE: 'flac:rename-file'
+  RENAME_FILE: 'flac:rename-file',
+  /** 実行環境のプラットフォームを取得 */
+  GET_PLATFORM: 'app:get-platform'
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -52,4 +54,6 @@ export interface IpcApi {
     dirname: (path: string) => string;
     join: (...paths: string[]) => string;
   };
+  /** 実行環境のプラットフォーム識別子 ('darwin', 'win32', 'linux' など) を取得します */
+  getPlatform: () => Promise<string>;
 }

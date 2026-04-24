@@ -57,7 +57,8 @@ export const api: IpcApi = {
   path: {
     dirname: (p: string) => path.dirname(p),
     join: (...paths: string[]) => path.join(...paths)
-  }
+  },
+  getPlatform: () => ipcRenderer.invoke(IPC_CHANNELS.GET_PLATFORM)
 };
 
 export type Api = typeof api;

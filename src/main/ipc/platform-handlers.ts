@@ -10,4 +10,9 @@ export const registerPlatformHandlers = (): void => {
   ipcMain.handle(IPC_CHANNELS.SELECT_DIRECTORY, async () => {
     return await selectDirectory();
   });
+
+  // プラットフォーム情報を取得
+  ipcMain.handle(IPC_CHANNELS.GET_PLATFORM, async () => {
+    return process.platform;
+  });
 };

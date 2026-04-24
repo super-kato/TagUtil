@@ -3,6 +3,9 @@
   import { Music, X } from '@lucide/svelte';
   import { tagActions } from '@renderer/services/tag-actions';
   import { trackStore } from '@renderer/stores/track-store.svelte';
+  import { isFocusedOnInput } from '@renderer/utils/dom-utils';
+  import { IS_MAC } from '@renderer/constants/platform';
+  import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
   let imageLoadError = $state(false);
 
@@ -28,13 +31,29 @@
     }
     return 'No Artwork';
   };
+
+  const handlePickArtwork = (): void => {
+    tagActions.pickAndApplyPicture();
+  };
+
+  const isNotEditing = (): boolean => !isFocusedOnInput();
+
+  const handler = new KeyboardHandler(IS_MAC, [
+    {
+      combo: { key: 'Enter' },
+      handler: handlePickArtwork,
+      enabled: isNotEditing
+    }
+  ]);
+
+  const onKeyDown = (e: KeyboardEvent): void => handler.handle(e);
 </script>
 
 <div class="artwork-container">
   <div
     class="artwork-section"
     onclick={() => tagActions.pickAndApplyPicture()}
-    onkeydown={(e) => e.key === 'Enter' && tagActions.pickAndApplyPicture()}
+    onkeydown={onKeyDown}
     role="button"
     tabindex="0"
     title="Click to change artwork"
