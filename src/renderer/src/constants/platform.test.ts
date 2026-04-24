@@ -9,19 +9,23 @@ describe('platform constant (renderer)', () => {
     vi.resetAllMocks();
   });
 
-  it('initializePlatform 呼び出し後に IS_MAC が正しく更新されること', async () => {
-    // Mac の場合
+  it('Mac 環境の場合、initializePlatform 呼び出し後に IS_MAC が true になること', async () => {
     vi.mocked(adapter.getPlatform).mockResolvedValue({
       isMac: true
     });
-    await initializePlatform();
-    expect(IS_MAC).toBe(true);
 
-    // Windows の場合
+    await initializePlatform();
+
+    expect(IS_MAC).toBe(true);
+  });
+
+  it('Windows 環境の場合、initializePlatform 呼び出し後に IS_MAC が false になること', async () => {
     vi.mocked(adapter.getPlatform).mockResolvedValue({
       isMac: false
     });
+
     await initializePlatform();
+
     expect(IS_MAC).toBe(false);
   });
 });

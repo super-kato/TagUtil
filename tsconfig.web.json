@@ -8,6 +8,8 @@
     "src/domain/**/*",
     "src/shared/**/*"
   ],
+
+
   "compilerOptions": {
     "composite": true,
     "paths": {
