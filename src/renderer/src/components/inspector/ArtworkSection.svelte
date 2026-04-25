@@ -42,6 +42,7 @@
 <div class="artwork-container">
   <div
     class="artwork-section"
+    class:is-placeholder={!trackStore.commonImageUrl || imageLoadError}
     onclick={() => tagActions.pickAndApplyPicture()}
     onkeydown={(e) => handler.handle(e)}
     role="button"
@@ -89,8 +90,8 @@
   }
 
   .artwork-section {
-    width: 100%;
-    aspect-ratio: 1 / 1;
+    margin: 0 auto;
+    max-width: 100%;
     max-height: 500px;
     position: relative;
     cursor: pointer;
@@ -99,6 +100,12 @@
     overflow: hidden;
     display: grid;
     place-items: center;
+    width: fit-content;
+  }
+
+  .artwork-section.is-placeholder {
+    width: 100%;
+    aspect-ratio: 1 / 1;
   }
 
   .cover-art,
@@ -110,8 +117,11 @@
   }
 
   .cover-art {
-    aspect-ratio: 1 / 1;
-    object-fit: contain;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 500px;
+    display: block;
     transition: transform 0.3s ease;
   }
 
