@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events';
 import { LogMessage, LogLevel, LogHandler } from '@domain/common/log';
-import { generateId } from '@main/utils/crypto';
+import { generateId } from '@shared/utils/id';
 import { formatLogTime } from '@shared/utils/date';
 
 /**
