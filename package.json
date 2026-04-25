@@ -1,6 +1,6 @@
 {
   "name": "tag-util",
-  "version": "0.13.70",
+  "version": "0.13.71",
   "description": "Functional FLAC metadata editor with Svelte 5 TagState",
   "type": "module",
   "main": "./out/main/index.js",
@@ -45,17 +45,18 @@
   },
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
+    "@lucide/svelte": "^1.9.0",
     "electron-updater": "^6.8.3",
     "fast-equals": "^6.0.0",
     "flac-tagger": "^2.0.0",
-    "music-metadata": "^11.12.3"
+    "music-metadata": "^11.12.3",
+    "svelte": "^5.55.5"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
     "@electron-toolkit/eslint-config-ts": "^3.1.0",
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/tsconfig": "^2.0.0",
-    "@lucide/svelte": "^1.9.0",
     "@sveltejs/vite-plugin-svelte": "^6.2.0",
     "@types/node": "^25.6.0",
     "@vitest/coverage-v8": "^4.1.5",
@@ -69,7 +70,6 @@
     "license-checker-rseidelsohn": "^4.4.2",
     "prettier": "^3.8.3",
     "prettier-plugin-svelte": "^3.4.0",
-    "svelte": "^5.55.5",
     "svelte-check": "^4.3.4",
     "typescript": "^6.0.3",
     "vite": "^7.2.6",

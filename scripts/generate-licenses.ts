@@ -40,7 +40,7 @@ const generateLicenses = (): void => {
   console.log('ライセンス情報を生成中...');
 
   // pnpm から全依存関係（バンドル対象を含む）のライセンス情報を取得
-  const json = execSync('pnpm licenses list --json').toString();
+  const json = execSync('pnpm licenses list --prod --json').toString();
   const credits = parseLicenses(json);
 
   // 出力先ディレクトリの確保
