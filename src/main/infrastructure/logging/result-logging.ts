@@ -16,20 +16,22 @@ export const withResultLogging = async <R extends TagResult<unknown>>(
   task: () => Promise<R>,
   ...params: unknown[]
 ): Promise<R> => {
-  const baseMessage = params.length > 0 ? `[${context}] ${params.join(', ')}` : `[${context}]`;
+  const paramInfo = params.join(', ');
 
   try {
     const result = await task();
+    const header = paramInfo ? `[${context}] ${paramInfo}` : `[${context}]`;
 
     if (result.type === 'success') {
-      logger.info(baseMessage);
+      logger.info(header);
     } else {
-      logger.warn(`${baseMessage}: ${formatTagError(result.error)}`);
+      logger.warn(`${header}: ${formatTagError(result.error)}`);
     }
 
     return result;
   } catch (error: unknown) {
-    logger.error(`${baseMessage}: ${formatTagError(error)}`);
+    const header = paramInfo ? `[${context}] ${paramInfo}` : `[${context}]`;
+    logger.error(`${header}: ${formatTagError(error)}`);
     throw error;
   }
 };
