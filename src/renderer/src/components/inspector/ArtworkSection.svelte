@@ -133,7 +133,7 @@
   }
 
   .art-overlay {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,7 +149,7 @@
 
   .art-overlay .icon-box {
     color: white;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.35);
     backdrop-filter: blur(4px);
     padding: 1rem;
     border-radius: var(--radius-2xl);
@@ -163,7 +163,7 @@
 
   .artwork-section:hover .art-overlay .icon-box {
     transform: scale(1.05);
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.5);
     border-color: rgba(255, 255, 255, 0.4);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
   }
