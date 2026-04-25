@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { ImagePlus, Music, X } from '@lucide/svelte';
+  import { Image, Music, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
   import { tagActions } from '@renderer/services/tag-actions';
@@ -78,7 +78,7 @@
 
     <div class="art-overlay">
       <div class="icon-circle">
-        <ImagePlus size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
+        <Image size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
       </div>
     </div>
   </div>
