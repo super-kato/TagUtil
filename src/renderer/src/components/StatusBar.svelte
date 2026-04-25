@@ -7,8 +7,7 @@
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
   import { formatLogTime } from '@shared/utils/date';
   import type { Component } from 'svelte';
-  import { flip } from 'svelte/animate';
-  import { fade, slide } from 'svelte/transition';
+  import { slide } from 'svelte/transition';
 
   const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
     ['INFO', Info],
@@ -79,11 +78,7 @@
       <div class="log-list" bind:this={logListElement}>
         {#each logStore.logs as log (log.id)}
           {@const ICON = levelIcons.get(log.level)}
-          <div
-            class="log-entry {log.level}"
-            transition:fade={{ duration: 200 }}
-            animate:flip={{ duration: 200 }}
-          >
+          <div class="log-entry {log.level}">
             <span class="log-time">[{formatLogTime(log.timestamp)}]</span>
             <div class="log-level-icon">
               <ICON size={UI_TOKENS.icons.sizeSmall} />
