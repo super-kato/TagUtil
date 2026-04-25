@@ -34,10 +34,8 @@ export const withAtomicWrite = async (
     // 成功した場合は一時ファイルを元のパスにリネーム（上書き）
     await fs.rename(tempPath, targetPath);
   } catch (error: unknown) {
-    // 失敗した場合は一時ファイルを削除
-    await fs.unlink(tempPath).catch((err) => {
-      console.warn(`[FileUtil] Failed to cleanup temporary file: ${tempPath}`, err);
-    });
+    // 失敗した場合は一時ファイルを削除（ここでの失敗も呼び出し側へ伝播する）
+    await fs.unlink(tempPath);
     throw error;
   }
 };

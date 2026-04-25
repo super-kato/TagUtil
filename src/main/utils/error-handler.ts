@@ -14,7 +14,7 @@ export const hasErrorCode = (error: unknown, code: string): error is { code: str
 };
 
 /**
- * catch 句で受け取った error: unknown を、ログ出力した上で TagResult の failure に変換します。
+ * catch 句で受け取った error: unknown を、TagResult の failure に変換します。
  * @param error 発生したエラー
  * @param factory TagError を生成する関数
  * @param options 追加のコンテキスト情報
@@ -28,6 +28,5 @@ export const toTagResultFailure = <T>(
   const message = error instanceof Error ? error.message : String(error);
   const tagError = factory({ ...options, detail: message });
 
-  console.error(`[${tagError.type}]`, error);
   return failure(tagError);
 };
