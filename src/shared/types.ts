@@ -3,3 +3,8 @@
  */
 export type ElementType<T> =
   NonNullable<T> extends Array<infer U> ? NonNullable<U> : NonNullable<T>;
+
+/**
+ * 購読解除を行う関数の型。
+ */
+export type Unsubscribe = () => void;

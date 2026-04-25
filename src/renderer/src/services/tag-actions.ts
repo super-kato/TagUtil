@@ -1,10 +1,12 @@
+import { MESSAGES } from '@domain/common/messages';
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
 import type { FlacTrack, TagResult } from '@domain/flac/types';
-import { trackStore } from '@renderer/stores/track-store.svelte';
+import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
+import { logStore } from '@renderer/stores/log-store.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
+import { trackStore } from '@renderer/stores/track-store.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
 import { tagEditor } from './tag-editor';
-import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 
 /**
  * スキャン処理の共通的なフローを制御するヘルパー関数。
@@ -12,20 +14,20 @@ import { tagRepository } from '@renderer/infrastructure/repositories/tag-reposit
 const handleScanOperation = async (
   operation: () => Promise<TagResult<{ tracks: FlacTrack[]; isLimited: boolean } | null>>
 ): Promise<void> => {
-  uiState.reset();
   uiState.startLoading();
 
   try {
     const result = await operation();
 
-    if (result.type === 'error') {
-      uiState.setError(result);
-    } else if (result.value) {
-      const { tracks: rawTracks, isLimited } = result.value;
-      const tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
+    if (result.type !== 'success' || !result.value) {
+      return;
+    }
 
-      trackStore.tracks = tracks;
-      uiState.setScanLimited(isLimited);
+    const { tracks: rawTracks, isLimited } = result.value;
+    trackStore.tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
+
+    if (isLimited) {
+      logStore.addWarn(MESSAGES.SCAN_LIMIT_EXCEEDED);
     }
   } finally {
     uiState.stopLoading();
@@ -82,11 +84,8 @@ const removeSelectedMultiFieldValue = (key: EditableMultiKey, value: string): vo
  * 画像ファイルを選択し、選択中のトラックに適用します。
  */
 const pickAndApplyPicture = async (): Promise<void> => {
-  uiState.clearError();
   const result = await tagRepository.pickImage();
-  if (result.type === 'error') {
-    uiState.setError(result);
-  } else if (result.value) {
+  if (result.type === 'success' && result.value) {
     tagEditor.applyPicture(trackStore.selectedTracks, result.value);
   }
 };
@@ -95,11 +94,8 @@ const pickAndApplyPicture = async (): Promise<void> => {
  * 指定されたパスの画像を読み込み、選択中のトラックに適用します（ドラッグ＆ドロップ用）。
  */
 const applyPictureFromPath = async (path: string): Promise<void> => {
-  uiState.clearError();
   const result = await tagRepository.getImageInfo(path);
-  if (result.type === 'error') {
-    uiState.setError(result);
-  } else if (result.value) {
+  if (result.type === 'success' && result.value) {
     tagEditor.applyPicture(trackStore.selectedTracks, result.value);
   }
 };
@@ -122,7 +118,6 @@ const applyAutoNumbering = (): void => {
  * 選択中の変更を破棄して再読み込みします。
  */
 const revertSelected = async (): Promise<void> => {
-  uiState.clearError();
   const modifiedSelected = trackStore.selectedTracks.filter((t) => t.isModified);
   if (modifiedSelected.length === 0) {
     return;
@@ -134,7 +129,6 @@ const revertSelected = async (): Promise<void> => {
     for (const track of modifiedSelected) {
       const result = await tagRepository.readMetadata(track.path);
       if (result.type === 'error') {
-        uiState.setError(result);
         break;
       }
 
@@ -151,7 +145,6 @@ const revertSelected = async (): Promise<void> => {
  * 変更があったすべてのトラックを保存します。
  */
 const saveAllModified = async (): Promise<void> => {
-  uiState.clearError();
   const modified = trackStore.tracks.filter((t) => t.isModified);
   if (modified.length === 0) {
     return;
@@ -164,12 +157,12 @@ const saveAllModified = async (): Promise<void> => {
     const rawData = modified.map((t) => t.toFlacTrack());
     const result = await tagRepository.saveTracks(rawData);
 
-    if (result.type === 'error') {
-      uiState.setError(result);
-    } else {
-      for (const track of modified) {
-        track.markAsSaved();
-      }
+    if (result.type !== 'success') {
+      return;
+    }
+
+    for (const track of modified) {
+      track.markAsSaved();
     }
   } finally {
     uiState.stopLoading();

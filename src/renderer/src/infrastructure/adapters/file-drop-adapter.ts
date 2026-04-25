@@ -1,3 +1,5 @@
+import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
+
 /**
  * ドラッグ＆ドロップイベントから必要なプロパティだけを定義。
  */
@@ -17,6 +19,6 @@ export const getAllPathsFromDropEvent = (e: DropEventLike): string[] => {
     return [];
   }
   return Array.from(files)
-    .map((file) => window.api.getPathForFile(file))
+    .map((file) => fileRepository.getPathForFile(file))
     .filter((path): path is string => !!path);
 };

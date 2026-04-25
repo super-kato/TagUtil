@@ -1,7 +1,7 @@
 import { success } from '@domain/common/result';
 import { Picture, TagResult } from '@domain/flac/types';
 import { readFile } from 'node:fs/promises';
-import { computeMd5 } from '@main/utils/hash';
+import { computeMd5 } from '@main/utils/crypto';
 import { getMimeTypeFromPath } from '@main/utils/mime';
 import { pickImageFile } from '@services/platform/dialog';
 import { readRawData } from './reader';
