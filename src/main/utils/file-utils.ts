@@ -39,4 +39,3 @@ export const withAtomicWrite = async (
     throw error;
   }
 };
-
