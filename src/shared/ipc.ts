@@ -50,11 +50,6 @@ export interface IpcApi {
   renameFile: (oldPath: string, newPath: string) => Promise<TagResult<void>>;
   /** File オブジェクトから OS 上のファイルシステムパスを取得します */
   getPathForFile: (file: File) => string;
-  /** パス操作ユーティリティ */
-  path: {
-    dirname: (path: string) => string;
-    join: (...paths: string[]) => string;
-  };
   /** 実行環境のプラットフォームを取得します */
   getPlatform: () => Promise<Platform>;
 }

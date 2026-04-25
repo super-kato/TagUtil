@@ -3,4 +3,5 @@
  */
 export interface Platform {
   isMac: boolean;
+  isWindows: boolean;
 }
