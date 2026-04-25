@@ -1,5 +1,6 @@
 import type { FlacMetadata, FlacTrack } from '@domain/flac/types';
 import { createImageUrl } from '@renderer/utils/image';
+import { isDeepEqual } from '@shared/utils/equality';
 
 /** 1つのFLACファイルとその状態を管理するクラス */
 export class TrackRecord {
@@ -10,25 +11,25 @@ export class TrackRecord {
   metadata = $state<FlacMetadata>()!;
 
   /** 初期状態（保存時または読み込み時）のメタデータのスナップショット */
-  #initialMetadataSnapshot = $state<string>('');
+  #initialMetadataSnapshot = $state<FlacMetadata>()!;
 
   /** メタデータの画像情報から導出される表示用URL */
   imageUrl = $derived(createImageUrl(this.metadata.picture));
 
   /** 変更があったかどうかのフラグ */
   isModified = $derived(
-    JSON.stringify($state.snapshot(this.metadata)) !== this.#initialMetadataSnapshot
+    !isDeepEqual($state.snapshot(this.metadata), this.#initialMetadataSnapshot)
   );
 
   constructor(path: string, metadata: FlacMetadata) {
     this.path = path;
     this.metadata = metadata;
-    // 初期状態をシリアライズして保持
-    this.#initialMetadataSnapshot = JSON.stringify($state.snapshot(metadata));
+    // 初期状態をスナップショットとして保持
+    this.#initialMetadataSnapshot = $state.snapshot(metadata);
   }
 
   markAsSaved(): void {
-    this.#initialMetadataSnapshot = JSON.stringify($state.snapshot(this.metadata));
+    this.#initialMetadataSnapshot = $state.snapshot(this.metadata);
   }
 
   toFlacTrack(): FlacTrack {
