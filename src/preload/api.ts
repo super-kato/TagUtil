@@ -49,6 +49,13 @@ export const api: IpcApi = {
    * Electron v28+ で非推奨となった File.path の代替です。
    */
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
+  /**
+   * パス操作（メインプロセス経由）。
+   */
+  path: {
+    dirname: (p: string) => ipcRenderer.invoke(IPC_CHANNELS.PATH_DIRNAME, p),
+    join: (...paths: string[]) => ipcRenderer.invoke(IPC_CHANNELS.PATH_JOIN, ...paths)
+  },
   getPlatform: () => ipcRenderer.invoke(IPC_CHANNELS.GET_PLATFORM)
 };
 

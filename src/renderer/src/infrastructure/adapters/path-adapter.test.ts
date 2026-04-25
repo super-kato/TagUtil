@@ -1,41 +1,40 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getDirectoryName, joinPath } from './path-adapter';
 
 describe('path-adapter', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', {
+      api: {
+        path: {
+          dirname: vi.fn(),
+          join: vi.fn()
+        }
+      }
+    });
+  });
+
   describe('getDirectoryName', () => {
-    it('Unix形式のパスからディレクトリ名を抽出できること', () => {
-      expect(getDirectoryName('/path/to/file.txt')).toBe('/path/to');
-    });
+    it('window.api.path.dirname を呼び出すこと', async () => {
+      const path = '/path/to/file.txt';
+      vi.mocked(window.api.path.dirname).mockResolvedValue('/path/to');
 
-    it('Windows形式のパスからディレクトリ名を抽出できること', () => {
-      expect(getDirectoryName('C:\\path\\to\\file.txt')).toBe('C:\\path\\to');
-    });
+      const result = await getDirectoryName(path);
 
-    it('ルートディレクトリ（Unix）のディレクトリ名を正しく返せること', () => {
-      expect(getDirectoryName('/file.txt')).toBe('/');
-    });
-
-    it('ルートディレクトリ（Windows）のディレクトリ名を正しく返せること', () => {
-      expect(getDirectoryName('C:\\file.txt')).toBe('C:\\');
-    });
-
-    it('セパレータが含まれない場合に "." を返すこと', () => {
-      expect(getDirectoryName('file.txt')).toBe('.');
+      expect(result).toBe('/path/to');
+      expect(window.api.path.dirname).toHaveBeenCalledWith(path);
     });
   });
 
   describe('joinPath', () => {
-    it('Unix形式のパスを結合できること', () => {
-      expect(joinPath('/path/to', 'file.txt')).toBe('/path/to/file.txt');
-    });
+    it('window.api.path.join を呼び出すこと', async () => {
+      const dir = '/path/to';
+      const filename = 'file.txt';
+      vi.mocked(window.api.path.join).mockResolvedValue('/path/to/file.txt');
 
-    it('Windows形式のパスを結合できること', () => {
-      expect(joinPath('C:\\path\\to', 'file.txt')).toBe('C:\\path\\to\\file.txt');
-    });
+      const result = await joinPath(dir, filename);
 
-    it('末尾にセパレータがあるディレクトリでも正しく結合できること', () => {
-      expect(joinPath('/path/to/', 'file.txt')).toBe('/path/to/file.txt');
-      expect(joinPath('C:\\path\\to\\', 'file.txt')).toBe('C:\\path\\to\\file.txt');
+      expect(result).toBe('/path/to/file.txt');
+      expect(window.api.path.join).toHaveBeenCalledWith(dir, filename);
     });
   });
 });
