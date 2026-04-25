@@ -38,9 +38,8 @@
       return;
     }
 
-    // 実行条件：下端に位置しており、かつ表示するログが存在すること
-    const shouldScroll = isAtBottom && logStore.logs.length > 0;
-    if (!shouldScroll) {
+    // 実行条件：下端にいない、または表示するログが存在しない場合は終了
+    if (!isAtBottom || logStore.logs.length === 0) {
       return;
     }
 
