@@ -15,7 +15,7 @@
     ['ERROR', CircleAlert]
   ] as const);
 
-  const SCROLL_THRESHOLD_PX = 2;
+  const SCROLL_THRESHOLD_PX = 50;
 
   let isExpanded = $state(false);
   let logListElement: HTMLDivElement | undefined = $state();
