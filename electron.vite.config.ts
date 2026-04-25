@@ -1,9 +1,20 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { defineConfig } from 'electron-vite';
+import { defineConfig, externalizeDepsPlugin } from 'electron-vite';
 import { resolve } from 'path';
 
 export default defineConfig({
   main: {
+    plugins: [
+      externalizeDepsPlugin({
+        exclude: [
+          'flac-tagger',
+          'music-metadata',
+          'fast-equals',
+          'electron-updater',
+          '@electron-toolkit/utils'
+        ]
+      })
+    ],
     resolve: {
       alias: {
         '@shared': resolve('src/shared'),
@@ -16,6 +27,7 @@ export default defineConfig({
     }
   },
   preload: {
+    plugins: [externalizeDepsPlugin()],
     resolve: {
       alias: {
         '@shared': resolve('src/shared'),
