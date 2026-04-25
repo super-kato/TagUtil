@@ -1,6 +1,6 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { app, BrowserWindow } from 'electron';
-import { registerIpcHandlers } from './ipc';
+import { initializeIpc } from './ipc';
 import { registerProtocolsPrivileged, registerProtocols } from './protocols';
 import { createWindow } from './window';
 import { initAutoUpdater } from './services/platform/update';
@@ -17,7 +17,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window);
   });
 
-  registerIpcHandlers();
+  initializeIpc();
 
   initAutoUpdater();
   setAppMenu();

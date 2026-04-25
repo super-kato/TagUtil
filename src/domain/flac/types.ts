@@ -146,6 +146,19 @@ const createFactory =
     }) as TagError;
 
 /**
+ * TagError かどうかの型ガード
+ */
+export const isTagError = (error: unknown): error is TagError => {
+  return (
+    !!error &&
+    typeof error === 'object' &&
+    'type' in error &&
+    'options' in error &&
+    typeof (error as { options: unknown }).options === 'object'
+  );
+};
+
+/**
  * 型安全にエラーオブジェクトを生成するためのファクトリ。
  */
 export const tagErrors = {
