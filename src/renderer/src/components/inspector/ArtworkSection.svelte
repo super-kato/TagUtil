@@ -85,7 +85,7 @@
 <style>
   .artwork-container {
     width: 90%;
-    height: 300px;
+    height: 240px;
     margin: 0 auto 2rem auto;
     flex-shrink: 0;
     display: flex;
@@ -102,8 +102,9 @@
     background-color: transparent;
     border-radius: var(--radius-xl);
     overflow: hidden;
-    display: grid;
-    place-items: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: fit-content;
   }
 
@@ -114,17 +115,21 @@
 
   .cover-placeholder,
   .art-overlay {
-    grid-area: 1 / 1;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .cover-art {
-    grid-area: 1 / 1;
     width: auto;
     height: auto;
     max-width: 100%;
-    max-height: 300px;
+    max-height: 240px;
     object-fit: contain;
     display: block;
     transition: transform 0.3s ease;
