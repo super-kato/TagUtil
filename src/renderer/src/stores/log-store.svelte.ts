@@ -1,4 +1,5 @@
 import type { LogMessage } from '@domain/common/log';
+import { generateId } from '@shared/utils/id';
 
 const DEFAULT_MAX_LOGS = 100;
 
@@ -37,7 +38,7 @@ class LogStore {
    */
   addError(message: string): void {
     this.addLog({
-      id: crypto.randomUUID(),
+      id: generateId(),
       level: 'ERROR',
       message,
       timestamp: Date.now()
@@ -50,7 +51,7 @@ class LogStore {
    */
   addWarn(message: string): void {
     this.addLog({
-      id: crypto.randomUUID(),
+      id: generateId(),
       level: 'WARN',
       message,
       timestamp: Date.now()

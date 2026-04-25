@@ -1,4 +1,5 @@
-import { createHash, randomUUID } from 'node:crypto';
+import { createHash } from 'node:crypto';
+import { generateId as sharedGenerateId } from '@shared/utils/id';
 
 /**
  * 指定されたバイナリデータのMD5ハッシュ値を計算します。
@@ -14,5 +15,5 @@ export const computeMd5 = (buffer: Uint8Array): string => {
  * @returns UUID 文字列
  */
 export const generateId = (): string => {
-  return randomUUID();
+  return sharedGenerateId();
 };
