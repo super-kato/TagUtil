@@ -5,11 +5,12 @@
   import TrackGrid from './components/TrackGrid.svelte';
   import KeyboardShortcuts from './components/KeyboardShortcuts.svelte';
   import ConfirmationDialog from './components/ui/ConfirmationDialog.svelte';
+  import { logRepository } from '@renderer/infrastructure/repositories/log-repository';
   import { onMount } from 'svelte';
   import { logStore } from './stores/log-store.svelte';
 
   onMount(() => {
-    const unsubscribe = window.api.onLogMessage((message) => {
+    const unsubscribe = logRepository.subscribe((message) => {
       logStore.addLog(message);
     });
     return unsubscribe;

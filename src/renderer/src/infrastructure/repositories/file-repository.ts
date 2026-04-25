@@ -8,5 +8,11 @@ const renameFile = async (oldPath: string, newPath: string): Promise<TagResult<v
 };
 
 export const fileRepository = {
-  renameFile
+  renameFile,
+  /**
+   * File オブジェクトから OS 上のファイルシステムパスを取得します。
+   */
+  getPathForFile: (file: File): string => {
+    return window.api.getPathForFile(file);
+  }
 } as const;
