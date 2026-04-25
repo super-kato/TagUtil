@@ -23,7 +23,7 @@ describe('result-logging', () => {
       const result = await withResultLogging('test-ctx', task);
 
       expect(result.type).toBe('success');
-      expect(logger.info).toHaveBeenCalledWith('[test-ctx] - succeeded');
+      expect(logger.info).toHaveBeenCalledWith('[test-ctx]');
     });
 
     it('複数の補足メッセージを渡した場合、カンマ区切りでログに含まれること', async () => {
@@ -31,7 +31,7 @@ describe('result-logging', () => {
 
       await withResultLogging('test-ctx', task, 'param1', 'param2');
 
-      expect(logger.info).toHaveBeenCalledWith('[test-ctx] param1, param2 - succeeded');
+      expect(logger.info).toHaveBeenCalledWith('[test-ctx] param1, param2');
     });
 
     it('補足メッセージに配列を渡した場合、カンマ区切りでログに含まれること', async () => {
@@ -41,18 +41,19 @@ describe('result-logging', () => {
       await withResultLogging('test-ctx', task, paths);
 
       // Array.prototype.join() により、配列の要素がカンマ区切りで出力される
-      expect(logger.info).toHaveBeenCalledWith('[test-ctx] path/a,path/b - succeeded');
+      expect(logger.info).toHaveBeenCalledWith('[test-ctx] path/a,path/b');
     });
 
     it('処理が失敗（Error型を返却）した場合、エラーログを出力すること', async () => {
       const error = { type: 'PARSE_FAILED', options: { path: 'file.flac' } };
       const task = vi.fn().mockResolvedValue(failure(error));
+      vi.spyOn(logger, 'warn').mockImplementation(() => {});
       vi.mocked(formatter.formatTagError).mockReturnValue('Formatted Error Message');
 
       const result = await withResultLogging('test-ctx', task);
 
       expect(result.type).toBe('error');
-      expect(logger.error).toHaveBeenCalledWith('[test-ctx] - failed: Formatted Error Message');
+      expect(logger.warn).toHaveBeenCalledWith('[test-ctx]: Formatted Error Message');
       expect(formatter.formatTagError).toHaveBeenCalledWith(error);
     });
 
@@ -64,7 +65,7 @@ describe('result-logging', () => {
       await expect(withResultLogging('test-ctx', task)).rejects.toThrow('Unexpected crash');
 
       expect(logger.error).toHaveBeenCalledWith(
-        '[test-ctx] - exception: Formatted Exception Message'
+        '[test-ctx]: Formatted Exception Message'
       );
       expect(formatter.formatTagError).toHaveBeenCalledWith(error);
     });

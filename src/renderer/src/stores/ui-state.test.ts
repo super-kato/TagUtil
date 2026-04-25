@@ -31,7 +31,7 @@ describe('UiState', () => {
       options: { path: 'test.flac', detail: 'custom message' }
     };
     uiState.setError(failure(error));
-    expect(uiState.error).toBe('Failed to parse file: custom message');
+    expect(uiState.error).toBe('Failed to parse metadata: custom message');
   });
 
   it('clearError でエラーメッセージが消去されること', () => {

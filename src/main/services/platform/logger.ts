@@ -1,6 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { LogMessage, LogLevel, LogHandler } from '@domain/common/log';
 import { generateId } from '@main/utils/crypto';
+import { formatLogTime } from '@shared/utils/date';
 
 /**
  * アプリケーション全体のログ管理を行うクラス。
@@ -25,7 +26,7 @@ class Logger extends EventEmitter {
     this.emit(Logger.#LOG_EVENT, logMessage);
 
     // 標準出力にも出す
-    const timestamp = new Date(logMessage.timestamp).toISOString();
+    const timestamp = formatLogTime(logMessage.timestamp);
     console.log(`[${timestamp}] [${level}] ${message}`);
   }
 

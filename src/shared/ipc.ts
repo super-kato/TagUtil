@@ -13,19 +13,19 @@ export const IMAGE_PROTOCOL_SCHEME = 'flac-image';
  */
 export const IPC_CHANNELS = {
   /** メタデータの読み取り */
-  READ_METADATA: 'flac:read-metadata',
+  READ_METADATA: 'tag:read-metadata',
   /** メタデータの書き込み */
-  WRITE_METADATA: 'flac:write-metadata',
+  WRITE_METADATA: 'tag:write-metadata',
   /** フォルダ選択ダイアログを表示 */
-  SELECT_DIRECTORY: 'flac:select-directory',
+  SELECT_DIRECTORY: 'app:select-directory',
   /** ディレクトリ内のFLACファイルを探索 */
-  SCAN_DIRECTORY: 'flac:scan-directory',
+  SCAN_DIRECTORY: 'tag:scan-directory',
   /** 画像ファイルを選択して読み込み */
-  PICK_IMAGE: 'flac:pick-image',
+  PICK_IMAGE: 'tag:pick-image',
   /** 指定したパスの画像情報を取得 */
-  GET_IMAGE_INFO: 'flac:get-image-info',
+  GET_IMAGE_INFO: 'tag:get-image-info',
   /** ファイルのリネーム */
-  RENAME_FILE: 'flac:rename-file',
+  RENAME_FILE: 'tag:rename-file',
   /** ログメッセージの通知 */
   ON_LOG_MESSAGE: 'app:on-log-message',
   /** 実行環境のプラットフォームを取得 */

@@ -1,13 +1,49 @@
 <script lang="ts">
-  import { uiState } from '@renderer/stores/ui-state.svelte';
-  import { logStore } from '@renderer/stores/log-store.svelte';
-  import { CircleAlert, TriangleAlert, ChevronUp, ChevronDown, Info } from '@lucide/svelte';
+  import {
+    ChevronUp,
+    CircleAlert,
+    CircleQuestionMark,
+    Info,
+    TriangleAlert,
+    type LucideProps
+  } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
+  import { IS_MAC } from '@renderer/constants/platform';
+  import { logStore } from '@renderer/stores/log-store.svelte';
+  import { uiState } from '@renderer/stores/ui-state.svelte';
+  import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
+  import { formatLogTime } from '@shared/utils/date';
+  import { slide } from 'svelte/transition';
+  import type { Component } from 'svelte';
 
   let isExpanded = $state(false);
 
   const toggleExpand = (): void => {
     isExpanded = !isExpanded;
+  };
+
+  let logListEl: HTMLDivElement | undefined = $state();
+
+  $effect(() => {
+    if (!logListEl || logStore.logs.length === 0 || !isExpanded) {
+      return;
+    }
+    logListEl.scrollTo({ top: logListEl.scrollHeight, behavior: 'smooth' });
+  });
+
+  const handler = new KeyboardHandler(IS_MAC, [{ combo: { key: 'Enter' }, handler: toggleExpand }]);
+
+  const getLevelIcon = (level: string): Component<LucideProps> => {
+    switch (level) {
+      case 'INFO':
+        return Info;
+      case 'WARN':
+        return TriangleAlert;
+      case 'ERROR':
+        return CircleAlert;
+      default:
+        return CircleQuestionMark;
+    }
   };
 </script>
 
@@ -15,7 +51,7 @@
   <div
     class="main-bar"
     onclick={toggleExpand}
-    onkeydown={(e) => e.key === 'Enter' && toggleExpand()}
+    onkeydown={(e) => handler.handle(e)}
     role="button"
     tabindex="0"
     aria-label={isExpanded ? 'Collapse logs' : 'Expand logs'}
@@ -43,23 +79,22 @@
       {/if}
     </div>
 
-    <div class="expand-icon">
-      {#if isExpanded}
-        <ChevronDown size={UI_TOKENS.icons.size} />
-      {:else}
-        <ChevronUp size={UI_TOKENS.icons.size} />
-      {/if}
+    <div class="expand-icon" class:is-expanded={isExpanded}>
+      <ChevronUp size={UI_TOKENS.icons.size} />
     </div>
   </div>
 
   {#if isExpanded}
-    <div class="log-panel">
-      <div class="log-list">
-        {#each [...logStore.logs].reverse() as log (log.id)}
+    <div class="log-panel" transition:slide={{ duration: 300 }}>
+      <div class="log-list" bind:this={logListEl}>
+        {#each logStore.logs as log (log.id)}
+          {@const ICON = getLevelIcon(log.level)}
           <div class="log-entry {log.level}">
-            <span class="log-time">[{new Date(log.timestamp).toISOString()}]</span>
-            <span class="log-level-tag">{log.level.toUpperCase()}</span>
-            <span class="log-text">{log.message}</span>
+            <span class="log-time">[{formatLogTime(log.timestamp)}]</span>
+            <div class="log-level-icon">
+              <ICON size={UI_TOKENS.icons.sizeSmall} />
+            </div>
+            <span class="log-text" title={log.message}>{log.message}</span>
           </div>
         {/each}
       </div>
@@ -138,11 +173,16 @@
     align-items: center;
     padding: 0.25rem;
     border-radius: var(--radius-sm);
-    transition: color 0.2s ease;
+    transition: all 0.3s ease;
+  }
+
+  .expand-icon.is-expanded {
+    transform: rotate(180deg);
   }
 
   .main-bar:hover .expand-icon {
-    color: var(--text-primary);
+    color: var(--accent-primary);
+    filter: drop-shadow(0 0 5px var(--selection-glow));
   }
 
   .log-panel {
@@ -155,7 +195,7 @@
 
   .log-list {
     flex: 1;
-    overflow-y: auto;
+    overflow: auto; /* 縦横両方のスクロールを許可 */
     padding: 0.5rem;
     font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
     font-size: 0.75rem;
@@ -167,6 +207,8 @@
   .log-entry {
     display: flex;
     gap: 0.75rem;
+    align-items: baseline;
+    font-size: 0.7rem;
     line-height: 1.5;
     padding: 0.1rem 0.4rem;
     border-radius: 2px;
@@ -182,24 +224,28 @@
     font-variant-numeric: tabular-nums;
   }
 
-  .log-level-tag {
-    font-weight: 700;
-    width: 3.5rem;
+  .log-level-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex-shrink: 0;
   }
 
-  .log-entry.info .log-level-tag {
+  .log-entry.info .log-level-icon {
     color: #4da6ff;
   }
-  .log-entry.warn .log-level-tag {
+  .log-entry.warn .log-level-icon {
     color: var(--accent-warning);
   }
-  .log-entry.error .log-level-tag {
+  .log-entry.error .log-level-icon {
     color: var(--accent-error);
   }
 
   .log-text {
     color: var(--text-secondary);
-    word-break: break-all;
+    white-space: nowrap; /* 改行を禁止 */
+    text-overflow: ellipsis; /* 溢れた場合は ... を表示 */
+    overflow: hidden;
+    flex: 1;
   }
 </style>
