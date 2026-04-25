@@ -1,4 +1,5 @@
-import type { LogHandler, LogMessage } from '@domain/common/log';
+import type { LogHandler, LogMessage } from '@shared/utils/log';
+
 import type { FlacTrack } from '@domain/flac/types';
 import type { IpcApi } from '@shared/ipc';
 import { IPC_CHANNELS } from '@shared/ipc';

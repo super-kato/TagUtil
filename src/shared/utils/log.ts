@@ -1,3 +1,5 @@
+import { generateId } from './id';
+
 /**
  * ログレベルの定義。
  */
@@ -21,3 +23,18 @@ export interface LogMessage {
  * ログメッセージを受け取るハンドラーの型定義。
  */
 export type LogHandler = (message: LogMessage) => void;
+
+/**
+ * 標準的なログメッセージオブジェクトを生成します。
+ * @param level ログレベル
+ * @param message メッセージ内容
+ * @returns 生成された LogMessage オブジェクト
+ */
+export const createLogMessage = (level: LogLevel, message: string): LogMessage => {
+  return {
+    id: generateId(),
+    level,
+    message,
+    timestamp: Date.now()
+  };
+};

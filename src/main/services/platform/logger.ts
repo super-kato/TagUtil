@@ -1,6 +1,5 @@
 import { EventEmitter } from 'node:events';
-import { LogLevel, LogHandler } from '@domain/common/log';
-import { createLogMessage } from '@shared/utils/log-factory';
+import { LogLevel, LogHandler, createLogMessage } from '@shared/utils/log';
 import { formatLogTime } from '@shared/utils/date';
 
 /**

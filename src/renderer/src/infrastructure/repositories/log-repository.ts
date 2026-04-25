@@ -1,4 +1,5 @@
-import type { LogHandler } from '@domain/common/log';
+import type { LogHandler } from '@shared/utils/log';
+
 import type { Unsubscribe } from '@shared/types';
 
 /**

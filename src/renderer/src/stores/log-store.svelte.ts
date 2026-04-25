@@ -1,5 +1,4 @@
-import type { LogMessage } from '@domain/common/log';
-import { createLogMessage } from '@shared/utils/log-factory';
+import { createLogMessage, type LogMessage } from '@shared/utils/log';
 
 const DEFAULT_MAX_LOGS = 100;
 

@@ -1,4 +1,5 @@
-import type { LogHandler } from '@domain/common/log';
+import type { LogHandler } from './utils/log';
+
 import type { FlacTrack, Picture, ScanResult, TagResult } from '@domain/flac/types';
 import type { Platform } from './platform';
 import type { Unsubscribe } from './types';
