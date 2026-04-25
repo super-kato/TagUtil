@@ -21,12 +21,13 @@
 
   // DOM更新前に現在のスクロール位置が下端に近いか判定
   $effect.pre(() => {
-    // logs.length を参照することで更新をトリガーにする
-    if (logStore.logs.length >= 0 && logListElement) {
-      const { scrollTop, scrollHeight, clientHeight } = logListElement;
-      // 下端付近にいるなら追従対象とする
-      isAtBottom = scrollHeight - scrollTop - clientHeight < SCROLL_THRESHOLD_PX;
+    if (!logListElement || logStore.logs.length < 0) {
+      return;
     }
+
+    const { scrollTop, scrollHeight, clientHeight } = logListElement;
+    // 下端付近にいるなら追従対象とする
+    isAtBottom = scrollHeight - scrollTop - clientHeight < SCROLL_THRESHOLD_PX;
   });
 
   // ログが追加された後、下端にいた場合のみスクロールを追従させる
