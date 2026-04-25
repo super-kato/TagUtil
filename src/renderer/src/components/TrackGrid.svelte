@@ -6,8 +6,8 @@
   import { selectionState } from '@renderer/stores/selection-state.svelte';
   import { TrackRecord } from '@renderer/stores/track-record.svelte';
   import { trackStore } from '@renderer/stores/track-store.svelte';
-  import DropZone from './DropZone.svelte';
-  import DropZoneOverlay from './DropZoneOverlay.svelte';
+  import DropZone from '@renderer/components/ui/DropZone.svelte';
+  import DropZoneOverlay from '@renderer/components/ui/DropZoneOverlay.svelte';
 
   const rowElements: HTMLElement[] = [];
 

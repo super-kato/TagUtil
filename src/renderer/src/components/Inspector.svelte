@@ -8,8 +8,8 @@
   import GenreSection from './inspector/GenreSection.svelte';
   import NumericFields from './inspector/NumericFields.svelte';
   import TechnicalInfo from './inspector/TechnicalInfo.svelte';
-  import DropZone from './DropZone.svelte';
-  import DropZoneOverlay from './DropZoneOverlay.svelte';
+  import DropZone from '@renderer/components/ui/DropZone.svelte';
+  import DropZoneOverlay from '@renderer/components/ui/DropZoneOverlay.svelte';
   import { hasExtension } from '@shared/utils/file-filter';
   /** ドラッグ＆ドロップされたファイルから最初の画像を見つけて適用します */
   const handleArtworkDrop = (paths: string[]): void => {

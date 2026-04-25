@@ -4,7 +4,7 @@ import { trackStore } from '@renderer/stores/track-store.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
 import { tagEditor } from './tag-editor';
-import { tagRepository } from '@renderer/infrastructure/tag-repository';
+import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 
 /**
  * スキャン処理の共通的なフローを制御するヘルパー関数。

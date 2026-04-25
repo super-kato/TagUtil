@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { Snippet } from 'svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
-  import { getAllPathsFromDropEvent } from '@renderer/infrastructure/file-drop-adapter';
+  import { getAllPathsFromDropEvent } from '@renderer/infrastructure/adapters/file-drop-adapter';
 
   interface Props {
     children: Snippet;
