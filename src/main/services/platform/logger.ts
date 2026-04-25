@@ -23,6 +23,14 @@ class Logger extends EventEmitter {
   }
 
   /**
+   * ログイベントのリスナーを登録します。
+   * イベント名を隠蔽し、型安全な購読を提供します。
+   */
+  public onLog(handler: LogHandler): void {
+    this.on(Logger.#LOG_EVENT, handler);
+  }
+
+  /**
    * ログを出力し、イベントを発火させます。
    * @param level ログレベル
    * @param message メッセージ
@@ -34,14 +42,6 @@ class Logger extends EventEmitter {
     // 標準出力にも出す
     const timestamp = formatLogTime(logMessage.timestamp);
     console.log(`[${timestamp}] [${level}] ${message}`);
-  }
-
-  /**
-   * ログイベントのリスナーを登録します。
-   * イベント名を隠蔽し、型安全な購読を提供します。
-   */
-  public onLog(handler: LogHandler): void {
-    this.on(Logger.#LOG_EVENT, handler);
   }
 }
 
