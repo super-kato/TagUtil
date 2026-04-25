@@ -5,7 +5,6 @@ import { type Platform } from '@shared/platform';
  */
 export const getPlatform = (): Platform => {
   return {
-    isMac: process.platform === 'darwin',
-    isWindows: process.platform === 'win32'
+    isMac: process.platform === 'darwin'
   };
 };

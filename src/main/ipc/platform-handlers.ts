@@ -4,6 +4,7 @@ import { IPC_CHANNELS } from '@shared/ipc';
 import { type Platform } from '@shared/platform';
 
 import { ipcMain } from 'electron';
+import path from 'path';
 
 /**
  * プラットフォーム汎用（OSダイアログ等）のIPCハンドラーを登録します。
@@ -17,5 +18,15 @@ export const registerPlatformHandlers = (): void => {
   // プラットフォームを取得
   ipcMain.handle(IPC_CHANNELS.GET_PLATFORM, (): Platform => {
     return getPlatform();
+  });
+
+  // ディレクトリ名を取得
+  ipcMain.handle(IPC_CHANNELS.PATH_DIRNAME, (_event, p: string) => {
+    return path.dirname(p);
+  });
+
+  // パスを結合
+  ipcMain.handle(IPC_CHANNELS.PATH_JOIN, (_event, ...paths: string[]) => {
+    return path.join(...paths);
   });
 };
