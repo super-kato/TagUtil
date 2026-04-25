@@ -52,8 +52,27 @@ export const showAboutWindow = (): void => {
     // プレーンテキストとして流し込む（スクロール可能）
     const html = `
       <html>
-        <body style="font-family: sans-serif; font-size: 13px; line-height: 1.5; padding: 20px; background: #f5f5f5;">
-          <pre style="white-space: pre-wrap; word-wrap: break-word;">${creditsText}</pre>
+        <head>
+          <style>
+            body {
+              font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+              font-size: 13px;
+              line-height: 1.6;
+              padding: 24px;
+              background-color: #1e1e1e;
+              color: #e0e0e0;
+              margin: 0;
+            }
+            pre {
+              white-space: pre-wrap;
+              word-wrap: break-word;
+              margin: 0;
+              opacity: 0.9;
+            }
+          </style>
+        </head>
+        <body>
+          <pre>${creditsText}</pre>
         </body>
       </html>
     `;
