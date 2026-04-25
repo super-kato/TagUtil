@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, it, expect, vi } from 'vitest';
 import { KeyboardHandler } from './keyboard-handler';
 
@@ -43,11 +44,15 @@ describe('KeyboardHandler', () => {
       ]);
 
       // Meta+S (MacのCommand+Sに相当)
-      await handler.handle({ key: 's', metaKey: true, ctrlKey: false } as KeyboardEvent);
+      await handler.handle(
+        new KeyboardEvent('keydown', { key: 's', metaKey: true, ctrlKey: false })
+      );
       expect(callback).toHaveBeenCalledTimes(1);
 
       // Ctrl+S (Macでは不一致)
-      await handler.handle({ key: 's', metaKey: false, ctrlKey: true } as KeyboardEvent);
+      await handler.handle(
+        new KeyboardEvent('keydown', { key: 's', metaKey: false, ctrlKey: true })
+      );
       expect(callback).toHaveBeenCalledTimes(1); // 1回のまま（呼ばれない）
     });
 
@@ -61,20 +66,22 @@ describe('KeyboardHandler', () => {
       ]);
 
       // Ctrl+S
-      await handler.handle({ key: 's', metaKey: false, ctrlKey: true } as KeyboardEvent);
+      await handler.handle(
+        new KeyboardEvent('keydown', { key: 's', metaKey: false, ctrlKey: true })
+      );
       expect(callback).toHaveBeenCalledTimes(1);
 
       // Meta+S (不一致)
-      await handler.handle({ key: 's', metaKey: true, ctrlKey: false } as KeyboardEvent);
+      await handler.handle(
+        new KeyboardEvent('keydown', { key: 's', metaKey: true, ctrlKey: false })
+      );
       expect(callback).toHaveBeenCalledTimes(1); // 1回のまま（呼ばれない）
     });
   });
 
   it('preventDefault が true の場合に event.preventDefault が呼ばれること', async () => {
-    const event = {
-      key: 'a',
-      preventDefault: vi.fn()
-    } as unknown as KeyboardEvent;
+    const event = new KeyboardEvent('keydown', { key: 'a' });
+    vi.spyOn(event, 'preventDefault');
 
     const handler = new KeyboardHandler(false, [
       {
@@ -98,7 +105,7 @@ describe('KeyboardHandler', () => {
       }
     ]);
 
-    await handler.handle({ key: 'a' } as KeyboardEvent);
+    await handler.handle(new KeyboardEvent('keydown', { key: 'a' }));
     expect(callback).not.toHaveBeenCalled();
   });
 });
