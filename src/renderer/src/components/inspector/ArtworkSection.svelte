@@ -108,7 +108,6 @@
     aspect-ratio: 1 / 1;
   }
 
-  .cover-art,
   .cover-placeholder,
   .art-overlay {
     grid-area: 1 / 1;
@@ -117,10 +116,12 @@
   }
 
   .cover-art {
-    width: auto;
+    grid-area: 1 / 1;
+    width: 100%;
     height: auto;
     max-width: 100%;
     max-height: 500px;
+    object-fit: contain;
     display: block;
     transition: transform 0.3s ease;
   }
