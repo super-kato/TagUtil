@@ -7,7 +7,8 @@
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
   import { formatLogTime } from '@shared/utils/date';
   import type { Component } from 'svelte';
-  import { slide } from 'svelte/transition';
+  import { flip } from 'svelte/animate';
+  import { fly, slide } from 'svelte/transition';
 
   const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
     ['INFO', Info],
@@ -15,11 +16,8 @@
     ['ERROR', CircleAlert]
   ] as const);
 
-  const SCROLL_THRESHOLD_PX = 50;
-
   let isExpanded = $state(false);
   let logListElement: HTMLDivElement | undefined = $state();
-  let isAtBottom = $state(true);
 
   const toggleExpand = (): void => {
     isExpanded = !isExpanded;
@@ -30,26 +28,15 @@
   /** メインバーに表示する現在の状態 */
   const displayState = $derived(logStore.latestLog);
 
-  // スクロールハイジャック対策
-  $effect.pre(() => {
-    if (!logListElement || logStore.logs.length < 0) {
-      return;
-    }
-
-    const { scrollTop, scrollHeight, clientHeight } = logListElement;
-    // 下端付近にいるなら追従対象とする
-    isAtBottom = scrollHeight - scrollTop - clientHeight < SCROLL_THRESHOLD_PX;
-  });
-
-  // ログが追加された後、下端にいた場合のみスクロールを追従させる
+  // ログが追加された後、スクロールを追従させる
   $effect(() => {
     // 前提条件：要素が存在し、かつ展開されていること
     if (!logListElement || !isExpanded) {
       return;
     }
 
-    // 実行条件：下端にいない、または表示するログが存在しない場合は終了
-    if (!isAtBottom || logStore.logs.length === 0) {
+    // 実行条件：表示するログが存在しない場合は終了
+    if (logStore.logs.length === 0) {
       return;
     }
 
@@ -92,7 +79,11 @@
       <div class="log-list" bind:this={logListElement}>
         {#each logStore.logs as log (log.id)}
           {@const ICON = levelIcons.get(log.level)}
-          <div class="log-entry {log.level}">
+          <div
+            class="log-entry {log.level}"
+            transition:fly={{ y: 10, duration: 200 }}
+            animate:flip={{ duration: 200 }}
+          >
             <span class="log-time">[{formatLogTime(log.timestamp)}]</span>
             <div class="log-level-icon">
               <ICON size={UI_TOKENS.icons.sizeSmall} />
