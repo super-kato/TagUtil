@@ -16,12 +16,28 @@
   };
 
   let logListElement: HTMLDivElement | undefined = $state();
+  let isAtBottom = true;
+  const SCROLL_THRESHOLD_PX = 10;
 
+  // DOM更新前に現在のスクロール位置が下端に近いか判定
+  $effect.pre(() => {
+    // logs.length を参照することで更新をトリガーにする
+    if (logStore.logs.length >= 0 && logListElement) {
+      const { scrollTop, scrollHeight, clientHeight } = logListElement;
+      // 下端付近にいるなら追従対象とする
+      isAtBottom = scrollHeight - scrollTop - clientHeight < SCROLL_THRESHOLD_PX;
+    }
+  });
+
+  // ログが追加された後、下端にいた場合のみスクロールを追従させる
   $effect(() => {
     if (!logListElement || logStore.logs.length === 0 || !isExpanded) {
       return;
     }
-    logListElement.scrollTo({ top: logListElement.scrollHeight, behavior: 'smooth' });
+
+    if (isAtBottom) {
+      logListElement.scrollTo({ top: logListElement.scrollHeight, behavior: 'smooth' });
+    }
   });
 
   const handler = new KeyboardHandler(IS_MAC, [{ combo: { key: 'Enter' }, handler: toggleExpand }]);
