@@ -33,13 +33,11 @@
 
   // ログが追加された後、下端にいた場合のみスクロールを追従させる
   $effect(() => {
-    if (!logListElement || logStore.logs.length === 0 || !isExpanded) {
+    if (!logListElement || logStore.logs.length === 0 || !isExpanded || !isAtBottom) {
       return;
     }
 
-    if (isAtBottom) {
-      logListElement.scrollTo({ top: logListElement.scrollHeight, behavior: 'smooth' });
-    }
+    logListElement.scrollTo({ top: logListElement.scrollHeight, behavior: 'smooth' });
   });
 
   const handler = new KeyboardHandler(IS_MAC, [{ combo: { key: 'Enter' }, handler: toggleExpand }]);
