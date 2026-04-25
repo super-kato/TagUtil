@@ -24,28 +24,28 @@ class LogStore {
    * ログを追加します。上限を超えた場合は古いものから削除されます。
    * @param log ログメッセージ
    */
-  addLog(log: LogMessage): void {
+  addLog = (log: LogMessage): void => {
     this.#logEntries.push(log);
     if (this.#logEntries.length > this.#MAX_LOGS) {
       this.#logEntries.shift();
     }
-  }
+  };
 
   /**
    * レンダラープロセス側で発生したエラーをログに追加します。
    * @param message エラーメッセージ
    */
-  addError(message: string): void {
+  addError = (message: string): void => {
     this.addLog(createLogMessage('ERROR', message));
-  }
+  };
 
   /**
    * レンダラープロセス側で発生した警告をログに追加します。
    * @param message 警告メッセージ
    */
-  addWarn(message: string): void {
+  addWarn = (message: string): void => {
     this.addLog(createLogMessage('WARN', message));
-  }
+  };
 }
 
 /**
