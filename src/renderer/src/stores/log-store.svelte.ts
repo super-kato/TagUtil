@@ -1,4 +1,4 @@
-import type { LogMessage } from '@domain/common/log';
+import type { LogMessage, LogLevel } from '@domain/common/log';
 import { generateId } from '@shared/utils/id';
 
 const DEFAULT_MAX_LOGS = 100;
@@ -37,12 +37,7 @@ class LogStore {
    * @param message エラーメッセージ
    */
   addError(message: string): void {
-    this.addLog({
-      id: generateId(),
-      level: 'ERROR',
-      message,
-      timestamp: Date.now()
-    });
+    this.#addEntry(message, 'ERROR');
   }
 
   /**
@@ -50,9 +45,16 @@ class LogStore {
    * @param message 警告メッセージ
    */
   addWarn(message: string): void {
+    this.#addEntry(message, 'WARN');
+  }
+
+  /**
+   * 指定されたレベルとメッセージでログエントリーを追加します。
+   */
+  #addEntry(message: string, level: LogLevel): void {
     this.addLog({
       id: generateId(),
-      level: 'WARN',
+      level,
       message,
       timestamp: Date.now()
     });
