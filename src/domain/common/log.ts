@@ -1,4 +1,4 @@
-import { generateId } from './id';
+import { generateId } from '@shared/utils/id';
 
 /**
  * ログレベルの定義。

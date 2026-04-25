@@ -6,6 +6,7 @@ import { uiState } from '@renderer/stores/ui-state.svelte';
 import { logStore } from '@renderer/stores/log-store.svelte';
 import { tagEditor } from './tag-editor';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
+import { MESSAGES } from '@shared/constants/messages';
 
 /**
  * スキャン処理の共通的なフローを制御するヘルパー関数。
@@ -25,7 +26,7 @@ const handleScanOperation = async (
       trackStore.tracks = tracks;
 
       if (isLimited) {
-        logStore.addWarn('Scan limit (500 items) reached. Some files were skipped.');
+        logStore.addWarn(MESSAGES.SCAN_LIMIT_EXCEEDED);
       }
     }
   } finally {

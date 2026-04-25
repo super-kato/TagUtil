@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { LogLevel } from '@shared/utils/log';
+  import type { LogLevel } from '@domain/common/log';
   import { ChevronUp, CircleAlert, Info, TriangleAlert, type LucideProps } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';

@@ -1,4 +1,4 @@
-import { createLogMessage, type LogMessage } from '@shared/utils/log';
+import { createLogMessage, type LogMessage } from '@domain/common/log';
 
 const DEFAULT_MAX_LOGS = 100;
 

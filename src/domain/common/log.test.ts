@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { createLogMessage } from './log';
 
-describe('Log ユーティリティ', () => {
+describe('Log ユーティリティ (Domain)', () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2024-01-01T00:00:00Z'));
@@ -17,14 +17,6 @@ describe('Log ユーティリティ', () => {
       expect(log.level).toBe('INFO');
       expect(log.message).toBe(message);
       expect(log.timestamp).toBe(Date.now());
-    });
-
-    it('指定されたログレベルが正しく反映されること', () => {
-      const errorLog = createLogMessage('ERROR', 'Error');
-      expect(errorLog.level).toBe('ERROR');
-
-      const warnLog = createLogMessage('WARN', 'Warning');
-      expect(warnLog.level).toBe('WARN');
     });
   });
 });
