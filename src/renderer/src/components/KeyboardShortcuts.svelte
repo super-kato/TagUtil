@@ -15,6 +15,11 @@
       enabled: () => !isInputFocused() && !uiState.isLoading
     },
     {
+      combo: { key: 'o', ctrl: true },
+      handler: () => tagActions.openAndScanDirectory(),
+      enabled: () => !uiState.isLoading
+    },
+    {
       combo: { key: 's', ctrl: true },
       handler: () => tagActions.saveAllModified(),
       enabled: () => !uiState.isLoading
