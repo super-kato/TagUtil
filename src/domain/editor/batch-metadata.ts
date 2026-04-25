@@ -1,6 +1,6 @@
 import type { FlacMetadata, Picture, StreamInfo } from '@domain/flac/types';
 import type { ElementType } from '@shared/types';
-import { arraysEqual } from '@shared/utils/array';
+import { isDeepEqual } from '@shared/utils/equality';
 
 export type FieldState<T> =
   | { type: 'uniform'; value: T }
@@ -97,7 +97,7 @@ const deriveMultiValueTags = (metadataList: FlacMetadata[]): MultiFieldSummary =
 
   for (const key of EDITABLE_MULTI_KEYS) {
     const firstValue = metadataList[0][key];
-    const allSame = metadataList.every((meta) => arraysEqual(meta[key], firstValue));
+    const allSame = metadataList.every((meta) => isDeepEqual(meta[key], firstValue));
 
     if (allSame) {
       result[key] = { type: 'uniform', value: firstValue };
