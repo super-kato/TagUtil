@@ -3,7 +3,8 @@ import { uiState } from './ui-state.svelte';
 
 describe('UiState', () => {
   beforeEach(() => {
-    uiState.reset();
+    uiState.stopLoading();
+    uiState.setScanLimited(false);
   });
 
   it('初期状態が正しいこと', () => {
@@ -29,11 +30,12 @@ describe('UiState', () => {
     expect(uiState.isScanLimited).toBe(false);
   });
 
-  it('reset で全ての状態が初期化されること', () => {
+  it('状態をクリアできること', () => {
     uiState.startLoading();
     uiState.setScanLimited(true);
 
-    uiState.reset();
+    uiState.stopLoading();
+    uiState.setScanLimited(false);
 
     expect(uiState.isLoading).toBe(false);
     expect(uiState.isScanLimited).toBe(false);

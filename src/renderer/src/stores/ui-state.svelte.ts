@@ -27,14 +27,6 @@ class UiState {
   setScanLimited(limited: boolean): void {
     this.#isScanLimited = limited;
   }
-
-  /**
-   * 制限フラグを含むすべての状態をリセットします。
-   */
-  reset(): void {
-    this.stopLoading();
-    this.#isScanLimited = false;
-  }
 }
 
 export const uiState = new UiState();
