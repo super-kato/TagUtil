@@ -30,6 +30,19 @@ class LogStore {
       this.#logEntries.shift();
     }
   }
+
+  /**
+   * レンダラープロセス側で発生したエラーをログに追加します。
+   * @param message エラーメッセージ
+   */
+  addError(message: string): void {
+    this.addLog({
+      id: crypto.randomUUID(),
+      level: 'ERROR',
+      message,
+      timestamp: Date.now()
+    });
+  }
 }
 
 /**

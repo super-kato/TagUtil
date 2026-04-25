@@ -6,6 +6,10 @@ import { selectionState } from '@renderer/stores/selection-state.svelte';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
 import { getDirectoryName, joinPath } from '@renderer/infrastructure/adapters/path-adapter';
+import { logStore } from '@renderer/stores/log-store.svelte';
+import { formatTagError } from '@shared/utils/tag-error-formatter';
+import { failure, success, type Result } from '@domain/common/result';
+import type { TagError } from '@domain/flac/types';
 
 /**
  * 選択中のファイルをメタデータに基づいてリネームします。
@@ -17,7 +21,6 @@ const renameSelectedFiles = async (): Promise<void> => {
   }
 
   uiState.startLoading();
-  uiState.clearError();
 
   try {
     const renamedMap = await executeRenameLoop(selected);
@@ -40,15 +43,14 @@ const executeRenameLoop = async (selected: TrackRecord[]): Promise<Map<string, T
   const renamedMap = new Map<string, TrackRecord>();
 
   for (const track of selected) {
-    const updatedRecord = await renameTrack(track);
+    const result = await renameTrack(track);
 
-    if (updatedRecord) {
-      renamedMap.set(track.path, updatedRecord);
+    if (result.type === 'error') {
+      break;
     }
 
-    // 各トラックの処理中にエラーが発生した場合はループを即時中断
-    if (uiState.error) {
-      break;
+    if (result.value) {
+      renamedMap.set(track.path, result.value);
     }
   }
 
@@ -57,38 +59,38 @@ const executeRenameLoop = async (selected: TrackRecord[]): Promise<Map<string, T
 
 /**
  * 単一のトラックに対して、ファイル名生成、パス計算、リネーム実行、再読み込みの一連の処理を行います。
- * 成功した場合は新しい TrackRecord を返し、スキップ（変更不要など）やエラー時は null を返します。
+ * 成功した場合は新しい TrackRecord を返し、スキップ（変更不要など）時は null を返します。
  */
-const renameTrack = async (track: TrackRecord): Promise<TrackRecord | null> => {
+const renameTrack = async (track: TrackRecord): Promise<Result<TrackRecord | null, TagError>> => {
   // 1. フォーマット処理（メタデータが足りない場合は Result 型のエラーが返る）
   const filenameResult = formatFlacFilename(track.toFlacTrack());
   if (filenameResult.type === 'error') {
-    uiState.setError(filenameResult);
-    return null;
+    // レンダラー側のエラーなので明示的にログ追加
+    logStore.addError(formatTagError(filenameResult.error));
+    return failure(filenameResult.error);
   }
 
   // 2. 新しいパスの取得と重複チェック（既存のフォルダ構造を維持して置換）
   const dir = await getDirectoryName(track.path);
   const newPath = await joinPath(dir, filenameResult.value);
   if (track.path === newPath) {
-    return null;
+    return success(null);
   }
 
   // 3. 物理的なリネーム実行
   const result = await fileRepository.renameFile(track.path, newPath);
   if (result.type === 'error') {
-    uiState.setError(result);
-    return null;
+    // メインプロセス側で既にログ出力されているため、ここでは Result を返すのみ
+    return failure(result.error);
   }
 
   // 3. 成功時: 再読み込みして新しい不変インスタンスを作成
   const reloadResult = await tagRepository.readMetadata(newPath);
   if (reloadResult.type === 'error') {
-    uiState.setError(reloadResult);
-    return null;
+    return failure(reloadResult.error);
   }
 
-  return new TrackRecord(newPath, reloadResult.value.metadata);
+  return success(new TrackRecord(newPath, reloadResult.value.metadata));
 };
 
 /**

@@ -35,9 +35,6 @@
 
   /** メインバーに表示する現在の状態 */
   const displayState = $derived.by(() => {
-    if (uiState.error) {
-      return { level: 'ERROR' as LogLevel, message: uiState.error };
-    }
     if (uiState.isScanLimited) {
       return {
         level: 'WARN' as LogLevel,
