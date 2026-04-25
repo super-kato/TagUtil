@@ -3,6 +3,7 @@ import type { FlacTrack, TagResult } from '@domain/flac/types';
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
+import { logStore } from '@renderer/stores/log-store.svelte';
 import { tagEditor } from './tag-editor';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 
@@ -22,7 +23,10 @@ const handleScanOperation = async (
       const tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
 
       trackStore.tracks = tracks;
-      uiState.setScanLimited(isLimited);
+
+      if (isLimited) {
+        logStore.addWarn('Scan limit (500 items) reached. Some files were skipped.');
+      }
     }
   } finally {
     uiState.stopLoading();

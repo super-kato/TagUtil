@@ -17,7 +17,6 @@ describe('fileActions', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     uiState.stopLoading();
-    uiState.setScanLimited(false);
     trackStore.tracks = [];
     selectionState.items.clear();
     vi.spyOn(tagRepository, 'readMetadata');

@@ -43,6 +43,19 @@ class LogStore {
       timestamp: Date.now()
     });
   }
+
+  /**
+   * レンダラープロセス側で発生した警告をログに追加します。
+   * @param message 警告メッセージ
+   */
+  addWarn(message: string): void {
+    this.addLog({
+      id: crypto.randomUUID(),
+      level: 'WARN',
+      message,
+      timestamp: Date.now()
+    });
+  }
 }
 
 /**

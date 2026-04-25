@@ -4,7 +4,6 @@
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
   import { logStore } from '@renderer/stores/log-store.svelte';
-  import { uiState } from '@renderer/stores/ui-state.svelte';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
   import { formatLogTime } from '@shared/utils/date';
   import type { Component } from 'svelte';
@@ -34,15 +33,7 @@
   ] as const);
 
   /** メインバーに表示する現在の状態 */
-  const displayState = $derived.by(() => {
-    if (uiState.isScanLimited) {
-      return {
-        level: 'WARN' as LogLevel,
-        message: 'Scan limit (500 items) reached. Some files were skipped.'
-      };
-    }
-    return logStore.latestLog;
-  });
+  const displayState = $derived(logStore.latestLog);
 </script>
 
 <footer class="status-bar" class:expanded={isExpanded}>

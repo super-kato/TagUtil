@@ -1,16 +1,11 @@
 /**
- * アプリケーション全体の通知・ステータスメッセージを管理するストア。
+ * アプリケーション全体の共通的なUI状態（ローディング表示など）を管理するストア。
  */
 class UiState {
   #isLoading = $state(false);
-  #isScanLimited = $state(false);
 
   get isLoading(): boolean {
     return this.#isLoading;
-  }
-
-  get isScanLimited(): boolean {
-    return this.#isScanLimited;
   }
 
   startLoading(): void {
@@ -19,13 +14,6 @@ class UiState {
 
   stopLoading(): void {
     this.#isLoading = false;
-  }
-
-  /**
-   * スキャンの件数制限に達したかどうかのフラグを更新します。
-   */
-  setScanLimited(limited: boolean): void {
-    this.#isScanLimited = limited;
   }
 }
 
