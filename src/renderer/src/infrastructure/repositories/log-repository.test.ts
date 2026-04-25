@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, type MockInstance } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { logRepository } from './log-repository';
 
 describe('LogRepository', () => {
@@ -13,7 +13,7 @@ describe('LogRepository', () => {
   it('subscribe が window.api.onLogMessage を呼び出すこと', () => {
     const callback = vi.fn();
     const unsubscribeMock = vi.fn();
-    (window.api.onLogMessage as unknown as MockInstance).mockReturnValue(unsubscribeMock);
+    vi.mocked(window.api.onLogMessage).mockReturnValue(unsubscribeMock);
 
     const result = logRepository.subscribe(callback);
 
