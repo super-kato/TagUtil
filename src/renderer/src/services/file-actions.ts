@@ -8,7 +8,7 @@ import { fileRepository } from '@renderer/infrastructure/repositories/file-repos
 import { getDirectoryName, joinPath } from '@renderer/infrastructure/adapters/path-adapter';
 import { logStore } from '@renderer/stores/log-store.svelte';
 import { formatTagError } from '@domain/flac/tag-error-formatter';
-import { failure, success, type Result } from '@domain/common/result';
+import { success, type Result } from '@domain/common/result';
 import type { TagError } from '@domain/flac/types';
 
 /**
@@ -67,7 +67,7 @@ const renameTrack = async (track: TrackRecord): Promise<Result<TrackRecord | nul
   if (filenameResult.type === 'error') {
     // レンダラー側のエラーなので明示的にログ追加
     logStore.addError(formatTagError(filenameResult.error));
-    return failure(filenameResult.error);
+    return filenameResult;
   }
 
   // 2. 新しいパスの取得と重複チェック（既存のフォルダ構造を維持して置換）
@@ -81,13 +81,13 @@ const renameTrack = async (track: TrackRecord): Promise<Result<TrackRecord | nul
   const result = await fileRepository.renameFile(track.path, newPath);
   if (result.type === 'error') {
     // メインプロセス側で既にログ出力されているため、ここでは Result を返すのみ
-    return failure(result.error);
+    return result;
   }
 
   // 3. 成功時: 再読み込みして新しい不変インスタンスを作成
   const reloadResult = await tagRepository.readMetadata(newPath);
   if (reloadResult.type === 'error') {
-    return failure(reloadResult.error);
+    return reloadResult;
   }
 
   return success(new TrackRecord(newPath, reloadResult.value.metadata));
