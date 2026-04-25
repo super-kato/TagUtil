@@ -6,7 +6,7 @@ import { LogMessage, LogLevel } from '@domain/common/log';
  * EventEmitter を継承し、ログ出力時にイベントを発火させます。
  */
 class Logger extends EventEmitter {
-  private static instance: Logger;
+  static #instance: Logger;
 
   private constructor() {
     super();
@@ -16,10 +16,10 @@ class Logger extends EventEmitter {
    * Logger のシングルトンインスタンスを取得します。
    */
   public static getInstance(): Logger {
-    if (!Logger.instance) {
-      Logger.instance = new Logger();
+    if (!Logger.#instance) {
+      Logger.#instance = new Logger();
     }
-    return Logger.instance;
+    return Logger.#instance;
   }
 
   /**
@@ -27,7 +27,7 @@ class Logger extends EventEmitter {
    * @param level ログレベル
    * @param message メッセージ
    */
-  public log(level: LogLevel, message: string): void {
+  #log(level: LogLevel, message: string): void {
     const logMessage: LogMessage = {
       level,
       message,
@@ -41,15 +41,15 @@ class Logger extends EventEmitter {
   }
 
   public info(message: string): void {
-    this.log('info', message);
+    this.#log('info', message);
   }
 
   public warn(message: string): void {
-    this.log('warn', message);
+    this.#log('warn', message);
   }
 
   public error(message: string): void {
-    this.log('error', message);
+    this.#log('error', message);
   }
 }
 

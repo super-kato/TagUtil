@@ -3,30 +3,29 @@ import { getDirname, joinPaths } from '@services/platform/path';
 import { getPlatform } from '@services/platform/platform';
 import { IPC_CHANNELS } from '@shared/ipc';
 import { type Platform } from '@shared/platform';
-
-import { ipcMain } from 'electron';
+import { handleWithLogging } from './handler-utils';
 
 /**
  * プラットフォーム汎用（OSダイアログ等）のIPCハンドラーを登録します。
  */
 export const registerPlatformHandlers = (): void => {
   // フォルダ選択ダイアログを表示
-  ipcMain.handle(IPC_CHANNELS.SELECT_DIRECTORY, async () => {
+  handleWithLogging(IPC_CHANNELS.SELECT_DIRECTORY, async () => {
     return await selectDirectory();
   });
 
   // プラットフォームを取得
-  ipcMain.handle(IPC_CHANNELS.GET_PLATFORM, (): Platform => {
+  handleWithLogging(IPC_CHANNELS.GET_PLATFORM, async (): Promise<Platform> => {
     return getPlatform();
   });
 
   // ディレクトリ名を取得
-  ipcMain.handle(IPC_CHANNELS.PATH_DIRNAME, (_event, p: string) => {
+  handleWithLogging(IPC_CHANNELS.PATH_DIRNAME, async (_event, p: string) => {
     return getDirname(p);
   });
 
   // パスを結合
-  ipcMain.handle(IPC_CHANNELS.PATH_JOIN, (_event, ...paths: string[]) => {
+  handleWithLogging(IPC_CHANNELS.PATH_JOIN, async (_event, ...paths: string[]) => {
     return joinPaths(...paths);
   });
 };
