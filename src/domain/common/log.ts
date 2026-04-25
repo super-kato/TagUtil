@@ -1,4 +1,5 @@
 import { generateId } from '@shared/utils/id';
+import { getCurrentTimestamp } from '@shared/utils/date';
 
 /**
  * ログレベルの定義。
@@ -35,6 +36,6 @@ export const createLogMessage = (level: LogLevel, message: string): LogMessage =
     id: generateId(),
     level,
     message,
-    timestamp: Date.now()
+    timestamp: getCurrentTimestamp()
   };
 };

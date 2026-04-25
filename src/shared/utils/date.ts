@@ -15,3 +15,10 @@ export const formatLogTime = (timestamp: number): string => {
 
   return new Intl.DateTimeFormat('ja-JP', options).format(date);
 };
+
+/**
+ * 現在のタイムスタンプ（ミリ秒）を取得します。
+ */
+export const getCurrentTimestamp = (): number => {
+  return Date.now();
+};
