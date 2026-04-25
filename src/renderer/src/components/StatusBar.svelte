@@ -8,7 +8,7 @@
   import { formatLogTime } from '@shared/utils/date';
   import type { Component } from 'svelte';
   import { flip } from 'svelte/animate';
-  import { fly, slide } from 'svelte/transition';
+  import { fade, slide } from 'svelte/transition';
 
   const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
     ['INFO', Info],
@@ -81,7 +81,7 @@
           {@const ICON = levelIcons.get(log.level)}
           <div
             class="log-entry {log.level}"
-            transition:fly={{ y: 10, duration: 200 }}
+            transition:fade={{ duration: 200 }}
             animate:flip={{ duration: 200 }}
           >
             <span class="log-time">[{formatLogTime(log.timestamp)}]</span>
