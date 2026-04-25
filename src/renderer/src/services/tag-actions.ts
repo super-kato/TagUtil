@@ -1,12 +1,12 @@
+import { MESSAGES } from '@domain/common/messages';
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
 import type { FlacTrack, TagResult } from '@domain/flac/types';
-import { trackStore } from '@renderer/stores/track-store.svelte';
-import { TrackRecord } from '@renderer/stores/track-record.svelte';
-import { uiState } from '@renderer/stores/ui-state.svelte';
-import { logStore } from '@renderer/stores/log-store.svelte';
-import { tagEditor } from './tag-editor';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
-import { MESSAGES } from '@domain/common/messages';
+import { logStore } from '@renderer/stores/log-store.svelte';
+import { TrackRecord } from '@renderer/stores/track-record.svelte';
+import { trackStore } from '@renderer/stores/track-store.svelte';
+import { uiState } from '@renderer/stores/ui-state.svelte';
+import { tagEditor } from './tag-editor';
 
 /**
  * スキャン処理の共通的なフローを制御するヘルパー関数。
@@ -24,9 +24,7 @@ const handleScanOperation = async (
     }
 
     const { tracks: rawTracks, isLimited } = result.value;
-    const tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
-
-    trackStore.tracks = tracks;
+    trackStore.tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
 
     if (isLimited) {
       logStore.addWarn(MESSAGES.SCAN_LIMIT_EXCEEDED);
@@ -159,10 +157,12 @@ const saveAllModified = async (): Promise<void> => {
     const rawData = modified.map((t) => t.toFlacTrack());
     const result = await tagRepository.saveTracks(rawData);
 
-    if (result.type === 'success') {
-      for (const track of modified) {
-        track.markAsSaved();
-      }
+    if (result.type !== 'success') {
+      return;
+    }
+
+    for (const track of modified) {
+      track.markAsSaved();
     }
   } finally {
     uiState.stopLoading();
