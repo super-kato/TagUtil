@@ -1,4 +1,4 @@
-import type { LogMessage } from '@domain/common/log';
+import type { LogHandler, LogMessage } from '@domain/common/log';
 import type { FlacTrack } from '@domain/flac/types';
 import type { IpcApi } from '@shared/ipc';
 import { IPC_CHANNELS } from '@shared/ipc';
@@ -63,12 +63,10 @@ export const api: IpcApi = {
    * @param callback ログメッセージを受け取るコールバック
    * @returns 登録解除用の関数
    */
-  onLogMessage: (callback: (message: LogMessage) => void) => {
-    const subscription = (_event: IpcRendererEvent, message: LogMessage): void => callback(message);
+  onLogMessage: (callback: LogHandler) => {
+    const subscription = (_: IpcRendererEvent, message: LogMessage): void => callback(message);
     ipcRenderer.on(IPC_CHANNELS.ON_LOG_MESSAGE, subscription);
-    return () => {
-      ipcRenderer.removeListener(IPC_CHANNELS.ON_LOG_MESSAGE, subscription);
-    };
+    return () => ipcRenderer.removeListener(IPC_CHANNELS.ON_LOG_MESSAGE, subscription);
   }
 };
 

@@ -1,26 +1,14 @@
 import { EventEmitter } from 'node:events';
-import { LogMessage, LogLevel } from '@domain/common/log';
+import { LogMessage, LogLevel, LogHandler } from '@domain/common/log';
+import { generateId } from '@main/utils/crypto';
 
 /**
  * アプリケーション全体のログ管理を行うクラス。
  * EventEmitter を継承し、ログ出力時にイベントを発火させます。
+ * クラス自体は非公開とし、シングルトンインスタンスのみを公開します。
  */
 class Logger extends EventEmitter {
-  static #instance: Logger;
-
-  private constructor() {
-    super();
-  }
-
-  /**
-   * Logger のシングルトンインスタンスを取得します。
-   */
-  public static getInstance(): Logger {
-    if (!Logger.#instance) {
-      Logger.#instance = new Logger();
-    }
-    return Logger.#instance;
-  }
+  static readonly #LOG_EVENT = 'log';
 
   /**
    * ログを出力し、イベントを発火させます。
@@ -29,36 +17,40 @@ class Logger extends EventEmitter {
    */
   #log(level: LogLevel, message: string): void {
     const logMessage: LogMessage = {
+      id: generateId(),
       level,
       message,
       timestamp: Date.now()
     };
-    this.emit('log', logMessage);
+    this.emit(Logger.#LOG_EVENT, logMessage);
 
     // 標準出力にも出す
-    const timestamp = new Date(logMessage.timestamp).toLocaleTimeString();
-    console.log(`[${timestamp}] [${level.toUpperCase()}] ${message}`);
+    const timestamp = new Date(logMessage.timestamp).toISOString();
+    console.log(`[${timestamp}] [${level}] ${message}`);
   }
 
   public info(message: string): void {
-    this.#log('info', message);
+    this.#log('INFO', message);
   }
 
   public warn(message: string): void {
-    this.#log('warn', message);
+    this.#log('WARN', message);
   }
 
   public error(message: string): void {
-    this.#log('error', message);
+    this.#log('ERROR', message);
   }
 
   /**
    * ログイベントのリスナーを登録します。
    * イベント名を隠蔽し、型安全な購読を提供します。
    */
-  public onLog(handler: (log: LogMessage) => void): void {
-    this.on('log', handler);
+  public onLog(handler: LogHandler): void {
+    this.on(Logger.#LOG_EVENT, handler);
   }
 }
 
-export const logger = Logger.getInstance();
+/**
+ * Logger のシングルトンインスタンス。
+ */
+export const logger = new Logger();

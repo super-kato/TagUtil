@@ -9,13 +9,6 @@ describe('Logger', () => {
     vi.spyOn(console, 'log').mockImplementation(() => {});
   });
 
-  it('シングルトンインスタンスであること', () => {
-    const instance1 = logger;
-    // getInstance() は private constructor なので直接呼べないが、
-    // エクスポートされているインスタンスが同一であることを確認
-    expect(instance1).toBeDefined();
-  });
-
   describe('ログ出力メソッド', () => {
     it('info() が正しくログイベントを発火させること', () => {
       const handler = vi.fn();
@@ -25,7 +18,8 @@ describe('Logger', () => {
 
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          level: 'info',
+          id: expect.any(String),
+          level: 'INFO',
           message: 'test info message',
           timestamp: expect.any(Number)
         })
@@ -40,7 +34,8 @@ describe('Logger', () => {
 
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          level: 'warn',
+          id: expect.any(String),
+          level: 'WARN',
           message: 'test warn message'
         })
       );
@@ -54,7 +49,8 @@ describe('Logger', () => {
 
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
-          level: 'error',
+          id: expect.any(String),
+          level: 'ERROR',
           message: 'test error message'
         })
       );
@@ -64,9 +60,7 @@ describe('Logger', () => {
       logger.info('console test');
       expect(console.log).toHaveBeenCalled();
       // 出力フォーマットの断片を確認
-      expect(console.log).toHaveBeenCalledWith(
-        expect.stringContaining('[INFO] console test')
-      );
+      expect(console.log).toHaveBeenCalledWith(expect.stringContaining('[INFO] console test'));
     });
   });
 

@@ -1,4 +1,5 @@
 import { FlacTrack } from '@domain/flac/types';
+import { withResultLogging } from '@main/infrastructure/logging/result-logging';
 import { getImageInfo, pickImage } from '@services/flac/image';
 import { readMetadata } from '@services/flac/reader';
 import { renameFile } from '@services/flac/renamer';
@@ -6,7 +7,6 @@ import { scanDirectory } from '@services/flac/scanner';
 import { writeMetadata } from '@services/flac/writer';
 import { IPC_CHANNELS } from '@shared/ipc';
 import { ipcMain } from 'electron';
-import { withResultLogging } from '@main/infrastructure/logging/result-logging';
 
 /** FLAC関連のIPCハンドラーを登録 */
 export const registerFlacHandlers = (): void => {
@@ -25,7 +25,7 @@ export const registerFlacHandlers = (): void => {
     return withResultLogging(
       IPC_CHANNELS.SCAN_DIRECTORY,
       () => scanDirectory(targetPaths),
-      targetPaths.join(', ')
+      targetPaths
     );
   });
 
@@ -44,7 +44,8 @@ export const registerFlacHandlers = (): void => {
     return withResultLogging(
       IPC_CHANNELS.RENAME_FILE,
       () => renameFile(oldPath, newPath),
-      `${oldPath} -> ${newPath}`
+      oldPath,
+      newPath
     );
   });
 };

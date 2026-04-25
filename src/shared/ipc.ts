@@ -1,7 +1,7 @@
+import type { LogHandler } from '@domain/common/log';
 import type { FlacTrack, Picture, ScanResult, TagResult } from '@domain/flac/types';
 import type { Platform } from './platform';
-
-import type { LogMessage } from '@domain/common/log';
+import type { Unsubscribe } from './types';
 
 /**
  * カスタムプロトコルのスキーム名。
@@ -66,5 +66,5 @@ export interface IpcApi {
   /** 実行環境のプラットフォームを取得します */
   getPlatform: () => Promise<Platform>;
   /** ログメッセージを受信した時のコールバックを登録します */
-  onLogMessage: (callback: (message: LogMessage) => void) => () => void;
+  onLogMessage: (callback: LogHandler) => Unsubscribe;
 }

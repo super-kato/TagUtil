@@ -14,9 +14,9 @@ import { formatTagError } from '@shared/utils/tag-error-formatter';
 export const withResultLogging = async <R extends TagResult<unknown>>(
   context: string,
   task: () => Promise<R>,
-  message?: string
+  ...params: unknown[]
 ): Promise<R> => {
-  const logPrefix = message ? ` ${message}` : '';
+  const logPrefix = params.length > 0 ? ` ${params.join(', ')}` : '';
 
   try {
     const result = await task();
