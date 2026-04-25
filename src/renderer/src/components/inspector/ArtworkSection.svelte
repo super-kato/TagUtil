@@ -117,7 +117,7 @@
   }
 
   .cover-art {
-    object-fit: cover;
+    object-fit: contain;
     transition: transform 0.3s ease;
   }
 
