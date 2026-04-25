@@ -16,7 +16,8 @@
   };
 
   let logListElement: HTMLDivElement | undefined = $state();
-  let isAtBottom = true;
+  let isAtBottom = $state(true);
+
   const SCROLL_THRESHOLD_PX = 10;
 
   // DOM更新前に現在のスクロール位置が下端に近いか判定
