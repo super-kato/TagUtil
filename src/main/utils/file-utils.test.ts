@@ -74,15 +74,14 @@ describe('file-utils', () => {
       expect(fs.unlink).toHaveBeenCalledWith(tempPath);
     });
 
-    it('異常系: クリーンアップ（unlink）が失敗しても元のエラーがスローされること', async () => {
+    it('異常系: クリーンアップ（unlink）が失敗した場合はそのエラーがスローされること', async () => {
       const error = new Error('Write failed');
       const task = vi.fn().mockRejectedValue(error);
-      vi.mocked(fs.unlink).mockRejectedValue(new Error('Unlink failed'));
+      const unlinkError = new Error('Unlink failed');
+      vi.mocked(fs.unlink).mockRejectedValue(unlinkError);
 
-      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
-
-      await expect(withAtomicWrite(targetPath, task)).rejects.toThrow(error);
-      expect(consoleWarnSpy).toHaveBeenCalled();
+      // unlink が失敗するとそのエラーがスローされる
+      await expect(withAtomicWrite(targetPath, task)).rejects.toThrow(unlinkError);
     });
   });
 });

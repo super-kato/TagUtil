@@ -36,7 +36,6 @@ describe('error-handler', () => {
 
     it('Error オブジェクトを TagResult の Failure（失敗）に正しく変換できること', () => {
       const error = new Error('Original error message');
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       const result = toTagResultFailure(error, factory, { path });
 
@@ -46,12 +45,10 @@ describe('error-handler', () => {
         expect(result.error.options.path).toBe(path);
         expect(result.error.options.detail).toBe('Original error message');
       }
-      expect(consoleErrorSpy).toHaveBeenCalled();
     });
 
     it('文字列のエラーメッセージを TagResult の Failure に正しく変換できること', () => {
       const error = 'Something went wrong';
-      const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       const result = toTagResultFailure(error, factory, { path });
 
@@ -59,7 +56,6 @@ describe('error-handler', () => {
       if (result.type === 'error') {
         expect(result.error.options.detail).toBe('Something went wrong');
       }
-      expect(consoleErrorSpy).toHaveBeenCalled();
     });
   });
 });

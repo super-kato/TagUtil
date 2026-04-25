@@ -4,6 +4,7 @@ import path from 'node:path';
 import { pathToFileURL } from 'url';
 import { extractEmbeddedImage } from '@services/flac/image';
 import { isSupportedAudioFile } from '@main/utils/file-utils';
+import { logger } from '@main/services/platform/logger';
 import { ProtocolError, isProtocolError } from './error';
 
 /**
@@ -25,7 +26,7 @@ export const handleImageRequest = async (request: Request): Promise<Response> =>
     // それ以外の場合（外部画像ファイル等）: ローカルファイルを直接配信
     return await serveLocalFile(filePath);
   } catch (error: unknown) {
-    console.error(`[Protocol] Error serving ${request.url}:`, error);
+    logger.error(`[Protocol] Error serving ${request.url}:`, error);
     return toErrorResponse(error);
   }
 };
@@ -68,7 +69,7 @@ const toErrorResponse = (error: unknown): Response => {
     return new Response(error.message, { status: error.status });
   }
 
-  console.error('[Protocol] Unexpected error:', error);
+  logger.error('[Protocol] Unexpected error:', error);
   return new Response('Internal Server Error', { status: HTTP_STATUS.INTERNAL_SERVER_ERROR });
 };
 
