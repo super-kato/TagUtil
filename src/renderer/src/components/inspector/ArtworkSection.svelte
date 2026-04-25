@@ -1,14 +1,14 @@
 <script lang="ts">
-  import { UI_TOKENS } from '@renderer/constants/design-system';
   import { Music, X } from '@lucide/svelte';
+  import { UI_TOKENS } from '@renderer/constants/design-system';
+  import { IS_MAC } from '@renderer/constants/platform';
   import { tagActions } from '@renderer/services/tag-actions';
   import { trackStore } from '@renderer/stores/track-store.svelte';
-  import { IS_MAC } from '@renderer/constants/platform';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
   let imageLoadError = $state(false);
 
-  // URLが変わるたびにエラー状態をリセットする
+  // URLが変わるたびに状態をリセットする
   $effect(() => {
     if (trackStore.commonImageUrl) {
       imageLoadError = false;
@@ -48,27 +48,21 @@
     tabindex="0"
     title="Click to change artwork"
   >
-    {#if trackStore.commonImageUrl}
+    {#if trackStore.commonImageUrl && !imageLoadError}
       <img
         src={trackStore.commonImageUrl}
         alt="Cover Art"
         class="cover-art"
-        class:hidden={imageLoadError}
         onerror={() => (imageLoadError = true)}
-        onload={() => (imageLoadError = false)}
       />
-      {#if !imageLoadError}
-        <button
-          class="remove-artwork no-hover-glow"
-          onclick={handleRemoveArtwork}
-          title="Remove Artwork"
-        >
-          <X size={UI_TOKENS.icons.size} />
-        </button>
-      {/if}
-    {/if}
-
-    {#if !trackStore.commonImageUrl || imageLoadError}
+      <button
+        class="remove-artwork no-hover-glow"
+        onclick={handleRemoveArtwork}
+        title="Remove Artwork"
+      >
+        <X size={UI_TOKENS.icons.size} />
+      </button>
+    {:else}
       <div
         class="cover-placeholder"
         class:error={imageLoadError}
@@ -97,13 +91,12 @@
   .artwork-section {
     width: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: var(--radius-xl);
-    overflow: hidden;
+    max-height: 500px;
     position: relative;
     cursor: pointer;
-    background-color: var(--bg-hover);
-    border: 1px solid var(--border-primary);
-    padding: 1px;
+    background-color: transparent;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
     display: grid;
     place-items: center;
   }
@@ -117,12 +110,9 @@
   }
 
   .cover-art {
+    aspect-ratio: 1 / 1;
     object-fit: contain;
     transition: transform 0.3s ease;
-  }
-
-  .cover-art.hidden {
-    display: none;
   }
 
   .art-overlay {
@@ -150,6 +140,7 @@
     padding: 0.5rem 1rem;
     border-radius: var(--radius-2xl);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    white-space: nowrap;
   }
 
   .remove-artwork {
@@ -186,6 +177,8 @@
     color: var(--text-dim);
     border: 2px dashed var(--border-primary);
     border-radius: var(--radius-xl);
+    background-color: var(--bg-hover);
+    gap: 0.5rem;
   }
 
   .cover-placeholder.error {
