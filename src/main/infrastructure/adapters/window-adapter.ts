@@ -7,9 +7,10 @@ import { BrowserWindow } from 'electron';
 const sendToAllWindows = (channel: string, data: unknown): void => {
   const windows = BrowserWindow.getAllWindows();
   for (const window of windows) {
-    if (!window.isDestroyed()) {
-      window.webContents.send(channel, data);
+    if (window.isDestroyed()) {
+      continue;
     }
+    window.webContents.send(channel, data);
   }
 };
 
