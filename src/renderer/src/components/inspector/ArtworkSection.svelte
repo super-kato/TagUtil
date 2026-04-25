@@ -1,14 +1,14 @@
 <script lang="ts">
+  import { Image, Music, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { Music, X } from '@lucide/svelte';
+  import { IS_MAC } from '@renderer/constants/platform';
   import { tagActions } from '@renderer/services/tag-actions';
   import { trackStore } from '@renderer/stores/track-store.svelte';
-  import { IS_MAC } from '@renderer/constants/platform';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
   let imageLoadError = $state(false);
 
-  // URLが変わるたびにエラー状態をリセットする
+  // URLが変わるたびに状態をリセットする
   $effect(() => {
     if (trackStore.commonImageUrl) {
       imageLoadError = false;
@@ -42,33 +42,28 @@
 <div class="artwork-container">
   <div
     class="artwork-section"
+    class:is-placeholder={!trackStore.commonImageUrl || imageLoadError}
     onclick={() => tagActions.pickAndApplyPicture()}
     onkeydown={(e) => handler.handle(e)}
     role="button"
     tabindex="0"
     title="Click to change artwork"
   >
-    {#if trackStore.commonImageUrl}
+    {#if trackStore.commonImageUrl && !imageLoadError}
       <img
         src={trackStore.commonImageUrl}
         alt="Cover Art"
         class="cover-art"
-        class:hidden={imageLoadError}
         onerror={() => (imageLoadError = true)}
-        onload={() => (imageLoadError = false)}
       />
-      {#if !imageLoadError}
-        <button
-          class="remove-artwork no-hover-glow"
-          onclick={handleRemoveArtwork}
-          title="Remove Artwork"
-        >
-          <X size={UI_TOKENS.icons.size} />
-        </button>
-      {/if}
-    {/if}
-
-    {#if !trackStore.commonImageUrl || imageLoadError}
+      <button
+        class="remove-artwork no-hover-glow"
+        onclick={handleRemoveArtwork}
+        title="Remove Artwork"
+      >
+        <X size={UI_TOKENS.icons.size} />
+      </button>
+    {:else}
       <div
         class="cover-placeholder"
         class:error={imageLoadError}
@@ -82,7 +77,9 @@
     {/if}
 
     <div class="art-overlay">
-      <span>Change Artwork</span>
+      <div class="icon-box">
+        <Image size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
+      </div>
     </div>
   </div>
 </div>
@@ -90,25 +87,33 @@
 <style>
   .artwork-container {
     width: 90%;
+    height: 240px;
     margin: 0 auto 2rem auto;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .artwork-section {
-    width: 100%;
-    aspect-ratio: 1 / 1;
-    border-radius: var(--radius-xl);
-    overflow: hidden;
+    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
     position: relative;
     cursor: pointer;
-    background-color: var(--bg-hover);
-    border: 1px solid var(--border-primary);
-    padding: 1px;
+    background-color: transparent;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
     display: grid;
     place-items: center;
+    width: fit-content;
   }
 
-  .cover-art,
+  .artwork-section.is-placeholder {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
   .cover-placeholder,
   .art-overlay {
     grid-area: 1 / 1;
@@ -117,12 +122,14 @@
   }
 
   .cover-art {
-    object-fit: cover;
+    grid-area: 1 / 1;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 240px;
+    object-fit: contain;
+    display: block;
     transition: transform 0.3s ease;
-  }
-
-  .cover-art.hidden {
-    display: none;
   }
 
   .art-overlay {
@@ -140,16 +147,25 @@
     opacity: 1;
   }
 
-  .art-overlay span {
+  .art-overlay .icon-box {
     color: white;
-    font-size: 0.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 0.5rem 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    padding: 1rem;
     border-radius: var(--radius-2xl);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.2s ease;
+  }
+
+  .artwork-section:hover .art-overlay .icon-box {
+    transform: scale(1.05);
+    background: rgba(0, 0, 0, 0.7);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
   }
 
   .remove-artwork {
@@ -186,6 +202,8 @@
     color: var(--text-dim);
     border: 2px dashed var(--border-primary);
     border-radius: var(--radius-xl);
+    background-color: var(--bg-hover);
+    gap: 0.5rem;
   }
 
   .cover-placeholder.error {
