@@ -9,14 +9,7 @@
   import { onMount } from 'svelte';
   import { logStore } from './stores/log-store.svelte';
 
-  onMount(() => {
-    const unsubscribe = logRepository.subscribe((log) => {
-      // 開発中のデバッグ用
-      console.log('[Renderer] Log received:', log);
-      logStore.addLog(log);
-    });
-    return unsubscribe;
-  });
+  onMount(() => logRepository.subscribe((log) => logStore.addLog(log)));
 </script>
 
 <KeyboardShortcuts />
