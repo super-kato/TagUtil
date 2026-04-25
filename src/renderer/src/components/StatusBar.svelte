@@ -1,20 +1,14 @@
 <script lang="ts">
-  import {
-    ChevronUp,
-    CircleAlert,
-    CircleQuestionMark,
-    Info,
-    TriangleAlert,
-    type LucideProps
-  } from '@lucide/svelte';
+  import type { LogLevel } from '@domain/common/log';
+  import { ChevronUp, CircleAlert, Info, TriangleAlert, type LucideProps } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
   import { logStore } from '@renderer/stores/log-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
   import { formatLogTime } from '@shared/utils/date';
-  import { slide } from 'svelte/transition';
   import type { Component } from 'svelte';
+  import { slide } from 'svelte/transition';
 
   let isExpanded = $state(false);
 
@@ -22,29 +16,36 @@
     isExpanded = !isExpanded;
   };
 
-  let logListEl: HTMLDivElement | undefined = $state();
+  let logListElement: HTMLDivElement | undefined = $state();
 
   $effect(() => {
-    if (!logListEl || logStore.logs.length === 0 || !isExpanded) {
+    if (!logListElement || logStore.logs.length === 0 || !isExpanded) {
       return;
     }
-    logListEl.scrollTo({ top: logListEl.scrollHeight, behavior: 'smooth' });
+    logListElement.scrollTo({ top: logListElement.scrollHeight, behavior: 'smooth' });
   });
 
   const handler = new KeyboardHandler(IS_MAC, [{ combo: { key: 'Enter' }, handler: toggleExpand }]);
 
-  const getLevelIcon = (level: string): Component<LucideProps> => {
-    switch (level) {
-      case 'INFO':
-        return Info;
-      case 'WARN':
-        return TriangleAlert;
-      case 'ERROR':
-        return CircleAlert;
-      default:
-        return CircleQuestionMark;
+  const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
+    ['INFO', Info],
+    ['WARN', TriangleAlert],
+    ['ERROR', CircleAlert]
+  ] as const);
+
+  /** メインバーに表示する現在の状態 */
+  const displayState = $derived.by(() => {
+    if (uiState.error) {
+      return { level: 'ERROR' as LogLevel, message: uiState.error };
     }
-  };
+    if (uiState.isScanLimited) {
+      return {
+        level: 'WARN' as LogLevel,
+        message: 'Scan limit (500 items) reached. Some files were skipped.'
+      };
+    }
+    return logStore.latestLog;
+  });
 </script>
 
 <footer class="status-bar" class:expanded={isExpanded}>
@@ -57,20 +58,13 @@
     aria-label={isExpanded ? 'Collapse logs' : 'Expand logs'}
   >
     <div class="status-content">
-      {#if uiState.error}
-        <div class="status-item error">
-          <CircleAlert size={UI_TOKENS.icons.size} />
-          <span>{uiState.error}</span>
-        </div>
-      {:else if uiState.isScanLimited}
-        <div class="status-item warning">
-          <TriangleAlert size={UI_TOKENS.icons.size} />
-          <span>Scan limit (500 items) reached. Some files were skipped.</span>
-        </div>
-      {:else if logStore.latestLog}
-        <div class="status-item info">
-          <Info size={UI_TOKENS.icons.size} />
-          <span class="log-message">{logStore.latestLog.message}</span>
+      {#if displayState}
+        {@const ICON = levelIcons.get(displayState.level)}
+        <div class="status-item {displayState.level.toLowerCase()}">
+          {#if ICON}
+            <ICON size={UI_TOKENS.icons.size} />
+          {/if}
+          <span class="log-message">{displayState.message}</span>
         </div>
       {:else}
         <div class="status-item ready">
@@ -86,9 +80,9 @@
 
   {#if isExpanded}
     <div class="log-panel" transition:slide={{ duration: 300 }}>
-      <div class="log-list" bind:this={logListEl}>
+      <div class="log-list" bind:this={logListElement}>
         {#each logStore.logs as log (log.id)}
-          {@const ICON = getLevelIcon(log.level)}
+          {@const ICON = levelIcons.get(log.level)}
           <div class="log-entry {log.level}">
             <span class="log-time">[{formatLogTime(log.timestamp)}]</span>
             <div class="log-level-icon">
@@ -154,7 +148,7 @@
     font-weight: 600;
   }
 
-  .status-item.warning {
+  .status-item.warn {
     color: var(--accent-warning);
     font-weight: 500;
   }
@@ -195,7 +189,7 @@
 
   .log-list {
     flex: 1;
-    overflow: auto; /* 縦横両方のスクロールを許可 */
+    overflow: auto;
     padding: 0.5rem;
     font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
     font-size: 0.75rem;
@@ -243,8 +237,8 @@
 
   .log-text {
     color: var(--text-secondary);
-    white-space: nowrap; /* 改行を禁止 */
-    text-overflow: ellipsis; /* 溢れた場合は ... を表示 */
+    white-space: nowrap;
+    text-overflow: ellipsis;
     overflow: hidden;
     flex: 1;
   }
