@@ -2,7 +2,6 @@ import type { FlacTrack } from '@domain/flac/types';
 import type { IpcApi } from '@shared/ipc';
 import { IPC_CHANNELS } from '@shared/ipc';
 import { ipcRenderer, webUtils } from 'electron';
-import path from 'path';
 
 /**
  * Rendererプロセスに露出させるカスタムAPIの定義。
@@ -51,12 +50,11 @@ export const api: IpcApi = {
    */
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
   /**
-   * パス操作ユーティリティ。
-   * Node.js の標準実装を同期的に提供します。
+   * パス操作（メインプロセス経由）。
    */
   path: {
-    dirname: (p: string) => path.dirname(p),
-    join: (...paths: string[]) => path.join(...paths)
+    dirname: (p: string) => ipcRenderer.invoke(IPC_CHANNELS.PATH_DIRNAME, p),
+    join: (...paths: string[]) => ipcRenderer.invoke(IPC_CHANNELS.PATH_JOIN, ...paths)
   },
   getPlatform: () => ipcRenderer.invoke(IPC_CHANNELS.GET_PLATFORM)
 };

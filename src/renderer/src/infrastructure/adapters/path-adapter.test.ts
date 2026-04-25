@@ -14,11 +14,11 @@ describe('path-adapter', () => {
   });
 
   describe('getDirectoryName', () => {
-    it('window.api.path.dirname を呼び出すこと', () => {
+    it('window.api.path.dirname を呼び出すこと', async () => {
       const path = '/path/to/file.txt';
-      vi.mocked(window.api.path.dirname).mockReturnValue('/path/to');
+      vi.mocked(window.api.path.dirname).mockResolvedValue('/path/to');
 
-      const result = getDirectoryName(path);
+      const result = await getDirectoryName(path);
 
       expect(result).toBe('/path/to');
       expect(window.api.path.dirname).toHaveBeenCalledWith(path);
@@ -26,12 +26,12 @@ describe('path-adapter', () => {
   });
 
   describe('joinPath', () => {
-    it('window.api.path.join を呼び出すこと', () => {
+    it('window.api.path.join を呼び出すこと', async () => {
       const dir = '/path/to';
       const filename = 'file.txt';
-      vi.mocked(window.api.path.join).mockReturnValue('/path/to/file.txt');
+      vi.mocked(window.api.path.join).mockResolvedValue('/path/to/file.txt');
 
-      const result = joinPath(dir, filename);
+      const result = await joinPath(dir, filename);
 
       expect(result).toBe('/path/to/file.txt');
       expect(window.api.path.join).toHaveBeenCalledWith(dir, filename);

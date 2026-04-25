@@ -7,8 +7,8 @@
  * @param path 対象のフルパス
  * @returns ディレクトリパス
  */
-export const getDirectoryName = (path: string): string => {
-  return window.api.path.dirname(path);
+export const getDirectoryName = async (path: string): Promise<string> => {
+  return await window.api.path.dirname(path);
 };
 
 /**
@@ -17,6 +17,6 @@ export const getDirectoryName = (path: string): string => {
  * @param filename ファイル名
  * @returns 結合されたフルパス
  */
-export const joinPath = (dir: string, filename: string): string => {
-  return window.api.path.join(dir, filename);
+export const joinPath = async (dir: string, filename: string): Promise<string> => {
+  return await window.api.path.join(dir, filename);
 };

@@ -68,8 +68,8 @@ const renameTrack = async (track: TrackRecord): Promise<TrackRecord | null> => {
   }
 
   // 2. 新しいパスの取得と重複チェック（既存のフォルダ構造を維持して置換）
-  const dir = getDirectoryName(track.path);
-  const newPath = joinPath(dir, filenameResult.value);
+  const dir = await getDirectoryName(track.path);
+  const newPath = await joinPath(dir, filenameResult.value);
   if (track.path === newPath) {
     return null;
   }

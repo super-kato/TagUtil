@@ -25,7 +25,11 @@ export const IPC_CHANNELS = {
   /** ファイルのリネーム */
   RENAME_FILE: 'flac:rename-file',
   /** 実行環境のプラットフォームを取得 */
-  GET_PLATFORM: 'app:get-platform'
+  GET_PLATFORM: 'app:get-platform',
+  /** ディレクトリ名を取得 */
+  PATH_DIRNAME: 'path:dirname',
+  /** パスを結合 */
+  PATH_JOIN: 'path:join'
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -50,10 +54,10 @@ export interface IpcApi {
   renameFile: (oldPath: string, newPath: string) => Promise<TagResult<void>>;
   /** File オブジェクトから OS 上のファイルシステムパスを取得します */
   getPathForFile: (file: File) => string;
-  /** パス操作ユーティリティ */
+  /** パス操作（メインプロセス経由） */
   path: {
-    dirname: (path: string) => string;
-    join: (...paths: string[]) => string;
+    dirname: (path: string) => Promise<string>;
+    join: (...paths: string[]) => Promise<string>;
   };
   /** 実行環境のプラットフォームを取得します */
   getPlatform: () => Promise<Platform>;
