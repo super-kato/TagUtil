@@ -9,18 +9,28 @@
   import type { Component } from 'svelte';
   import { slide } from 'svelte/transition';
 
+  const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
+    ['INFO', Info],
+    ['WARN', TriangleAlert],
+    ['ERROR', CircleAlert]
+  ] as const);
+
+  const SCROLL_THRESHOLD_PX = 2;
+
   let isExpanded = $state(false);
+  let logListElement: HTMLDivElement | undefined = $state();
+  let isAtBottom = $state(true);
 
   const toggleExpand = (): void => {
     isExpanded = !isExpanded;
   };
 
-  let logListElement: HTMLDivElement | undefined = $state();
-  let isAtBottom = $state(true);
+  const handler = new KeyboardHandler(IS_MAC, [{ combo: { key: 'Enter' }, handler: toggleExpand }]);
 
-  const SCROLL_THRESHOLD_PX = 10;
+  /** メインバーに表示する現在の状態 */
+  const displayState = $derived(logStore.latestLog);
 
-  // DOM更新前に現在のスクロール位置が下端に近いか判定
+  // スクロールハイジャック対策
   $effect.pre(() => {
     if (!logListElement || logStore.logs.length < 0) {
       return;
@@ -45,17 +55,6 @@
 
     logListElement.scrollTo({ top: logListElement.scrollHeight, behavior: 'smooth' });
   });
-
-  const handler = new KeyboardHandler(IS_MAC, [{ combo: { key: 'Enter' }, handler: toggleExpand }]);
-
-  const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
-    ['INFO', Info],
-    ['WARN', TriangleAlert],
-    ['ERROR', CircleAlert]
-  ] as const);
-
-  /** メインバーに表示する現在の状態 */
-  const displayState = $derived(logStore.latestLog);
 </script>
 
 <footer class="status-bar" class:expanded={isExpanded}>
