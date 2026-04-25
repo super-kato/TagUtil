@@ -104,9 +104,8 @@
     background-color: transparent;
     border-radius: var(--radius-xl);
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     width: fit-content;
   }
 
@@ -117,17 +116,13 @@
 
   .cover-placeholder,
   .art-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
+    grid-area: 1 / 1;
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 
   .cover-art {
+    grid-area: 1 / 1;
     width: auto;
     height: auto;
     max-width: 100%;
