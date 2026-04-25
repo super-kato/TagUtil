@@ -45,5 +45,6 @@
     border-right: 1px solid #333;
     overflow: clip;
     min-height: 0;
+    min-width: 0;
   }
 </style>

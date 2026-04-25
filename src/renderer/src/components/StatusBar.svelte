@@ -215,6 +215,8 @@
     line-height: 1.5;
     padding: 0.1rem 0.4rem;
     border-radius: 2px;
+    width: fit-content;
+    min-width: 100%;
   }
 
   .log-entry:hover {
@@ -247,8 +249,6 @@
   .log-text {
     color: var(--text-secondary);
     white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
     flex: 1;
   }
 </style>
