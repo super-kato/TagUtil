@@ -51,6 +51,14 @@ class Logger extends EventEmitter {
   public error(message: string): void {
     this.#log('error', message);
   }
+
+  /**
+   * ログイベントのリスナーを登録します。
+   * イベント名を隠蔽し、型安全な購読を提供します。
+   */
+  public onLog(handler: (log: LogMessage) => void): void {
+    this.on('log', handler);
+  }
 }
 
 export const logger = Logger.getInstance();
