@@ -4,6 +4,17 @@ import { resolve } from 'path';
 
 export default defineConfig({
   main: {
+    build: {
+      externalizeDeps: {
+        exclude: [
+          'flac-tagger',
+          'music-metadata',
+          'fast-equals',
+          'electron-updater',
+          '@electron-toolkit/utils'
+        ]
+      }
+    },
     resolve: {
       alias: {
         '@shared': resolve('src/shared'),
