@@ -77,7 +77,7 @@
     {/if}
 
     <div class="art-overlay">
-      <div class="icon-circle">
+      <div class="icon-box">
         <Image size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
       </div>
     </div>
@@ -147,13 +147,13 @@
     opacity: 1;
   }
 
-  .art-overlay .icon-circle {
+  .art-overlay .icon-box {
     color: white;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     padding: 1rem;
-    border-radius: var(--radius-full);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-2xl);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -161,10 +161,10 @@
     transition: all 0.2s ease;
   }
 
-  .artwork-section:hover .art-overlay .icon-circle {
+  .artwork-section:hover .art-overlay .icon-box {
     transform: scale(1.05);
     background: rgba(0, 0, 0, 0.7);
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.4);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
   }
 
