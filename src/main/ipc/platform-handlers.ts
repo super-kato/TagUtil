@@ -1,10 +1,10 @@
 import { selectDirectory } from '@services/platform/dialog';
+import { getDirname, joinPaths } from '@services/platform/path';
 import { getPlatform } from '@services/platform/platform';
 import { IPC_CHANNELS } from '@shared/ipc';
 import { type Platform } from '@shared/platform';
 
 import { ipcMain } from 'electron';
-import path from 'path';
 
 /**
  * プラットフォーム汎用（OSダイアログ等）のIPCハンドラーを登録します。
@@ -22,11 +22,11 @@ export const registerPlatformHandlers = (): void => {
 
   // ディレクトリ名を取得
   ipcMain.handle(IPC_CHANNELS.PATH_DIRNAME, (_event, p: string) => {
-    return path.dirname(p);
+    return getDirname(p);
   });
 
   // パスを結合
   ipcMain.handle(IPC_CHANNELS.PATH_JOIN, (_event, ...paths: string[]) => {
-    return path.join(...paths);
+    return joinPaths(...paths);
   });
 };
