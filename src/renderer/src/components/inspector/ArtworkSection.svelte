@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Music, X } from '@lucide/svelte';
+  import { ImagePlus, Music, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
   import { tagActions } from '@renderer/services/tag-actions';
@@ -77,7 +77,9 @@
     {/if}
 
     <div class="art-overlay">
-      <span>Change Artwork</span>
+      <div class="icon-circle">
+        <ImagePlus size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
+      </div>
     </div>
   </div>
 </div>
@@ -145,17 +147,25 @@
     opacity: 1;
   }
 
-  .art-overlay span {
+  .art-overlay .icon-circle {
     color: white;
-    font-size: 0.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-2xl);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    white-space: nowrap;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    padding: 1rem;
+    border-radius: var(--radius-full);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .artwork-section:hover .art-overlay .icon-circle {
+    transform: scale(1.1) rotate(5deg);
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
   }
 
   .remove-artwork {
