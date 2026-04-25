@@ -19,15 +19,17 @@ const handleScanOperation = async (
   try {
     const result = await operation();
 
-    if (result.type === 'success' && result.value) {
-      const { tracks: rawTracks, isLimited } = result.value;
-      const tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
+    if (result.type !== 'success' || !result.value) {
+      return;
+    }
 
-      trackStore.tracks = tracks;
+    const { tracks: rawTracks, isLimited } = result.value;
+    const tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
 
-      if (isLimited) {
-        logStore.addWarn(MESSAGES.SCAN_LIMIT_EXCEEDED);
-      }
+    trackStore.tracks = tracks;
+
+    if (isLimited) {
+      logStore.addWarn(MESSAGES.SCAN_LIMIT_EXCEEDED);
     }
   } finally {
     uiState.stopLoading();
