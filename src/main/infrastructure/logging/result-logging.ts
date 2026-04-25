@@ -16,20 +16,20 @@ export const withResultLogging = async <R extends TagResult<unknown>>(
   task: () => Promise<R>,
   ...params: unknown[]
 ): Promise<R> => {
-  const logPrefix = params.length > 0 ? ` ${params.join(', ')}` : '';
+  const baseMessage = params.length > 0 ? `[${context}] ${params.join(', ')}` : `[${context}]`;
 
   try {
     const result = await task();
 
     if (result.type === 'success') {
-      logger.info(`[${context}]${logPrefix}`);
+      logger.info(baseMessage);
     } else {
-      logger.warn(`[${context}]${logPrefix}: ${formatTagError(result.error)}`);
+      logger.warn(`${baseMessage}: ${formatTagError(result.error)}`);
     }
 
     return result;
   } catch (error: unknown) {
-    logger.error(`[${context}]${logPrefix}: ${formatTagError(error)}`);
+    logger.error(`${baseMessage}: ${formatTagError(error)}`);
     throw error;
   }
 };
