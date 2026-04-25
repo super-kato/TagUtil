@@ -1,7 +1,8 @@
+import type { LogMessage } from '@domain/common/log';
 import type { FlacTrack } from '@domain/flac/types';
 import type { IpcApi } from '@shared/ipc';
 import { IPC_CHANNELS } from '@shared/ipc';
-import { ipcRenderer, webUtils } from 'electron';
+import { ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
 
 /**
  * Rendererプロセスに露出させるカスタムAPIの定義。
@@ -56,7 +57,19 @@ export const api: IpcApi = {
     dirname: (p: string) => ipcRenderer.invoke(IPC_CHANNELS.PATH_DIRNAME, p),
     join: (...paths: string[]) => ipcRenderer.invoke(IPC_CHANNELS.PATH_JOIN, ...paths)
   },
-  getPlatform: () => ipcRenderer.invoke(IPC_CHANNELS.GET_PLATFORM)
+  getPlatform: () => ipcRenderer.invoke(IPC_CHANNELS.GET_PLATFORM),
+  /**
+   * ログメッセージを受信した時のコールバックを登録します。
+   * @param callback ログメッセージを受け取るコールバック
+   * @returns 登録解除用の関数
+   */
+  onLogMessage: (callback: (message: LogMessage) => void) => {
+    const subscription = (_event: IpcRendererEvent, message: LogMessage): void => callback(message);
+    ipcRenderer.on(IPC_CHANNELS.ON_LOG_MESSAGE, subscription);
+    return () => {
+      ipcRenderer.removeListener(IPC_CHANNELS.ON_LOG_MESSAGE, subscription);
+    };
+  }
 };
 
 export type Api = typeof api;

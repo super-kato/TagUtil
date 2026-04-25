@@ -1,6 +1,8 @@
 import type { FlacTrack, Picture, ScanResult, TagResult } from '@domain/flac/types';
 import type { Platform } from './platform';
 
+import type { LogMessage } from '@domain/common/log';
+
 /**
  * カスタムプロトコルのスキーム名。
  */
@@ -24,6 +26,8 @@ export const IPC_CHANNELS = {
   GET_IMAGE_INFO: 'flac:get-image-info',
   /** ファイルのリネーム */
   RENAME_FILE: 'flac:rename-file',
+  /** ログメッセージの通知 */
+  ON_LOG_MESSAGE: 'app:on-log-message',
   /** 実行環境のプラットフォームを取得 */
   GET_PLATFORM: 'app:get-platform',
   /** ディレクトリ名を取得 */
@@ -61,4 +65,6 @@ export interface IpcApi {
   };
   /** 実行環境のプラットフォームを取得します */
   getPlatform: () => Promise<Platform>;
+  /** ログメッセージを受信した時のコールバックを登録します */
+  onLogMessage: (callback: (message: LogMessage) => void) => () => void;
 }

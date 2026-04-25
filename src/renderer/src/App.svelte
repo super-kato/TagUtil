@@ -5,6 +5,15 @@
   import TrackGrid from './components/TrackGrid.svelte';
   import KeyboardShortcuts from './components/KeyboardShortcuts.svelte';
   import ConfirmationDialog from './components/ui/ConfirmationDialog.svelte';
+  import { onMount } from 'svelte';
+  import { logStore } from './stores/log-store.svelte';
+
+  onMount(() => {
+    const unsubscribe = window.api.onLogMessage((message) => {
+      logStore.addLog(message);
+    });
+    return unsubscribe;
+  });
 </script>
 
 <KeyboardShortcuts />
