@@ -3,13 +3,13 @@ import { fileActions } from './file-actions';
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
 import { selectionState } from '@renderer/stores/selection-state.svelte';
-import { tagRepository } from '@renderer/infrastructure/tag-repository';
-import { fileRepository } from '@renderer/infrastructure/file-repository';
+import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
+import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
 import { success, failure } from '@domain/common/result';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import type { FlacMetadata, FlacTrack, TagError } from '@domain/flac/types';
 
-import * as pathAdapter from '@renderer/infrastructure/path-adapter';
+import * as pathAdapter from '@renderer/infrastructure/adapters/path-adapter';
 import * as formatter from '@domain/flac/filename-formatter';
 
 describe('fileActions', () => {

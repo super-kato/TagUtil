@@ -2,7 +2,7 @@
   import { DEFAULT_GENRES } from '@domain/flac/types';
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { tagActions } from '@renderer/services/tag-actions';
-  import BadgeField from './BadgeField.svelte';
+  import BadgeField from '@renderer/components/ui/BadgeField.svelte';
   import { getMultiFieldValues } from './tag-field-handlers';
 
   const MAX_QUICK_GENRES = 4;

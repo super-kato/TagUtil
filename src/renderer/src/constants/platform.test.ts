@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { initializePlatform, IS_MAC } from './platform';
-import * as adapter from '@renderer/infrastructure/platform-adapter';
+import * as adapter from '@renderer/infrastructure/adapters/platform-adapter';
 
-vi.mock('@renderer/infrastructure/platform-adapter');
+vi.mock('@renderer/infrastructure/adapters/platform-adapter');
 
 describe('platform constant (renderer)', () => {
   beforeEach(() => {

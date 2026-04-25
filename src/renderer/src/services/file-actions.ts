@@ -3,9 +3,9 @@ import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
 import { selectionState } from '@renderer/stores/selection-state.svelte';
-import { tagRepository } from '@renderer/infrastructure/tag-repository';
-import { fileRepository } from '@renderer/infrastructure/file-repository';
-import { getDirectoryName, joinPath } from '@renderer/infrastructure/path-adapter';
+import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
+import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
+import { getDirectoryName, joinPath } from '@renderer/infrastructure/adapters/path-adapter';
 
 /**
  * 選択中のファイルをメタデータに基づいてリネームします。

@@ -1,4 +1,4 @@
-import { getPlatform } from '@renderer/infrastructure/platform-adapter';
+import { getPlatform } from '@renderer/infrastructure/adapters/platform-adapter';
 
 let isMacInternal = false;
 

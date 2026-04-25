@@ -2,7 +2,7 @@
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { tagActions } from '@renderer/services/tag-actions';
 
-  import MultiValueField from './MultiValueField.svelte';
+  import MultiValueField from '@renderer/components/ui/MultiValueField.svelte';
   import {
     getSingleFieldValue,
     handleSingleInput,
