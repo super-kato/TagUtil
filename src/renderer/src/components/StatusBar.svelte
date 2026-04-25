@@ -57,7 +57,7 @@
       <div class="log-list">
         {#each [...logStore.logs].reverse() as log (log.id)}
           <div class="log-entry {log.level}">
-            <span class="log-time">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+            <span class="log-time">[{new Date(log.timestamp).toISOString()}]</span>
             <span class="log-level-tag">{log.level.toUpperCase()}</span>
             <span class="log-text">{log.message}</span>
           </div>
