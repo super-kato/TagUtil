@@ -7,7 +7,7 @@ import { tagRepository } from '@renderer/infrastructure/repositories/tag-reposit
 import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
 import { getDirectoryName, joinPath } from '@renderer/infrastructure/adapters/path-adapter';
 import { logStore } from '@renderer/stores/log-store.svelte';
-import { formatTagError } from '@shared/utils/tag-error-formatter';
+import { formatTagError } from '@domain/flac/tag-error-formatter';
 import { failure, success, type Result } from '@domain/common/result';
 import type { TagError } from '@domain/flac/types';
 

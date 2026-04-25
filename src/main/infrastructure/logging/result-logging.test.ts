@@ -1,6 +1,6 @@
 import { failure, success } from '@domain/common/result';
 import { logger } from '@services/platform/logger';
-import * as formatter from '@shared/utils/tag-error-formatter';
+import * as formatter from '@domain/flac/tag-error-formatter';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { withResultLogging } from './result-logging';
 

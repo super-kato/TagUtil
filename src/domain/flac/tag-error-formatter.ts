@@ -1,5 +1,5 @@
-import { isTagError, type TagError } from '@domain/flac/types';
-import { MESSAGES } from '@shared/constants/messages';
+import { isTagError, type TagError } from './types';
+import { MESSAGES } from '@domain/common/messages';
 
 /**
  * TagError 型を人間が読めるメッセージに変換します。

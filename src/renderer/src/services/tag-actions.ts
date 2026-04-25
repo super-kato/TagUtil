@@ -6,7 +6,7 @@ import { uiState } from '@renderer/stores/ui-state.svelte';
 import { logStore } from '@renderer/stores/log-store.svelte';
 import { tagEditor } from './tag-editor';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
-import { MESSAGES } from '@shared/constants/messages';
+import { MESSAGES } from '@domain/common/messages';
 
 /**
  * スキャン処理の共通的なフローを制御するヘルパー関数。

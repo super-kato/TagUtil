@@ -1,6 +1,6 @@
 import { type TagResult } from '@domain/flac/types';
 import { logger } from '@services/platform/logger';
-import { formatTagError } from '@shared/utils/tag-error-formatter';
+import { formatTagError } from '@domain/flac/tag-error-formatter';
 
 /**
  * 処理の実行結果（成功/失敗/例外）に基づいたロギングを行うラッパー関数。

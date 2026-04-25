@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formatTagError } from './tag-error-formatter';
-import type { TagError } from '@domain/flac/types';
+import type { TagError } from './types';
 
 describe('エラーフォーマッター', () => {
   describe('formatTagError', () => {
