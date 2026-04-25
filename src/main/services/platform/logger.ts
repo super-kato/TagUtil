@@ -1,6 +1,6 @@
 import { EventEmitter } from 'node:events';
-import { LogMessage, LogLevel, LogHandler } from '@domain/common/log';
-import { generateId } from '@shared/utils/id';
+import { LogLevel, LogHandler } from '@domain/common/log';
+import { createLogMessage } from '@shared/utils/log-factory';
 import { formatLogTime } from '@shared/utils/date';
 
 /**
@@ -29,12 +29,7 @@ class Logger extends EventEmitter {
    * @param message メッセージ
    */
   #log(level: LogLevel, message: string): void {
-    const logMessage: LogMessage = {
-      id: generateId(),
-      level,
-      message,
-      timestamp: Date.now()
-    };
+    const logMessage = createLogMessage(level, message);
     this.emit(Logger.#LOG_EVENT, logMessage);
 
     // 標準出力にも出す
