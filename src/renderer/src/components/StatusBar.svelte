@@ -33,7 +33,14 @@
 
   // ログが追加された後、下端にいた場合のみスクロールを追従させる
   $effect(() => {
-    if (!logListElement || logStore.logs.length === 0 || !isExpanded || !isAtBottom) {
+    // 前提条件：要素が存在し、かつ展開されていること
+    if (!logListElement || !isExpanded) {
+      return;
+    }
+
+    // 実行条件：下端に位置しており、かつ表示するログが存在すること
+    const shouldScroll = isAtBottom && logStore.logs.length > 0;
+    if (!shouldScroll) {
       return;
     }
 
