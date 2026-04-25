@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
-import { generateId as sharedGenerateId } from '@shared/utils/id';
+
+export { generateId } from '@shared/utils/id';
 
 /**
  * 指定されたバイナリデータのMD5ハッシュ値を計算します。
@@ -8,12 +9,4 @@ import { generateId as sharedGenerateId } from '@shared/utils/id';
  */
 export const computeMd5 = (buffer: Uint8Array): string => {
   return createHash('md5').update(buffer).digest('hex');
-};
-
-/**
- * 一意な識別子（UUID v4）を生成します。
- * @returns UUID 文字列
- */
-export const generateId = (): string => {
-  return sharedGenerateId();
 };
