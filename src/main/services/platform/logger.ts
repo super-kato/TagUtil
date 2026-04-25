@@ -11,6 +11,18 @@ import { formatLogTime } from '@shared/utils/date';
 class Logger extends EventEmitter {
   static readonly #LOG_EVENT = 'log';
 
+  public info(message: string): void {
+    this.#log('INFO', message);
+  }
+
+  public warn(message: string): void {
+    this.#log('WARN', message);
+  }
+
+  public error(message: string): void {
+    this.#log('ERROR', message);
+  }
+
   /**
    * ログを出力し、イベントを発火させます。
    * @param level ログレベル
@@ -28,18 +40,6 @@ class Logger extends EventEmitter {
     // 標準出力にも出す
     const timestamp = formatLogTime(logMessage.timestamp);
     console.log(`[${timestamp}] [${level}] ${message}`);
-  }
-
-  public info(message: string): void {
-    this.#log('INFO', message);
-  }
-
-  public warn(message: string): void {
-    this.#log('WARN', message);
-  }
-
-  public error(message: string): void {
-    this.#log('ERROR', message);
   }
 
   /**

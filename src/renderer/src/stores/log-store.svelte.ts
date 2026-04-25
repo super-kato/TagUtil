@@ -24,18 +24,11 @@ class LogStore {
    * ログを追加します。上限を超えた場合は古いものから削除されます。
    * @param log ログメッセージ
    */
-  addLog = (log: LogMessage): void => {
+  addLog(log: LogMessage): void {
     this.#logEntries.push(log);
     if (this.#logEntries.length > this.#MAX_LOGS) {
       this.#logEntries.shift();
     }
-  };
-
-  /**
-   * 全てのログをクリアします。
-   */
-  clear(): void {
-    this.#logEntries = [];
   }
 }
 

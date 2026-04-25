@@ -64,9 +64,7 @@ describe('result-logging', () => {
 
       await expect(withResultLogging('test-ctx', task)).rejects.toThrow('Unexpected crash');
 
-      expect(logger.error).toHaveBeenCalledWith(
-        '[test-ctx]: Formatted Exception Message'
-      );
+      expect(logger.error).toHaveBeenCalledWith('[test-ctx]: Formatted Exception Message');
       expect(formatter.formatTagError).toHaveBeenCalledWith(error);
     });
   });
