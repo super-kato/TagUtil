@@ -54,6 +54,7 @@
 <style>
   .inspector {
     width: 320px;
+    min-width: 320px;
     background-color: var(--bg-inspector);
     display: flex;
     flex-direction: column;
