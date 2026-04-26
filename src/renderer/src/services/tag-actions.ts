@@ -1,7 +1,7 @@
 import { MESSAGES } from '@domain/common/messages';
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
-import type { AppResult } from '@domain/flac/types';
 import type { FlacTrack } from '@domain/flac/models';
+import type { AppResult } from '@domain/flac/types';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { logStore } from '@renderer/stores/log-store.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
@@ -170,7 +170,7 @@ const saveAllModified = async (): Promise<void> => {
   try {
     // インフラ層に渡すためにドメインモデルの配列に整形
     const rawData = modified.map((t) => t.toFlacTrack());
-    const { successes } = await tagRepository.saveTracks(rawData);
+    const successes = await tagRepository.saveTracks(rawData);
 
     const successPaths = new Set(successes);
     for (const track of modified) {

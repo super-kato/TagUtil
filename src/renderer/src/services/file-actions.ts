@@ -38,8 +38,7 @@ const renameSelectedFiles = async (): Promise<void> => {
  * 1つ以上のエラーが発生しても、全てのトラックに対して処理を試行します。
  */
 const executeRenameLoop = async (selected: TrackRecord[]): Promise<Map<string, TrackRecord>> => {
-  const tasks = selected.map((track) => () => renameTrack(track));
-  const results = await pooledAll(tasks);
+  const results = await pooledAll(selected.map((track) => () => renameTrack(track)));
 
   const renamedMap = new Map<string, TrackRecord>();
   for (const result of results) {
