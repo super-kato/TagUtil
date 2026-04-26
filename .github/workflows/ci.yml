@@ -79,3 +79,26 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
+
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: pnpm のセットアップ
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+
+      - name: 依存関係のインストール
+        run: pnpm install
+
+      - name: ビルドの実行
+        run: pnpm build
