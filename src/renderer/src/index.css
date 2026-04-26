@@ -48,7 +48,7 @@
   --focus-glow: 0 0 6px var(--selection-glow);
 }
 
-:root[data-theme='pop'] {
+:root[data-theme='light'] {
   --bg-body: #fdfdfd;
   --bg-main: #ffffff;
   --bg-secondary: #f0f2f5;

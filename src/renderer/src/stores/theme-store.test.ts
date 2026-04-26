@@ -29,8 +29,8 @@ describe('ThemeStore', () => {
   });
 
   it('setTheme でテーマを変更できること', async () => {
-    await themeStore.setTheme('pop');
-    expect(themeStore.current).toBe('pop');
+    await themeStore.setTheme('light');
+    expect(themeStore.current).toBe('light');
     await themeStore.setTheme('default');
     expect(themeStore.current).toBe('default');
   });
@@ -38,7 +38,7 @@ describe('ThemeStore', () => {
   it('toggleTheme でテーマを切り替えられること', async () => {
     await themeStore.setTheme('default');
     await themeStore.toggleTheme();
-    expect(themeStore.current).toBe('pop');
+    expect(themeStore.current).toBe('light');
     await themeStore.toggleTheme();
     expect(themeStore.current).toBe('default');
   });

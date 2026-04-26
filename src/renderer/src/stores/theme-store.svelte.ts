@@ -1,6 +1,6 @@
 import { settingsStore } from './settings-store.svelte';
 
-export type Theme = 'default' | 'pop';
+export type Theme = 'default' | 'light';
 
 class ThemeStore {
   /**
@@ -23,7 +23,7 @@ class ThemeStore {
    * テーマを切り替えます。
    */
   async toggleTheme(): Promise<void> {
-    const nextTheme = this.current === 'default' ? 'pop' : 'default';
+    const nextTheme = this.current === 'default' ? 'light' : 'default';
     await this.setTheme(nextTheme);
   }
 }
