@@ -73,5 +73,20 @@ describe('result-logging', () => {
       });
       expect(formatter.formatTagError).toHaveBeenCalledWith(error);
     });
+
+    it('引数(params)がある状態で例外が発生した場合、引数情報を含めてログ出力すること', async () => {
+      const error = new Error('Crash with params');
+      const task = vi.fn().mockRejectedValue(error);
+      vi.mocked(formatter.formatTagError).mockReturnValue('Error Detail');
+
+      await expect(withResultLogging('test-ctx', task, 'p1', 'p2')).rejects.toThrow(
+        'Crash with params'
+      );
+
+      expect(logger.error).toHaveBeenCalledWith({
+        context: 'test-ctx',
+        message: 'p1, p2: Error Detail'
+      });
+    });
   });
 });
