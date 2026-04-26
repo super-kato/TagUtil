@@ -6,7 +6,7 @@
   import { logStore } from '@renderer/stores/log-store.svelte';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
   import { formatLogTime } from '@shared/utils/date';
-  import type { Component } from 'svelte';
+  import { onDestroy, type Component } from 'svelte';
   import { slide } from 'svelte/transition';
 
   const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
@@ -17,6 +17,18 @@
 
   let isExpanded = $state(false);
   let logListElement: HTMLDivElement | undefined = $state();
+
+  // ログが最初に1件以上になった時、自動で展開する
+  const stopAutoExpand = $effect.root(() => {
+    $effect(() => {
+      if (logStore.logs.length === 0) {
+        return;
+      }
+      isExpanded = true;
+      stopAutoExpand();
+    });
+  });
+  onDestroy(stopAutoExpand);
 
   const toggleExpand = (): void => {
     isExpanded = !isExpanded;

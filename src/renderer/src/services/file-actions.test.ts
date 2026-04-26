@@ -7,11 +7,8 @@ import { tagRepository } from '@renderer/infrastructure/repositories/tag-reposit
 import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
 import { success, failure } from '@domain/common/result';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
-import type { FlacMetadata, FlacTrack } from '@domain/flac/types';
-import { logStore } from '@renderer/stores/log-store.svelte';
-
+import { tagErrors, type FlacMetadata, type FlacTrack } from '@domain/flac/types';
 import * as pathAdapter from '@renderer/infrastructure/adapters/path-adapter';
-import * as formatter from '@domain/flac/filename-formatter';
 
 describe('fileActions', () => {
   beforeEach(() => {
@@ -21,11 +18,12 @@ describe('fileActions', () => {
     selectionState.items.clear();
     vi.spyOn(tagRepository, 'readMetadata');
     vi.spyOn(fileRepository, 'renameFile');
-    vi.spyOn(pathAdapter, 'getDirectoryName').mockReturnValue(Promise.resolve('/dir'));
-    vi.spyOn(pathAdapter, 'joinPath').mockImplementation((dir, file) =>
-      Promise.resolve(`${dir}/${file}`)
-    );
-    vi.spyOn(formatter, 'formatFlacFilename').mockReturnValue(success('new.flac'));
+    vi.spyOn(pathAdapter, 'generateNewPath').mockResolvedValue(success('/dir/new.flac'));
+    vi.stubGlobal('window', {
+      api: {
+        generateNewPath: vi.fn().mockResolvedValue(success('/dir/new.flac'))
+      }
+    });
   });
 
   describe('renameSelectedFiles', () => {
@@ -56,19 +54,18 @@ describe('fileActions', () => {
       expect(selectionState.items.size).toBe(0);
     });
 
-    it('ファイル名生成（レンダラー側処理）に失敗した場合はログを記録し、処理を中断すること', async () => {
+    it('パス生成に失敗した場合は処理を中断すること', async () => {
       const metadata: FlacMetadata = { title: 'T' };
       const mockTrack = new TrackRecord('old.flac', metadata);
       trackStore.tracks = [mockTrack];
       selectionState.selectSingle(mockTrack, 0);
 
-      vi.mocked(formatter.formatFlacFilename).mockReturnValue(
-        failure({ type: 'PARSE_FAILED', options: { path: 'old.flac' } })
+      vi.mocked(pathAdapter.generateNewPath).mockResolvedValue(
+        failure(tagErrors.parseFailed({ path: 'old.flac' }))
       );
 
       await fileActions.renameSelectedFiles();
 
-      expect(logStore.latestLog?.level).toBe('ERROR');
       expect(fileRepository.renameFile).not.toHaveBeenCalled();
     });
 

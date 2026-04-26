@@ -2,7 +2,7 @@ import { FlacTrack } from '@domain/flac/types';
 import { withResultLogging } from '@main/infrastructure/logging/result-logging';
 import { getImageInfo, pickImage } from '@services/flac/image';
 import { readMetadata } from '@services/flac/reader';
-import { renameFile } from '@services/flac/renamer';
+import { renameFile, resolveRenamedPath } from '@services/flac/renamer';
 import { scanDirectory } from '@services/flac/scanner';
 import { writeMetadata } from '@services/flac/writer';
 import { IPC_CHANNELS } from '@shared/ipc';
@@ -46,6 +46,15 @@ export const registerFlacHandlers = (): void => {
       () => renameFile(oldPath, newPath),
       oldPath,
       newPath
+    );
+  });
+
+  // 新しいパスの生成
+  ipcMain.handle(IPC_CHANNELS.GENERATE_NEW_PATH, async (_event, track: FlacTrack) => {
+    return withResultLogging(
+      IPC_CHANNELS.GENERATE_NEW_PATH,
+      async () => resolveRenamedPath(track),
+      track.path
     );
   });
 };

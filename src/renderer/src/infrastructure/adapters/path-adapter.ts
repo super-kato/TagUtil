@@ -1,22 +1,14 @@
+import type { FlacTrack, TagResult } from '@domain/flac/types';
+
 /**
  * Electron/Node.jsのパス操作APIをRendererプロセスから利用するためのアダプター。
  */
 
 /**
- * フルパスからディレクトリ名を抽出します。
- * @param path 対象のフルパス
- * @returns ディレクトリパス
+ * メタデータに基づいて新しいファイルパスを生成します。
+ * @param track トラック情報
+ * @returns 生成された新しいフルパス
  */
-export const getDirectoryName = async (path: string): Promise<string> => {
-  return await window.api.path.dirname(path);
-};
-
-/**
- * ディレクトリパスとファイル名を結合します。
- * @param dir ディレクトリパス
- * @param filename ファイル名
- * @returns 結合されたフルパス
- */
-export const joinPath = async (dir: string, filename: string): Promise<string> => {
-  return await window.api.path.join(dir, filename);
+export const generateNewPath = async (track: FlacTrack): Promise<TagResult<string>> => {
+  return await window.api.generateNewPath(track);
 };

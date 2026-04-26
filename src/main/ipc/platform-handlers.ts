@@ -1,5 +1,4 @@
 import { selectDirectory } from '@services/platform/dialog';
-import { getDirname, joinPaths } from '@services/platform/path';
 import { getPlatform } from '@services/platform/platform';
 import { IPC_CHANNELS } from '@shared/ipc';
 import { ipcMain } from 'electron';
@@ -16,15 +15,5 @@ export const registerPlatformHandlers = (): void => {
   // プラットフォームを取得
   ipcMain.handle(IPC_CHANNELS.GET_PLATFORM, () => {
     return getPlatform();
-  });
-
-  // ディレクトリ名を取得
-  ipcMain.handle(IPC_CHANNELS.PATH_DIRNAME, (_event, p: string) => {
-    return getDirname(p);
-  });
-
-  // パスを結合
-  ipcMain.handle(IPC_CHANNELS.PATH_JOIN, (_event, ...paths: string[]) => {
-    return joinPaths(...paths);
   });
 };

@@ -1,15 +1,12 @@
-import { formatFlacFilename } from '@domain/flac/filename-formatter';
+import { success, type Result } from '@domain/common/result';
+import type { TagError } from '@domain/flac/types';
+import { generateNewPath } from '@renderer/infrastructure/adapters/path-adapter';
+import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
+import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
+import { selectionState } from '@renderer/stores/selection-state.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
-import { selectionState } from '@renderer/stores/selection-state.svelte';
-import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
-import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
-import { getDirectoryName, joinPath } from '@renderer/infrastructure/adapters/path-adapter';
-import { logStore } from '@renderer/stores/log-store.svelte';
-import { formatTagError } from '@domain/flac/tag-error-formatter';
-import { success, type Result } from '@domain/common/result';
-import type { TagError } from '@domain/flac/types';
 
 /**
  * 選択中のファイルをメタデータに基づいてリネームします。
@@ -62,25 +59,20 @@ const executeRenameLoop = async (selected: TrackRecord[]): Promise<Map<string, T
  * 成功した場合は新しい TrackRecord を返し、スキップ（変更不要など）時は null を返します。
  */
 const renameTrack = async (track: TrackRecord): Promise<Result<TrackRecord | null, TagError>> => {
-  // 1. フォーマット処理（メタデータが足りない場合は Result 型のエラーが返る）
-  const filenameResult = formatFlacFilename(track.toFlacTrack());
-  if (filenameResult.type === 'error') {
-    // レンダラー側のエラーなので明示的にログ追加
-    logStore.addError(formatTagError(filenameResult.error));
-    return filenameResult;
+  // 1. メタデータに基づいた新しいパスの生成（フォーマットとパス結合を一括で行う）
+  const pathResult = await generateNewPath(track.toFlacTrack());
+  if (pathResult.type === 'error') {
+    return pathResult;
   }
 
-  // 2. 新しいパスの取得と重複チェック（既存のフォルダ構造を維持して置換）
-  const dir = await getDirectoryName(track.path);
-  const newPath = await joinPath(dir, filenameResult.value);
+  const newPath = pathResult.value;
   if (track.path === newPath) {
     return success(null);
   }
 
-  // 3. 物理的なリネーム実行
+  // 2. 物理的なリネーム実行
   const result = await fileRepository.renameFile(track.path, newPath);
   if (result.type === 'error') {
-    // メインプロセス側で既にログ出力されているため、ここでは Result を返すのみ
     return result;
   }
 

@@ -1,40 +1,31 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getDirectoryName, joinPath } from './path-adapter';
+import { generateNewPath } from './path-adapter';
+import { success } from '@domain/common/result';
+import type { FlacTrack } from '@domain/flac/types';
 
 describe('path-adapter', () => {
   beforeEach(() => {
     vi.stubGlobal('window', {
       api: {
-        path: {
-          dirname: vi.fn(),
-          join: vi.fn()
-        }
+        generateNewPath: vi.fn()
       }
     });
   });
 
-  describe('getDirectoryName', () => {
-    it('window.api.path.dirname を呼び出すこと', async () => {
-      const path = '/path/to/file.txt';
-      vi.mocked(window.api.path.dirname).mockResolvedValue('/path/to');
+  describe('generateNewPath', () => {
+    it('window.api.generateNewPath を呼び出すこと', async () => {
+      const track = { path: '/dir/old.flac', metadata: { title: 'T', trackNumber: 1 } };
+      const expected = success('/dir/01 - T.flac');
+      vi.stubGlobal('window', {
+        api: {
+          generateNewPath: vi.fn().mockResolvedValue(expected)
+        }
+      });
 
-      const result = await getDirectoryName(path);
+      const result = await generateNewPath(track as unknown as FlacTrack);
 
-      expect(result).toBe('/path/to');
-      expect(window.api.path.dirname).toHaveBeenCalledWith(path);
-    });
-  });
-
-  describe('joinPath', () => {
-    it('window.api.path.join を呼び出すこと', async () => {
-      const dir = '/path/to';
-      const filename = 'file.txt';
-      vi.mocked(window.api.path.join).mockResolvedValue('/path/to/file.txt');
-
-      const result = await joinPath(dir, filename);
-
-      expect(result).toBe('/path/to/file.txt');
-      expect(window.api.path.join).toHaveBeenCalledWith(dir, filename);
+      expect(result).toBe(expected);
+      expect(window.api.generateNewPath).toHaveBeenCalledWith(track);
     });
   });
 });

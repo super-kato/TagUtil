@@ -1,5 +1,7 @@
 import { success } from '@domain/common/result';
-import { tagErrors, TagResult } from '@domain/flac/types';
+import { tagErrors, TagResult, type FlacTrack } from '@domain/flac/types';
+import { formatFlacFilename } from '@domain/flac/filename-formatter';
+import path from 'path';
 import fs from 'fs/promises';
 import { toTagResultFailure } from '@main/utils/error-handler';
 import { ensureFileExists } from '@main/utils/fs';
@@ -25,6 +27,20 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<TagR
   }
 
   return success(undefined);
+};
+
+/**
+ * トラックのメタデータに基づいて、リネーム後のフルパスを算出します。
+ * @param track トラック情報
+ */
+export const resolveRenamedPath = (track: FlacTrack): TagResult<string> => {
+  const filenameResult = formatFlacFilename(track);
+  if (filenameResult.type === 'error') {
+    return filenameResult;
+  }
+  const dir = path.dirname(track.path);
+  const newPath = path.join(dir, filenameResult.value);
+  return success(newPath);
 };
 
 /**
