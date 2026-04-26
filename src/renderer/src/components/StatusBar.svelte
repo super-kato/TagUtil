@@ -176,12 +176,12 @@
   }
 
   .log-context {
-    color: var(--text-dim);
+    color: var(--text-muted);
     font-weight: 500;
   }
 
   .expand-icon {
-    color: var(--text-dim);
+    color: var(--text-muted);
     display: flex;
     align-items: center;
     padding: 0.25rem;
