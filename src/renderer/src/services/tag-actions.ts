@@ -135,25 +135,21 @@ const revertSelected = async (): Promise<void> => {
   }
 
   uiState.startLoading();
-
   try {
-    const tasks = modifiedSelected.map((track) => async () => {
-      const result = await tagRepository.readMetadata(track.path);
-      return { track, result };
-    });
-
-    const results = await pooledAll(tasks);
-
-    for (const { track, result } of results) {
-      if (result.type === 'success') {
-        // 取得したドメインモデルを UI モデルに反映
-        track.metadata = result.value.metadata;
-        track.markAsSaved();
-      }
-    }
+    const tasks = modifiedSelected.map((track) => () => revert(track));
+    await pooledAll(tasks);
   } finally {
     uiState.stopLoading();
   }
+};
+
+const revert = async (track: TrackRecord): Promise<void> => {
+  const result = await tagRepository.readMetadata(track.path);
+  if (result.type !== 'success') {
+    return;
+  }
+  track.metadata = result.value.metadata;
+  track.markAsSaved();
 };
 
 /**

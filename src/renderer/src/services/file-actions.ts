@@ -41,11 +41,11 @@ const executeRenameLoop = async (selected: TrackRecord[]): Promise<Map<string, T
   const results = await pooledAll(selected.map((track) => () => renameTrack(track)));
 
   const renamedMap = new Map<string, TrackRecord>();
-  for (const result of results) {
+  for (const [index, result] of results.entries()) {
     if (result.type === 'error' || !result.value) {
       continue;
     }
-    renamedMap.set(result.value.path, result.value);
+    renamedMap.set(selected[index].path, result.value);
   }
 
   return renamedMap;

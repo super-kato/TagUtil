@@ -76,8 +76,7 @@ describe('tag-repository', () => {
 
       const result = await tagRepository.saveTracks(tracks);
 
-      expect(result.successes).toHaveLength(2);
-      expect(result.errors).toHaveLength(0);
+      expect(result).toHaveLength(2);
       expect(window.api.writeMetadata).toHaveBeenCalledTimes(2);
     });
 
@@ -99,9 +98,7 @@ describe('tag-repository', () => {
 
       const result = await tagRepository.saveTracks(tracks);
 
-      expect(result.successes).toEqual(['a.flac', 'c.flac']);
-      expect(result.errors).toHaveLength(1);
-      expect(result.errors[0].path).toBe('b.flac');
+      expect(result).toEqual(['a.flac', 'c.flac']);
       // 一つが失敗しても全てのトラックに対して書き込みを試行する
       expect(window.api.writeMetadata).toHaveBeenCalledTimes(3);
     });
