@@ -29,9 +29,11 @@ class LogStore {
    */
   addLog(log: LogMessage): void {
     this.#logEntries.push(log);
-    if (this.#logEntries.length > this.#MAX_LOGS) {
-      this.#logEntries.shift();
+    if (this.#logEntries.length <= this.#MAX_LOGS) {
+      return;
     }
+
+    this.#logEntries.shift();
   }
 
   /**
