@@ -8,6 +8,8 @@ export const createWindow = (): BrowserWindow => {
   const mainWindow = new BrowserWindow({
     width: 1400,
     height: 1000,
+    minWidth: 960,
+    minHeight: 600,
     show: false,
     autoHideMenuBar: true,
     backgroundColor: '#1e1e1e',
