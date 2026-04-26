@@ -1,5 +1,5 @@
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
-import type { Picture } from '@domain/flac/types';
+import type { Picture } from '@domain/flac/models';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 
 /**

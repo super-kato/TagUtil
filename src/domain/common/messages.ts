@@ -13,7 +13,7 @@ export const MESSAGES = {
     WRITE_FAILED: 'Failed to write metadata',
     SCAN_FAILED: 'Failed to scan directory',
     PICK_IMAGE_FAILED: 'Failed to pick image',
-    MISSING_TRACK_NUMBER: 'Missing track number',
-    MISSING_TITLE: 'Missing title'
+    MISSING_REQUIRED_TAG: 'Missing required tag for renaming',
+    INVALID_RENAME_PATTERN: 'Invalid rename pattern (must contain at least one tag)'
   }
 } as const;

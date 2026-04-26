@@ -1,4 +1,4 @@
-import { StreamInfo } from '@domain/flac/types';
+import { StreamInfo } from '@domain/flac/models';
 
 /**
  * ライブラリに依存しない、FLACの生のメタデータ構造。

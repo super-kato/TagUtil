@@ -1,4 +1,4 @@
-import type { FlacMetadata, FlacTrack } from '@domain/flac/types';
+import type { FlacMetadata, FlacTrack } from '@domain/flac/models';
 import { createImageUrl } from '@renderer/utils/image';
 import { isDeepEqual } from '@shared/utils/equality';
 

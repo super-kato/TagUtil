@@ -1,8 +1,9 @@
 import type { LogHandler, LogMessage } from '@domain/common/log';
 
-import type { FlacTrack } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/models';
 import type { IpcApi } from '@shared/ipc';
 import { IPC_CHANNELS } from '@shared/ipc';
+import type { AppSettings } from '@shared/settings';
 import { ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
 
 /**
@@ -57,6 +58,16 @@ export const api: IpcApi = {
    */
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
   getPlatform: () => ipcRenderer.invoke(IPC_CHANNELS.GET_PLATFORM),
+  /**
+   * アプリケーション設定を取得します。
+   */
+  getSettings: () => ipcRenderer.invoke(IPC_CHANNELS.GET_SETTINGS),
+  /**
+   * アプリケーション設定を更新します。
+   * @param settings 更新する設定のサブセット
+   */
+  updateSettings: (settings: Partial<AppSettings>) =>
+    ipcRenderer.invoke(IPC_CHANNELS.UPDATE_SETTINGS, settings),
   /**
    * ログメッセージを受信した時のコールバックを登録します。
    * @param callback ログメッセージを受け取るコールバック

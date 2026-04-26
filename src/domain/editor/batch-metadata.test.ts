@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { deriveCommonMetadata } from './batch-metadata';
-import type { FlacMetadata } from '@domain/flac/types';
+import type { FlacMetadata } from '@domain/flac/models';
 
 describe('deriveCommonMetadata', () => {
   const mockMetadata1: FlacMetadata = {

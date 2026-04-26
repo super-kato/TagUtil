@@ -1,5 +1,5 @@
 import { success, type Result } from '@domain/common/result';
-import type { TagError } from '@domain/flac/types';
+import type { TagError } from '@domain/flac/errors';
 import { generateNewPath } from '@renderer/infrastructure/adapters/path-adapter';
 import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';

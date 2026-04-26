@@ -8,3 +8,8 @@ export type ElementType<T> =
  * 購読解除を行う関数の型。
  */
 export type Unsubscribe = () => void;
+
+/**
+ * オブジェクトのバリューの型を取得する
+ */
+export type ValuesOf<T> = T[keyof T];

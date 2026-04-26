@@ -1,4 +1,4 @@
-import { isTagError, type TagError } from './types';
+import { isTagError, type TagError } from './errors';
 import { MESSAGES } from '@domain/common/messages';
 
 /**

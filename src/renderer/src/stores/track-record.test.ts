@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TrackRecord } from './track-record.svelte';
-import type { FlacMetadata } from '@domain/flac/types';
+import type { FlacMetadata } from '@domain/flac/models';
 
 import * as imageUtils from '@renderer/utils/image';
 

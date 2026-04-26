@@ -1,4 +1,4 @@
-import type { FlacMetadata, Picture, StreamInfo } from '@domain/flac/types';
+import type { FlacMetadata, Picture, StreamInfo } from '@domain/flac/models';
 import type { ElementType } from '@shared/types';
 import { isDeepEqual } from '@shared/utils/equality';
 

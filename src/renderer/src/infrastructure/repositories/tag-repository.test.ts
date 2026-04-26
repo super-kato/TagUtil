@@ -1,7 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { tagRepository } from './tag-repository';
 import { success, failure } from '@domain/common/result';
-import type { FlacTrack, TagError } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/models';
+import type { TagError } from '@domain/flac/errors';
 
 describe('tag-repository', () => {
   beforeEach(() => {
@@ -100,6 +101,58 @@ describe('tag-repository', () => {
       expect(result.type).toBe('error');
       // 一つが失敗しても全てのトラックに対して書き込みを試行する
       expect(window.api.writeMetadata).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe('scanAndLoadTracks', () => {
+    it('ディレクトリを選択してスキャンを実行すること', async () => {
+      vi.mocked(window.api.selectDirectory).mockResolvedValue('/mock/dir');
+      vi.mocked(window.api.scanDirectory).mockResolvedValue(
+        success({ paths: ['a.flac'], isLimited: false })
+      );
+      vi.mocked(window.api.readMetadata).mockResolvedValue(
+        success({ path: 'a.flac', metadata: {} })
+      );
+
+      const result = await tagRepository.scanAndLoadTracks();
+
+      expect(result.type).toBe('success');
+      expect(window.api.selectDirectory).toHaveBeenCalled();
+    });
+
+    it('ディレクトリ選択がキャンセルされた場合は null を返すこと', async () => {
+      vi.mocked(window.api.selectDirectory).mockResolvedValue(null);
+
+      const result = await tagRepository.scanAndLoadTracks();
+
+      expect(result.type).toBe('success');
+      if (result.type === 'success') {
+        expect(result.value).toBeNull();
+      }
+    });
+  });
+
+  describe('pickImage', () => {
+    it('window.api.pickImage を呼び出すこと', async () => {
+      const mockResult = success({ format: 'image/png', sourcePath: 'p', hash: 'h' });
+      vi.mocked(window.api.pickImage).mockResolvedValue(mockResult);
+
+      const result = await tagRepository.pickImage();
+
+      expect(result).toStrictEqual(mockResult);
+      expect(window.api.pickImage).toHaveBeenCalled();
+    });
+  });
+
+  describe('getImageInfo', () => {
+    it('window.api.getImageInfo を呼び出すこと', async () => {
+      const mockResult = success({ format: 'image/jpeg', sourcePath: 'p', hash: 'h' });
+      vi.mocked(window.api.getImageInfo).mockResolvedValue(mockResult);
+
+      const result = await tagRepository.getImageInfo('test.jpg');
+
+      expect(result).toStrictEqual(mockResult);
+      expect(window.api.getImageInfo).toHaveBeenCalledWith('test.jpg');
     });
   });
 });

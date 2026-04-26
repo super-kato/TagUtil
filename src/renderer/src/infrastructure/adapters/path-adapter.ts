@@ -1,4 +1,5 @@
-import type { FlacTrack, TagResult } from '@domain/flac/types';
+import type { TagResult } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/models';
 
 /**
  * Electron/Node.jsのパス操作APIをRendererプロセスから利用するためのアダプター。

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { DEFAULT_GENRES } from '@domain/flac/types';
+  import { DEFAULT_GENRES } from '@domain/flac/constants';
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { tagActions } from '@renderer/services/tag-actions';
   import BadgeField from '@renderer/components/ui/BadgeField.svelte';

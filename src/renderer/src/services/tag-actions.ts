@@ -1,6 +1,7 @@
 import { MESSAGES } from '@domain/common/messages';
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
-import type { FlacTrack, TagResult } from '@domain/flac/types';
+import type { TagResult } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/models';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { logStore } from '@renderer/stores/log-store.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
@@ -19,7 +20,10 @@ const handleScanOperation = async (
   try {
     const result = await operation();
 
-    if (result.type !== 'success' || !result.value) {
+    if (result.type === 'error') {
+      return;
+    }
+    if (!result.value) {
       return;
     }
 
@@ -27,7 +31,7 @@ const handleScanOperation = async (
     trackStore.tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
 
     if (isLimited) {
-      logStore.addWarn(MESSAGES.SCAN_LIMIT_EXCEEDED);
+      logStore.addWarn({ message: MESSAGES.SCAN_LIMIT_EXCEEDED, context: 'TagActions' });
     }
   } finally {
     uiState.stopLoading();
@@ -85,7 +89,10 @@ const removeSelectedMultiFieldValue = (key: EditableMultiKey, value: string): vo
  */
 const pickAndApplyPicture = async (): Promise<void> => {
   const result = await tagRepository.pickImage();
-  if (result.type === 'success' && result.value) {
+  if (result.type === 'error') {
+    return;
+  }
+  if (result.value) {
     tagEditor.applyPicture(trackStore.selectedTracks, result.value);
   }
 };
@@ -95,7 +102,10 @@ const pickAndApplyPicture = async (): Promise<void> => {
  */
 const applyPictureFromPath = async (path: string): Promise<void> => {
   const result = await tagRepository.getImageInfo(path);
-  if (result.type === 'success' && result.value) {
+  if (result.type === 'error') {
+    return;
+  }
+  if (result.value) {
     tagEditor.applyPicture(trackStore.selectedTracks, result.value);
   }
 };
@@ -157,7 +167,7 @@ const saveAllModified = async (): Promise<void> => {
     const rawData = modified.map((t) => t.toFlacTrack());
     const result = await tagRepository.saveTracks(rawData);
 
-    if (result.type !== 'success') {
+    if (result.type === 'error') {
       return;
     }
 

@@ -1,10 +1,13 @@
 import { success } from '@domain/common/result';
-import { tagErrors, TagResult, type FlacTrack } from '@domain/flac/types';
+import { TagResult } from '@domain/flac/types';
+import { tagErrors } from '@domain/flac/errors';
+import type { FlacTrack } from '@domain/flac/models';
 import { formatFlacFilename } from '@domain/flac/filename-formatter';
 import path from 'path';
 import fs from 'fs/promises';
 import { toTagResultFailure } from '@main/utils/error-handler';
 import { ensureFileExists } from '@main/utils/fs';
+import { settingsRepository } from '@main/infrastructure/repositories/settings-repository';
 
 /**
  * ファイルを新しいパスにリネーム（移動）します。
@@ -34,12 +37,17 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<TagR
  * @param track トラック情報
  */
 export const resolveRenamedPath = (track: FlacTrack): TagResult<string> => {
-  const filenameResult = formatFlacFilename(track);
+  const { renamePattern, trackNumberPadding } = settingsRepository.settings;
+  const filenameResult = formatFlacFilename(track, {
+    pattern: renamePattern,
+    trackNumberPadding
+  });
   if (filenameResult.type === 'error') {
     return filenameResult;
   }
   const dir = path.dirname(track.path);
-  const newPath = path.join(dir, filenameResult.value);
+  const ext = path.extname(track.path);
+  const newPath = path.join(dir, filenameResult.value + ext);
   return success(newPath);
 };
 

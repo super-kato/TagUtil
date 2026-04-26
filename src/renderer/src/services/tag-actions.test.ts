@@ -6,7 +6,29 @@ import { selectionState } from '@renderer/stores/selection-state.svelte';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { tagActions } from './tag-actions';
 import { tagEditor } from './tag-editor';
-import type { FlacMetadata } from '@domain/flac/types';
+import type { FlacMetadata } from '@domain/flac/models';
+import { logStore } from '@renderer/stores/log-store.svelte';
+import { failure, success } from '@domain/common/result';
+import type { TagError } from '@domain/flac/errors';
+
+vi.mock('@renderer/stores/log-store.svelte', () => ({
+  logStore: {
+    addError: vi.fn(),
+    addWarn: vi.fn(),
+    addInfo: vi.fn()
+  }
+}));
+
+vi.mock('@renderer/infrastructure/repositories/tag-repository', () => ({
+  tagRepository: {
+    scanAndLoadTracks: vi.fn(),
+    loadTracksFromPaths: vi.fn(),
+    readMetadata: vi.fn(),
+    saveTracks: vi.fn(),
+    pickImage: vi.fn(),
+    getImageInfo: vi.fn()
+  }
+}));
 
 describe('tagActions', () => {
   const metadata: FlacMetadata = { title: 'T' };
@@ -18,6 +40,10 @@ describe('tagActions', () => {
     trackStore.tracks = [...mockTracks];
     selectionState.items.clear();
     mockTracks.forEach((t) => selectionState.items.add(t));
+
+    // デフォルトの成功レスポンスをセット
+    vi.mocked(tagRepository.readMetadata).mockResolvedValue(success({ path: 'p', metadata: {} }));
+    vi.mocked(tagRepository.saveTracks).mockResolvedValue(success(undefined));
   });
 
   describe('applySelectedMultiFieldChange', () => {
@@ -170,6 +196,49 @@ describe('tagActions', () => {
       const removeSpy = vi.spyOn(tagEditor, 'removePicture');
       tagActions.removeArtwork();
       expect(removeSpy).toHaveBeenCalledWith(mockTracks);
+    });
+  });
+
+  describe('error and edge cases', () => {
+    it('スキャンエラー時にレンダラー側でログを重複して記録しないこと', async () => {
+      const error: TagError = { type: 'SCAN_FAILED', options: { path: '/dir' } };
+      vi.mocked(tagRepository.loadTracksFromPaths).mockResolvedValue(failure(error));
+
+      await tagActions.loadFromPaths(['/dir']);
+
+      expect(logStore.addError).not.toHaveBeenCalled();
+    });
+
+    it('スキャン件数制限を超えた場合に警告をログに記録すること', async () => {
+      vi.mocked(tagRepository.loadTracksFromPaths).mockResolvedValue(
+        success({ tracks: [], isLimited: true })
+      );
+
+      await tagActions.loadFromPaths(['/dir']);
+
+      expect(logStore.addWarn).toHaveBeenCalledWith(
+        expect.objectContaining({ context: 'TagActions' })
+      );
+    });
+
+    it('一括保存エラー時にレンダラー側でログを重複して記録しないこと', async () => {
+      const error: TagError = { type: 'WRITE_FAILED', options: { path: 'a.flac' } };
+      vi.mocked(tagRepository.saveTracks).mockResolvedValue(failure(error));
+      trackStore.tracks = [new TrackRecord('a.flac', {})];
+      trackStore.tracks[0].metadata.title = 'New';
+
+      await tagActions.saveAllModified();
+
+      expect(logStore.addError).not.toHaveBeenCalled();
+    });
+
+    it('画像選択エラー時にレンダラー側でログを重複して記録しないこと', async () => {
+      const error: TagError = { type: 'PICK_IMAGE_FAILED', options: { path: '' } };
+      vi.spyOn(tagRepository, 'pickImage').mockResolvedValue(failure(error));
+
+      await tagActions.pickAndApplyPicture();
+
+      expect(logStore.addError).not.toHaveBeenCalled();
     });
   });
 });

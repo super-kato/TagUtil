@@ -1,5 +1,7 @@
 import { failure, success } from '@domain/common/result';
-import { FlacMetadata, FlacTrack, TagResult, tagErrors } from '@domain/flac/types';
+import { TagResult } from '@domain/flac/types';
+import { tagErrors } from '@domain/flac/errors';
+import { FlacMetadata, FlacTrack } from '@domain/flac/models';
 import { writeFlacTags } from 'flac-tagger';
 import fs from 'node:fs/promises';
 import { hasErrorCode, toTagResultFailure } from '@main/utils/error-handler';

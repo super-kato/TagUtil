@@ -1,5 +1,6 @@
 import { success } from '@domain/common/result';
-import { Picture, TagResult } from '@domain/flac/types';
+import { TagResult } from '@domain/flac/types';
+import { Picture } from '@domain/flac/models';
 import { readFile } from 'node:fs/promises';
 import { computeMd5 } from '@main/utils/crypto';
 import { getMimeTypeFromPath } from '@main/utils/mime';
