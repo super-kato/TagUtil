@@ -1,6 +1,6 @@
 import { success } from '@domain/common/result';
-import type { AppResult } from '@domain/flac/types';
 import type { FlacTrack, Picture } from '@domain/flac/models';
+import type { AppResult } from '@domain/flac/types';
 import { pooledAll } from '@renderer/utils/concurrency';
 
 /**
@@ -44,16 +44,10 @@ const scanAndLoadTracks = async (): Promise<
   return await loadTracksFromPaths([dirPath]);
 };
 
-const saveTracks = async (tracks: FlacTrack[]): Promise<AppResult<void>> => {
-  const results = await pooledAll(tracks.map((track) => () => window.api.writeMetadata(track)));
-
-  for (const result of results) {
-    if (result.type === 'error') {
-      return result;
-    }
-  }
-
-  return success(undefined);
+const saveTracks = async (tracks: FlacTrack[]): Promise<string[]> => {
+  const tasks = tracks.map((track) => () => window.api.writeMetadata(track));
+  const results = await pooledAll(tasks);
+  return results.filter((x) => x.type === 'success').map((x) => x.value);
 };
 
 const pickImage = async (): Promise<AppResult<Picture | null>> => {

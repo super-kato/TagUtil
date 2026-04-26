@@ -43,7 +43,7 @@ describe('tagActions', () => {
 
     // デフォルトの成功レスポンスをセット
     vi.mocked(tagRepository.readMetadata).mockResolvedValue(success({ path: 'p', metadata: {} }));
-    vi.mocked(tagRepository.saveTracks).mockResolvedValue(success(undefined));
+    vi.mocked(tagRepository.saveTracks).mockResolvedValue([]);
   });
 
   describe('applySelectedMultiFieldChange', () => {
@@ -128,10 +128,7 @@ describe('tagActions', () => {
 
       const startLoadingSpy = vi.spyOn(uiState, 'startLoading');
       const stopLoadingSpy = vi.spyOn(uiState, 'stopLoading');
-      const saveTracksSpy = vi.spyOn(tagRepository, 'saveTracks').mockResolvedValue({
-        type: 'success',
-        value: undefined
-      });
+      const saveTracksSpy = vi.spyOn(tagRepository, 'saveTracks').mockResolvedValue([track.path]);
 
       await tagActions.saveAllModified();
 
@@ -222,8 +219,7 @@ describe('tagActions', () => {
     });
 
     it('一括保存エラー時にレンダラー側でログを重複して記録しないこと', async () => {
-      const error: AppError = { type: 'WRITE_FAILED', options: { path: 'a.flac' } };
-      vi.mocked(tagRepository.saveTracks).mockResolvedValue(failure(error));
+      vi.mocked(tagRepository.saveTracks).mockResolvedValue([]);
       trackStore.tracks = [new TrackRecord('a.flac', {})];
       trackStore.tracks[0].metadata.title = 'New';
 

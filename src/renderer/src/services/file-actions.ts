@@ -7,6 +7,7 @@ import { selectionState } from '@renderer/stores/selection-state.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
+import { pooledAll } from '@renderer/utils/concurrency';
 
 /**
  * 選択中のファイルをメタデータに基づいてリネームします。
@@ -33,22 +34,18 @@ const renameSelectedFiles = async (): Promise<void> => {
 };
 
 /**
- * 選択された全てのトラックに対してリネームを試行し、結果をマップに集約します。
- * エラーが発生した場合は途中で処理を中断します。
+ * 選択された全てのトラックに対してリネームを試行し、結果を集約します。
+ * 1つ以上のエラーが発生しても、全てのトラックに対して処理を試行します。
  */
 const executeRenameLoop = async (selected: TrackRecord[]): Promise<Map<string, TrackRecord>> => {
+  const results = await pooledAll(selected.map((track) => () => renameTrack(track)));
+
   const renamedMap = new Map<string, TrackRecord>();
-
-  for (const track of selected) {
-    const result = await renameTrack(track);
-
-    if (result.type === 'error') {
-      break;
+  for (const [index, result] of results.entries()) {
+    if (result.type === 'error' || !result.value) {
+      continue;
     }
-
-    if (result.value) {
-      renamedMap.set(track.path, result.value);
-    }
+    renamedMap.set(selected[index].path, result.value);
   }
 
   return renamedMap;

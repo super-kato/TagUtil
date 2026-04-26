@@ -12,7 +12,7 @@ import { readRawData } from './reader';
 /**
  * 指定されたパスのFLACファイルへメタデータを書き込みます。
  */
-export const writeMetadata = async (track: FlacTrack): Promise<AppResult<void>> => {
+export const writeMetadata = async (track: FlacTrack): Promise<AppResult<string>> => {
   const { path, metadata } = track;
 
   try {
@@ -23,5 +23,5 @@ export const writeMetadata = async (track: FlacTrack): Promise<AppResult<void>> 
   } catch (error: unknown) {
     return toAppResultFailure(error, appErrors.writeFailed, { path });
   }
-  return success(undefined);
+  return success(path);
 };

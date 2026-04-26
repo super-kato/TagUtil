@@ -49,7 +49,7 @@ export interface IpcApi {
   /** 指定されたパスの FLAC メタデータを読み取ります */
   readMetadata: (filePath: string) => Promise<AppResult<FlacTrack>>;
   /** 指定されたパスの FLAC メタデータを書き込みます */
-  writeMetadata: (track: FlacTrack) => Promise<AppResult<void>>;
+  writeMetadata: (track: FlacTrack) => Promise<AppResult<string>>;
   /** フォルダ選択ダイアログを表示し、選択されたパスを返します */
   selectDirectory: () => Promise<string | null>;
   /** 指定されたパス（ファイルまたはディレクトリ）内のFLACファイルのパスリストを返します */
