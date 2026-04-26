@@ -4,7 +4,7 @@
   import {
     getSingleFieldValue,
     handleSingleFieldChange,
-    handleEnterKey
+    handleEnterToBlur
   } from './tag-field-handlers';
 </script>
 
@@ -29,7 +29,7 @@
           type="text"
           value={getSingleFieldValue('trackNumber')}
           onblur={(e) => handleSingleFieldChange('trackNumber', e)}
-          onkeydown={handleEnterKey}
+          onkeydown={handleEnterToBlur}
           placeholder="#"
           disabled={trackStore.selectedTracks.length > 1}
           class:disabled={trackStore.selectedTracks.length > 1}
@@ -40,7 +40,7 @@
           type="text"
           value={getSingleFieldValue('trackTotal')}
           onblur={(e) => handleSingleFieldChange('trackTotal', e)}
-          onkeydown={handleEnterKey}
+          onkeydown={handleEnterToBlur}
           placeholder="Tracks"
         />
       </div>
@@ -54,7 +54,7 @@
           type="text"
           value={getSingleFieldValue('discNumber')}
           onblur={(e) => handleSingleFieldChange('discNumber', e)}
-          onkeydown={handleEnterKey}
+          onkeydown={handleEnterToBlur}
           placeholder="#"
         />
         <span class="separator">/</span>
@@ -63,7 +63,7 @@
           type="text"
           value={getSingleFieldValue('discTotal')}
           onblur={(e) => handleSingleFieldChange('discTotal', e)}
-          onkeydown={handleEnterKey}
+          onkeydown={handleEnterToBlur}
           placeholder="Discs"
         />
       </div>
@@ -76,7 +76,7 @@
         type="text"
         value={getSingleFieldValue('date')}
         onblur={(e) => handleSingleFieldChange('date', e)}
-        onkeydown={handleEnterKey}
+        onkeydown={handleEnterToBlur}
         placeholder="YYYY"
       />
     </div>
