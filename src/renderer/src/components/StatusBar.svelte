@@ -1,6 +1,12 @@
 <script lang="ts">
   import type { LogLevel } from '@domain/common/log';
-  import { ChevronUp, CircleAlert, Info, TriangleAlert, type LucideProps } from '@lucide/svelte';
+  import {
+    ChevronUp,
+    OctagonAlert,
+    CircleCheck,
+    TriangleAlert,
+    type LucideProps
+  } from '@lucide/svelte';
   import { tooltip } from '@renderer/actions/tooltip';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
@@ -11,9 +17,9 @@
   import { slide } from 'svelte/transition';
 
   const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
-    ['INFO', Info],
+    ['INFO', CircleCheck],
     ['WARN', TriangleAlert],
-    ['ERROR', CircleAlert]
+    ['ERROR', OctagonAlert]
   ] as const);
 
   let isExpanded = $state(false);
