@@ -1,4 +1,5 @@
 import { EventEmitter } from 'node:events';
+import { format } from 'node:util';
 import { LogLevel, LogHandler, createLogMessage } from '@domain/common/log';
 import { formatLogTime } from '@shared/utils/date';
 
@@ -10,16 +11,16 @@ import { formatLogTime } from '@shared/utils/date';
 class Logger extends EventEmitter {
   static readonly #LOG_EVENT = 'log';
 
-  public info(message: string, context: string): void {
-    this.#log('INFO', message, context);
+  public info(context: string, message: string, ...args: unknown[]): void {
+    this.#log('INFO', context, message, ...args);
   }
 
-  public warn(message: string, context: string): void {
-    this.#log('WARN', message, context);
+  public warn(context: string, message: string, ...args: unknown[]): void {
+    this.#log('WARN', context, message, ...args);
   }
 
-  public error(message: string, context: string): void {
-    this.#log('ERROR', message, context);
+  public error(context: string, message: string, ...args: unknown[]): void {
+    this.#log('ERROR', context, message, ...args);
   }
 
   /**
@@ -33,16 +34,18 @@ class Logger extends EventEmitter {
   /**
    * ログを出力し、イベントを発火させます。
    * @param level ログレベル
-   * @param message メッセージ
    * @param context コンテキスト
+   * @param message メッセージ
+   * @param args 追加の引数
    */
-  #log(level: LogLevel, message: string, context: string): void {
-    const logMessage = createLogMessage(level, message, context);
+  #log(level: LogLevel, context: string, message: string, ...args: unknown[]): void {
+    const formattedMessage = format(message, ...args);
+    const logMessage = createLogMessage(level, context, formattedMessage);
     this.emit(Logger.#LOG_EVENT, logMessage);
 
     // 標準出力にも出す
     const timestamp = formatLogTime(logMessage.timestamp);
-    console.log(`[${timestamp}] [${level}] [${context}] ${message}`);
+    console.log(`[${timestamp}] [${level}] [${context}] ${formattedMessage}`);
   }
 }
 

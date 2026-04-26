@@ -33,20 +33,20 @@ class LogStore {
 
   /**
    * レンダラープロセス側で発生したエラーをログに追加します。
-   * @param message エラーメッセージ
    * @param context コンテキスト
+   * @param message エラーメッセージ
    */
-  addError(message: string, context: string): void {
-    this.addLog(createLogMessage('ERROR', message, context));
+  addError(context: string, message: string): void {
+    this.addLog(createLogMessage('ERROR', context, message));
   }
 
   /**
    * レンダラープロセス側で発生した警告をログに追加します。
-   * @param message 警告メッセージ
    * @param context コンテキスト
+   * @param message 警告メッセージ
    */
-  addWarn(message: string, context: string): void {
-    this.addLog(createLogMessage('WARN', message, context));
+  addWarn(context: string, message: string): void {
+    this.addLog(createLogMessage('WARN', context, message));
   }
 }
 

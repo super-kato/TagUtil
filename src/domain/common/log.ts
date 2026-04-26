@@ -30,11 +30,11 @@ export type LogHandler = (message: LogMessage) => void;
 /**
  * 標準的なログメッセージオブジェクトを生成します。
  * @param level ログレベル
- * @param message メッセージ内容
  * @param context コンテキスト
+ * @param message メッセージ内容
  * @returns 生成された LogMessage オブジェクト
  */
-export const createLogMessage = (level: LogLevel, message: string, context: string): LogMessage => {
+export const createLogMessage = (level: LogLevel, context: string, message: string): LogMessage => {
   return {
     id: generateId(),
     level,
