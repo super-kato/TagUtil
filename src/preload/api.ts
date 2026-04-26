@@ -47,17 +47,15 @@ export const api: IpcApi = {
   renameFile: (oldPath: string, newPath: string) =>
     ipcRenderer.invoke(IPC_CHANNELS.RENAME_FILE, oldPath, newPath),
   /**
+   * メタデータに基づいて新しいファイルパスを生成します。
+   * @param track トラック情報
+   */
+  generateNewPath: (track: FlacTrack) => ipcRenderer.invoke(IPC_CHANNELS.GENERATE_NEW_PATH, track),
+  /**
    * File オブジェクトから OS 上のファイルシステムパスを取得します。
    * Electron v28+ で非推奨となった File.path の代替です。
    */
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
-  /**
-   * パス操作（メインプロセス経由）。
-   */
-  path: {
-    dirname: (p: string) => ipcRenderer.invoke(IPC_CHANNELS.PATH_DIRNAME, p),
-    join: (...paths: string[]) => ipcRenderer.invoke(IPC_CHANNELS.PATH_JOIN, ...paths)
-  },
   getPlatform: () => ipcRenderer.invoke(IPC_CHANNELS.GET_PLATFORM),
   /**
    * ログメッセージを受信した時のコールバックを登録します。

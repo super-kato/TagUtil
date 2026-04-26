@@ -26,14 +26,12 @@ export const IPC_CHANNELS = {
   GET_IMAGE_INFO: 'tag:get-image-info',
   /** ファイルのリネーム */
   RENAME_FILE: 'tag:rename-file',
+  /** メタデータに基づいた新しいパスの生成 */
+  GENERATE_NEW_PATH: 'tag:generate-new-path',
   /** ログメッセージの通知 */
   ON_LOG_MESSAGE: 'app:on-log-message',
   /** 実行環境のプラットフォームを取得 */
-  GET_PLATFORM: 'app:get-platform',
-  /** ディレクトリ名を取得 */
-  PATH_DIRNAME: 'path:dirname',
-  /** パスを結合 */
-  PATH_JOIN: 'path:join'
+  GET_PLATFORM: 'app:get-platform'
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -56,13 +54,10 @@ export interface IpcApi {
   getImageInfo: (filePath: string) => Promise<TagResult<Picture>>;
   /** ファイルをリネーム（移動）します */
   renameFile: (oldPath: string, newPath: string) => Promise<TagResult<void>>;
+  /** メタデータに基づいて新しいファイルパスを生成します */
+  generateNewPath: (track: FlacTrack) => Promise<TagResult<string>>;
   /** File オブジェクトから OS 上のファイルシステムパスを取得します */
   getPathForFile: (file: File) => string;
-  /** パス操作（メインプロセス経由） */
-  path: {
-    dirname: (path: string) => Promise<string>;
-    join: (...paths: string[]) => Promise<string>;
-  };
   /** 実行環境のプラットフォームを取得します */
   getPlatform: () => Promise<Platform>;
   /** ログメッセージを受信した時のコールバックを登録します */
