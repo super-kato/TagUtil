@@ -167,16 +167,14 @@
     font-weight: 500;
   }
 
-  .status-item.info {
-    color: var(--accent-info);
-  }
-
   .status-item.ready {
     color: var(--text-muted);
   }
 
   .status-item.error .log-message,
-  .status-item.warn .log-message {
+  .status-item.warn .log-message,
+  .status-item.error .log-context,
+  .status-item.warn .log-context {
     color: inherit;
   }
 
@@ -256,28 +254,25 @@
     flex-shrink: 0;
   }
 
-  .log-entry.info .log-level-icon {
-    color: var(--accent-info);
-  }
-
   .log-entry.warn {
     background-color: var(--accent-warning-dim);
-  }
-  .log-entry.warn .log-level-icon {
-    color: var(--accent-warning);
-  }
-  .log-entry.warn .log-text {
     color: var(--accent-warning);
   }
 
   .log-entry.error {
     background-color: var(--accent-error-dim);
-  }
-  .log-entry.error .log-level-icon {
     color: var(--accent-error);
   }
+
+  .log-entry.warn .timestamp,
+  .log-entry.warn .log-context,
+  .log-entry.warn .log-level-icon,
+  .log-entry.warn .log-text,
+  .log-entry.error .timestamp,
+  .log-entry.error .log-context,
+  .log-entry.error .log-level-icon,
   .log-entry.error .log-text {
-    color: var(--accent-error);
+    color: inherit;
   }
 
   .log-text {
