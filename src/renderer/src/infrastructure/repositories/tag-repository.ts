@@ -45,24 +45,15 @@ const scanAndLoadTracks = async (): Promise<
 };
 
 const saveTracks = async (tracks: FlacTrack[]): Promise<TagResult<void>> => {
-  let firstError: TagResult<void> | null = null;
+  const results = await pooledAll(tracks.map((track) => () => window.api.writeMetadata(track)));
 
-  const tasks = tracks.map((track) => async () => {
-    // すでにエラーが発生している場合は、新たな書き込みを行わない
-    if (firstError) {
-      return success(undefined);
+  for (const result of results) {
+    if (result.type === 'error') {
+      return result;
     }
+  }
 
-    const result = await window.api.writeMetadata(track);
-    if (result.type === 'error' && !firstError) {
-      firstError = result;
-    }
-    return result;
-  });
-
-  await pooledAll(tasks);
-
-  return firstError ?? success(undefined);
+  return success(undefined);
 };
 
 const pickImage = async (): Promise<TagResult<Picture | null>> => {
