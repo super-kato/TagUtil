@@ -63,7 +63,9 @@ describe('Logger', () => {
       logger.info({ context: 'console', message: 'console test' });
       expect(console.log).toHaveBeenCalled();
       // 出力フォーマットの断片を確認
-      expect(console.log).toHaveBeenCalledWith(expect.stringContaining('[INFO] [console] console test'));
+      expect(console.log).toHaveBeenCalledWith(
+        expect.stringContaining('[INFO] [console] console test')
+      );
     });
   });
 

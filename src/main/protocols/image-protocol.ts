@@ -26,7 +26,7 @@ export const handleImageRequest = async (request: Request): Promise<Response> =>
     // それ以外の場合（外部画像ファイル等）: ローカルファイルを直接配信
     return await serveLocalFile(filePath);
   } catch (error: unknown) {
-    logger.error(`[Protocol] Error serving ${request.url}:`, error);
+    logger.error({ context: 'Protocol', message: `Error serving ${request.url}` }, error);
     return toErrorResponse(error);
   }
 };
@@ -69,7 +69,7 @@ const toErrorResponse = (error: unknown): Response => {
     return new Response(error.message, { status: error.status });
   }
 
-  logger.error('[Protocol] Unexpected error:', error);
+  logger.error({ context: 'Protocol', message: 'Unexpected error' }, error);
   return new Response('Internal Server Error', { status: HTTP_STATUS.INTERNAL_SERVER_ERROR });
 };
 
