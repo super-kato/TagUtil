@@ -1,19 +1,22 @@
 import { failure, success } from '@domain/common/result';
+import { ValuesOf } from '@shared/types';
 import { sanitize } from '@shared/utils/filename';
 import {
-  tagErrors,
   TAG_PLACEHOLDERS,
+  tagErrors,
   type FlacMetadata,
   type FlacTrack,
   type TagResult
 } from './types';
 
+type ResolverOptions = { trackNumberPadding: number };
+
 /**
  * 各プレースホルダのリゾルバ関数の定義。
  */
 const PLACEHOLDER_RESOLVERS: Record<
-  string,
-  (metadata: FlacMetadata, options: { trackNumberPadding: number }) => string | undefined
+  ValuesOf<typeof TAG_PLACEHOLDERS>,
+  (metadata: FlacMetadata, options: ResolverOptions) => string | undefined
 > = {
   [TAG_PLACEHOLDERS.TRACK_NUMBER]: (metadata, { trackNumberPadding }) =>
     metadata.trackNumber?.toString().padStart(trackNumberPadding, '0'),
