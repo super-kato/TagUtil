@@ -17,6 +17,7 @@ export const handleSingleFieldChange = (key: EditableSingleKey, e: Event): void 
 const enterHandler = new KeyboardHandler(IS_MAC, [
   {
     combo: { key: 'Enter' },
+    ignoreComposition: true,
     handler: (e) => (e.target as HTMLElement).blur()
   }
 ]);
