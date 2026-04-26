@@ -14,6 +14,8 @@ export interface LogMessage {
   id: string;
   /** ログレベル */
   level: LogLevel;
+  /** コンテキスト（処理の識別子など） */
+  context?: string;
   /** メッセージ内容 */
   message: string;
   /** タイムスタンプ（ミリ秒） */
@@ -29,12 +31,18 @@ export type LogHandler = (message: LogMessage) => void;
  * 標準的なログメッセージオブジェクトを生成します。
  * @param level ログレベル
  * @param message メッセージ内容
+ * @param context コンテキスト（オプション）
  * @returns 生成された LogMessage オブジェクト
  */
-export const createLogMessage = (level: LogLevel, message: string): LogMessage => {
+export const createLogMessage = (
+  level: LogLevel,
+  message: string,
+  context?: string
+): LogMessage => {
   return {
     id: generateId(),
     level,
+    context,
     message,
     timestamp: getCurrentTimestamp()
   };

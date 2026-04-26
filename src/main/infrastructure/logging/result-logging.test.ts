@@ -23,7 +23,7 @@ describe('result-logging', () => {
       const result = await withResultLogging('test-ctx', task);
 
       expect(result.type).toBe('success');
-      expect(logger.info).toHaveBeenCalledWith('[test-ctx]');
+      expect(logger.info).toHaveBeenCalledWith('', 'test-ctx');
     });
 
     it('複数の補足メッセージを渡した場合、カンマ区切りでログに含まれること', async () => {
@@ -31,7 +31,7 @@ describe('result-logging', () => {
 
       await withResultLogging('test-ctx', task, 'param1', 'param2');
 
-      expect(logger.info).toHaveBeenCalledWith('[test-ctx] param1, param2');
+      expect(logger.info).toHaveBeenCalledWith('param1, param2', 'test-ctx');
     });
 
     it('補足メッセージに配列を渡した場合、カンマ区切りでログに含まれること', async () => {
@@ -41,7 +41,7 @@ describe('result-logging', () => {
       await withResultLogging('test-ctx', task, paths);
 
       // Array.prototype.join() により、配列の要素がカンマ区切りで出力される
-      expect(logger.info).toHaveBeenCalledWith('[test-ctx] path/a,path/b');
+      expect(logger.info).toHaveBeenCalledWith('path/a,path/b', 'test-ctx');
     });
 
     it('処理が失敗（Error型を返却）した場合、エラーログを出力すること', async () => {
@@ -53,7 +53,7 @@ describe('result-logging', () => {
       const result = await withResultLogging('test-ctx', task);
 
       expect(result.type).toBe('error');
-      expect(logger.warn).toHaveBeenCalledWith('[test-ctx]: Formatted Error Message');
+      expect(logger.warn).toHaveBeenCalledWith('Formatted Error Message', 'test-ctx');
       expect(formatter.formatTagError).toHaveBeenCalledWith(error);
     });
 
@@ -64,7 +64,7 @@ describe('result-logging', () => {
 
       await expect(withResultLogging('test-ctx', task)).rejects.toThrow('Unexpected crash');
 
-      expect(logger.error).toHaveBeenCalledWith('[test-ctx]: Formatted Exception Message');
+      expect(logger.error).toHaveBeenCalledWith('Formatted Exception Message', 'test-ctx');
       expect(formatter.formatTagError).toHaveBeenCalledWith(error);
     });
   });

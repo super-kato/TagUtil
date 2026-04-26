@@ -33,9 +33,7 @@ describe('error-handler', () => {
       window.onerror(message, source, lineno, colno, error);
     }
 
-    expect(logStore.addError).toHaveBeenCalledWith(
-      expect.stringContaining('[Uncaught Exception] stack trace')
-    );
+    expect(logStore.addError).toHaveBeenCalledWith('stack trace', 'Uncaught Exception');
   });
 
   it('window.onerror がエラーオブジェクトなしで呼ばれた場合も適切にフォーマットされること', () => {
@@ -49,7 +47,8 @@ describe('error-handler', () => {
     }
 
     expect(logStore.addError).toHaveBeenCalledWith(
-      expect.stringContaining('[Uncaught Exception] Test error without object (test.js:10:5)')
+      'Test error without object (test.js:10:5)',
+      'Uncaught Exception'
     );
   });
 
@@ -67,9 +66,7 @@ describe('error-handler', () => {
       window.onunhandledrejection(event);
     }
 
-    expect(logStore.addError).toHaveBeenCalledWith(
-      expect.stringContaining('[Unhandled Rejection] promise stack trace')
-    );
+    expect(logStore.addError).toHaveBeenCalledWith('promise stack trace', 'Unhandled Rejection');
   });
 
   it('window.onunhandledrejection が Error 以外の理由で呼ばれた場合も適切に記録されること', () => {
@@ -85,8 +82,6 @@ describe('error-handler', () => {
       window.onunhandledrejection(event);
     }
 
-    expect(logStore.addError).toHaveBeenCalledWith(
-      expect.stringContaining('[Unhandled Rejection] Something went wrong')
-    );
+    expect(logStore.addError).toHaveBeenCalledWith('Something went wrong', 'Unhandled Rejection');
   });
 });

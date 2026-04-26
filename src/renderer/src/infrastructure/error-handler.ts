@@ -7,12 +7,12 @@ import { logStore } from '@renderer/stores/log-store.svelte';
 export const initializeGlobalErrorHandler = (): void => {
   window.onerror = (message, source, lineno, colno, error): void => {
     const errorMsg = error?.stack || `${message} (${source}:${lineno}:${colno})`;
-    logStore.addError(`[Uncaught Exception] ${errorMsg}`);
+    logStore.addError(errorMsg, 'Uncaught Exception');
   };
 
   window.onunhandledrejection = (event: PromiseRejectionEvent): void => {
     const reason = event.reason;
-    const errorMsg = reason instanceof Error ? reason.stack : String(reason);
-    logStore.addError(`[Unhandled Rejection] ${errorMsg}`);
+    const errorMsg = reason instanceof Error ? (reason.stack ?? reason.message) : String(reason);
+    logStore.addError(errorMsg, 'Unhandled Rejection');
   };
 };

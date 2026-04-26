@@ -72,7 +72,12 @@
           {#if ICON}
             <ICON size={UI_TOKENS.icons.size} />
           {/if}
-          <span class="log-message">{displayState.message}</span>
+          <span class="log-message">
+            {#if displayState.context}
+              <span class="log-context">[{displayState.context}]</span>
+            {/if}
+            {displayState.message}
+          </span>
         </div>
       {:else}
         <div class="status-item ready">
@@ -96,7 +101,12 @@
             <div class="log-level-icon">
               <ICON size={UI_TOKENS.icons.sizeSmall} />
             </div>
-            <span class="log-text" use:tooltip={log.message}>{log.message}</span>
+            <span class="log-text" use:tooltip={log.message}>
+              {#if log.context}
+                <span class="log-context">[{log.context}]</span>
+              {/if}
+              {log.message}
+            </span>
           </div>
         {/each}
       </div>
@@ -167,6 +177,11 @@
 
   .log-message {
     color: var(--text-primary);
+  }
+
+  .log-context {
+    color: var(--text-dim);
+    font-weight: 500;
   }
 
   .expand-icon {
