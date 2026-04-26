@@ -20,7 +20,7 @@ export const TAG_PLACEHOLDERS = {
   TITLE: '{title}',
   ALBUM: '{album}',
   ARTIST: '{artist}',
-  YEAR: '{year}',
+  DATE: '{date}',
   GENRE: '{genre}'
 } as const;
 

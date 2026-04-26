@@ -3,7 +3,7 @@ import { trackStore } from './track-store.svelte';
 import { selectionState } from './selection-state.svelte';
 import { TrackRecord } from './track-record.svelte';
 import { DEFAULT_GENRES } from '@domain/flac/constants';
-import type { FlacMetadata } from '@domain/flac/models';
+import type { FlacMetadata, Picture } from '@domain/flac/models';
 
 import * as imageUtils from '@renderer/utils/image';
 
@@ -67,5 +67,29 @@ describe('TrackStore', () => {
       expect(artistState.value).toStrictEqual(['Artist']);
     }
     expect(trackStore.commonMetadata?.title.type).toBe('divergent');
+  });
+
+  it('commonImageUrl が選択中のトラックの共通カバーアートを返すこと', () => {
+    const pic: Picture = { format: 'image/png', sourcePath: 'p', hash: 'h' };
+    const m1: FlacMetadata = { picture: pic };
+    const m2: FlacMetadata = { picture: pic };
+    const t1 = new TrackRecord('p1', m1);
+    const t2 = new TrackRecord('p2', m2);
+    trackStore.tracks = [t1, t2];
+    selectionState.selectRange([t1, t2]);
+
+    expect(trackStore.commonImageUrl).toBe('blob:mock');
+    expect(imageUtils.createImageUrl).toHaveBeenCalledWith(pic);
+  });
+
+  it('カバーアートが不一致の場合は commonImageUrl が null を返すこと', () => {
+    const m1: FlacMetadata = { picture: { format: 'a', sourcePath: 'a', hash: 'a' } };
+    const m2: FlacMetadata = { picture: { format: 'b', sourcePath: 'b', hash: 'b' } };
+    const t1 = new TrackRecord('p1', m1);
+    const t2 = new TrackRecord('p2', m2);
+    trackStore.tracks = [t1, t2];
+    selectionState.selectRange([t1, t2]);
+
+    expect(trackStore.commonImageUrl).toBeNull();
   });
 });

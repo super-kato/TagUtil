@@ -30,7 +30,7 @@ const PLACEHOLDER_RESOLVERS: Record<
   [TAG_PLACEHOLDERS.TITLE]: (metadata) => metadata.title,
   [TAG_PLACEHOLDERS.ALBUM]: (metadata) => metadata.album,
   [TAG_PLACEHOLDERS.ARTIST]: (metadata) => metadata.artist?.join(', '),
-  [TAG_PLACEHOLDERS.YEAR]: (metadata) => metadata.date,
+  [TAG_PLACEHOLDERS.DATE]: (metadata) => metadata.date,
   [TAG_PLACEHOLDERS.GENRE]: (metadata) => metadata.genre?.join(', ')
 } as const;
 

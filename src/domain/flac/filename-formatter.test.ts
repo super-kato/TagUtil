@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { formatFlacFilename } from './filename-formatter';
+import { describe, expect, it } from 'vitest';
 import { TAG_PLACEHOLDERS } from './constants';
+import { formatFlacFilename } from './filename-formatter';
 import type { FlacTrack } from './models';
 
 describe('filename-formatter', () => {
@@ -86,6 +86,22 @@ describe('filename-formatter', () => {
       expect(result.type).toBe('success');
       if (result.type === 'success') {
         expect(result.value).toBe('Artist A, Artist B - Title');
+      }
+    });
+
+    it('ジャンルと日付のプレースホルダが機能すること', () => {
+      const track = createMockTrack('1', 'Title', 'Album', ['Artist'], '2024-01-01', [
+        'Rock',
+        'Jazz'
+      ]);
+      const result = formatFlacFilename(track, {
+        pattern: '{date} [{genre}] {title}',
+        trackNumberPadding: 2
+      });
+
+      expect(result.type).toBe('success');
+      if (result.type === 'success') {
+        expect(result.value).toBe('2024-01-01 [Rock, Jazz] Title');
       }
     });
 
