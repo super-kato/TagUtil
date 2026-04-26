@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { LogLevel } from '@domain/common/log';
-  import { ChevronUp, X, Check, TriangleAlert, type LucideProps } from '@lucide/svelte';
+  import { ChevronUp, X, Check, TriangleAlert, List, type LucideProps } from '@lucide/svelte';
   import { tooltip } from '@renderer/actions/tooltip';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
@@ -66,7 +66,12 @@
     aria-label={isExpanded ? 'Collapse logs' : 'Expand logs'}
   >
     <div class="status-content">
-      {#if displayState}
+      {#if isExpanded}
+        <div class="status-item logs-title">
+          <List size={UI_TOKENS.icons.size} />
+          <span>Activity Log</span>
+        </div>
+      {:else if displayState}
         {@const ICON = levelIcons.get(displayState.level)}
         <div class="status-item {displayState.level.toLowerCase()}">
           {#if ICON}
@@ -166,6 +171,10 @@
   }
 
   .status-item.ready {
+    color: var(--text-muted);
+  }
+
+  .status-item.logs-title {
     color: var(--text-muted);
   }
 
