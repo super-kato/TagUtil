@@ -5,7 +5,7 @@ import path from 'path';
 import fs from 'fs/promises';
 import { toTagResultFailure } from '@main/utils/error-handler';
 import { ensureFileExists } from '@main/utils/fs';
-import { settingsStore } from '@main/infrastructure/adapters/settings-store';
+import { settingsRepository } from '@main/infrastructure/repositories/settings-repository';
 
 /**
  * ファイルを新しいパスにリネーム（移動）します。
@@ -35,13 +35,14 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<TagR
  * @param track トラック情報
  */
 export const resolveRenamedPath = (track: FlacTrack): TagResult<string> => {
-  const { renamePattern, trackNumberPadding } = settingsStore.getSettings();
+  const { renamePattern, trackNumberPadding } = settingsRepository.settings;
   const filenameResult = formatFlacFilename(track, renamePattern, trackNumberPadding);
   if (filenameResult.type === 'error') {
     return filenameResult;
   }
   const dir = path.dirname(track.path);
-  const newPath = path.join(dir, filenameResult.value);
+  const ext = path.extname(track.path);
+  const newPath = path.join(dir, filenameResult.value + ext);
   return success(newPath);
 };
 

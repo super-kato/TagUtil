@@ -1,4 +1,5 @@
 import { DEFAULT_SETTINGS, type AppSettings } from '@shared/settings';
+import { settingsRepository } from '@renderer/infrastructure/repositories/settings-repository';
 
 /**
  * アプリケーション設定を管理するストア。
@@ -21,15 +22,15 @@ export class SettingsStore {
   }
 
   /**
-   * メメインプロセスから最新の設定を読み込みます。
+   * メインプロセスから最新の設定を読み込みます。
    */
   async refresh(): Promise<void> {
-    try {
-      const settings = await window.api.getSettings();
-      this.#current = settings;
-    } catch (error) {
-      console.error('Failed to fetch settings:', error);
+    const result = await settingsRepository.getSettings();
+    if (result.type !== 'success') {
+      return;
     }
+
+    this.#current = result.value;
   }
 
   /**
@@ -37,13 +38,13 @@ export class SettingsStore {
    * @param settings 更新する設定のサブセット
    */
   async update(settings: Partial<AppSettings>): Promise<void> {
-    try {
-      await window.api.updateSettings(settings);
-      // 成功したらローカルの状態も更新する
-      this.#current = { ...this.#current, ...settings };
-    } catch (error) {
-      console.error('Failed to update settings:', error);
+    const result = await settingsRepository.updateSettings(settings);
+    if (result.type !== 'success') {
+      return;
     }
+
+    // 成功したら最新の状態を再取得して同期する
+    await this.refresh();
   }
 }
 

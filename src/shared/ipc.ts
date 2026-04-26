@@ -66,9 +66,9 @@ export interface IpcApi {
   /** 実行環境のプラットフォームを取得します */
   getPlatform: () => Promise<Platform>;
   /** アプリケーション設定を取得します */
-  getSettings: () => Promise<AppSettings>;
+  getSettings: () => Promise<TagResult<AppSettings>>;
   /** アプリケーション設定を更新します */
-  updateSettings: (settings: Partial<AppSettings>) => Promise<void>;
+  updateSettings: (settings: Partial<AppSettings>) => Promise<TagResult<void>>;
   /** ログメッセージを受信した時のコールバックを登録します */
   onLogMessage: (callback: LogHandler) => Unsubscribe;
 }

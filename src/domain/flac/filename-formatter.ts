@@ -1,6 +1,28 @@
-import { sanitize } from '@shared/utils/filename';
 import { failure, success } from '@domain/common/result';
-import { tagErrors, type FlacTrack, type TagResult } from './types';
+import { sanitize } from '@shared/utils/filename';
+import {
+  tagErrors,
+  TAG_PLACEHOLDERS,
+  type FlacMetadata,
+  type FlacTrack,
+  type TagResult
+} from './types';
+
+/**
+ * 各プレースホルダのリゾルバ関数の定義。
+ */
+const PLACEHOLDER_RESOLVERS: Record<
+  string,
+  (metadata: FlacMetadata, options: { trackNumberPadding: number }) => string | undefined
+> = {
+  [TAG_PLACEHOLDERS.TRACK_NUMBER]: (metadata, { trackNumberPadding }) =>
+    metadata.trackNumber?.toString().padStart(trackNumberPadding, '0'),
+  [TAG_PLACEHOLDERS.TITLE]: (metadata) => metadata.title,
+  [TAG_PLACEHOLDERS.ALBUM]: (metadata) => metadata.album,
+  [TAG_PLACEHOLDERS.ARTIST]: (metadata) => metadata.artist?.join(', '),
+  [TAG_PLACEHOLDERS.YEAR]: (metadata) => metadata.date,
+  [TAG_PLACEHOLDERS.GENRE]: (metadata) => metadata.genre?.join(', ')
+} as const;
 
 /**
  * メタデータに基づいてFLACのファイル名を生成します。
@@ -16,33 +38,30 @@ export const formatFlacFilename = (
   const { metadata } = track;
   let filename = pattern;
 
-  // 必須フィールドのチェック（パターンに含まれている場合のみ）
-  if (pattern.includes('{trackNumber}') && !metadata.trackNumber) {
-    return failure(tagErrors.missingTrackNumber({ path: track.path }));
+  // パターンに少なくとも1つのプレースホルダが含まれているかチェック
+  const hasPlaceholder = Object.keys(PLACEHOLDER_RESOLVERS).some((placeholder) =>
+    pattern.includes(placeholder)
+  );
+
+  if (!hasPlaceholder) {
+    return failure(tagErrors.invalidRenamePattern({ path: track.path }));
   }
-  if (pattern.includes('{title}') && !metadata.title) {
-    return failure(tagErrors.missingTitle({ path: track.path }));
-  }
 
-  // 置換処理
-  const replacements: Record<string, string | number | undefined> = {
-    ['{trackNumber}']: metadata.trackNumber
-      ? metadata.trackNumber.toString().padStart(trackNumberPadding, '0')
-      : '',
-    ['{title}']: metadata.title,
-    ['{album}']: metadata.album,
-    ['{artist}']: metadata.artist?.join(', '),
-    ['{year}']: metadata.date,
-    ['{genre}']: metadata.genre?.join(', ')
-  };
+  // 置換処理とバリデーション
+  // パターンに含まれるすべてのプレースホルダについて、値が存在するかチェックする
+  for (const [placeholder, resolver] of Object.entries(PLACEHOLDER_RESOLVERS)) {
+    if (!pattern.includes(placeholder)) {
+      continue;
+    }
 
-  Object.entries(replacements).forEach(([placeholder, value]) => {
-    filename = filename.replaceAll(placeholder, value?.toString() ?? '');
-  });
+    const value = resolver(metadata, { trackNumberPadding });
 
-  // 拡張子を付与
-  if (!filename.toLowerCase().endsWith('.flac')) {
-    filename += '.flac';
+    // 値が空（または未定義）の場合はエラー
+    if (!value || value.toString().trim() === '') {
+      return failure(tagErrors.missingRequiredTag({ path: track.path, detail: placeholder }));
+    }
+
+    filename = filename.replaceAll(placeholder, value.toString());
   }
 
   return success(sanitize(filename));

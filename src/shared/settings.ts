@@ -11,7 +11,7 @@ export interface AppSettings {
 /**
  * デフォルトの設定値。
  */
-export const DEFAULT_SETTINGS: AppSettings = {
+export const DEFAULT_SETTINGS = {
   renamePattern: '{trackNumber} - {title}',
   trackNumberPadding: 2
-};
+} as const satisfies AppSettings;

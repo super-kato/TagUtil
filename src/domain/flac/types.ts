@@ -100,8 +100,8 @@ export const TAG_ERROR_TYPES = [
   'WRITE_FAILED',
   'SCAN_FAILED',
   'PICK_IMAGE_FAILED',
-  'MISSING_TRACK_NUMBER',
-  'MISSING_TITLE'
+  'MISSING_REQUIRED_TAG',
+  'INVALID_RENAME_PATTERN'
 ] as const;
 
 /**
@@ -131,8 +131,8 @@ export type TagError =
   | { type: 'WRITE_FAILED'; options: TagErrorOptions }
   | { type: 'SCAN_FAILED'; options: TagErrorOptions }
   | { type: 'PICK_IMAGE_FAILED'; options: TagErrorOptions }
-  | { type: 'MISSING_TRACK_NUMBER'; options: TagErrorOptions }
-  | { type: 'MISSING_TITLE'; options: TagErrorOptions };
+  | { type: 'MISSING_REQUIRED_TAG'; options: TagErrorOptions }
+  | { type: 'INVALID_RENAME_PATTERN'; options: TagErrorOptions };
 
 /**
  * TagError を生成する共通のファクトリ関数を作成します。
@@ -174,10 +174,22 @@ export const tagErrors = {
   scanFailed: createFactory('SCAN_FAILED'),
   /** 画像の選択・読み込みに失敗した場合のエラー */
   pickImageFailed: createFactory('PICK_IMAGE_FAILED'),
-  /** トラック番号が欠損している場合のエラー */
-  missingTrackNumber: createFactory('MISSING_TRACK_NUMBER'),
-  /** タイトルが欠損している場合のエラー */
-  missingTitle: createFactory('MISSING_TITLE')
+  /** 必須タグ（フォーマットに含まれるタグ）が欠損している場合のエラー */
+  missingRequiredTag: createFactory('MISSING_REQUIRED_TAG'),
+  /** リネームパターンが無効な場合（タグが含まれていない等）のエラー */
+  invalidRenamePattern: createFactory('INVALID_RENAME_PATTERN')
+} as const;
+
+/**
+ * リネームパターンで使用されるプレースホルダの定義。
+ */
+export const TAG_PLACEHOLDERS = {
+  TRACK_NUMBER: '{trackNumber}',
+  TITLE: '{title}',
+  ALBUM: '{album}',
+  ARTIST: '{artist}',
+  YEAR: '{year}',
+  GENRE: '{genre}'
 } as const;
 
 /**

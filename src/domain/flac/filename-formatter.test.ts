@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formatFlacFilename } from './filename-formatter';
-import type { FlacTrack } from './types';
+import { TAG_PLACEHOLDERS, type FlacTrack } from './types';
 
 describe('filename-formatter', () => {
   const createMockTrack = (
@@ -22,7 +22,7 @@ describe('filename-formatter', () => {
     }
   });
 
-  const DEFAULT_PATTERN = '{trackNumber} - {title}';
+  const DEFAULT_PATTERN = `${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`;
   const DEFAULT_PADDING = 2;
 
   describe('formatFlacFilename', () => {
@@ -32,7 +32,7 @@ describe('filename-formatter', () => {
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
-        expect(result.value).toBe('01 - Song Title.flac');
+        expect(result.value).toBe('01 - Song Title');
       }
     });
 
@@ -42,7 +42,7 @@ describe('filename-formatter', () => {
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
-        expect(result.value).toBe('12 - Longer Track.flac');
+        expect(result.value).toBe('12 - Longer Track');
       }
     });
 
@@ -52,27 +52,35 @@ describe('filename-formatter', () => {
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
-        expect(result.value).toBe('001 - Song Title.flac');
+        expect(result.value).toBe('001 - Song Title');
       }
     });
 
     it('アルバム名を含むカスタムパターンが機能すること', () => {
       const track = createMockTrack('1', 'Title', 'My Album');
-      const result = formatFlacFilename(track, '{album} - {trackNumber} - {title}', 2);
+      const result = formatFlacFilename(
+        track,
+        `${TAG_PLACEHOLDERS.ALBUM} - ${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`,
+        2
+      );
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
-        expect(result.value).toBe('My Album - 01 - Title.flac');
+        expect(result.value).toBe('My Album - 01 - Title');
       }
     });
 
     it('複数値のアーティストが正しく結合されること', () => {
       const track = createMockTrack('1', 'Title', undefined, ['Artist A', 'Artist B']);
-      const result = formatFlacFilename(track, '{artist} - {title}', 2);
+      const result = formatFlacFilename(
+        track,
+        `${TAG_PLACEHOLDERS.ARTIST} - ${TAG_PLACEHOLDERS.TITLE}`,
+        2
+      );
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
-        expect(result.value).toBe('Artist A, Artist B - Title.flac');
+        expect(result.value).toBe('Artist A, Artist B - Title');
       }
     });
 
@@ -82,37 +90,64 @@ describe('filename-formatter', () => {
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
-        expect(result.value).toBe('01 - What_.flac');
+        expect(result.value).toBe('01 - What_');
       }
     });
 
     it('トラック番号が欠損しているがパターンに含まれていない場合、成功すること', () => {
       const track = createMockTrack(undefined, 'Title Only');
-      const result = formatFlacFilename(track, '{title}', 2);
+      const result = formatFlacFilename(track, TAG_PLACEHOLDERS.TITLE, 2);
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
-        expect(result.value).toBe('Title Only.flac');
+        expect(result.value).toBe('Title Only');
       }
     });
 
     it('パターンに含まれるトラック番号が欠損している場合、エラーを返却すること', () => {
-      const track = createMockTrack(undefined, 'Title Only');
+      const track = createMockTrack(undefined, 'Title');
       const result = formatFlacFilename(track, DEFAULT_PATTERN, DEFAULT_PADDING);
 
       expect(result.type).toBe('error');
       if (result.type === 'error') {
-        expect(result.error.type).toBe('MISSING_TRACK_NUMBER');
+        expect(result.error.type).toBe('MISSING_REQUIRED_TAG');
+        expect(result.error.options.detail).toBe(TAG_PLACEHOLDERS.TRACK_NUMBER);
       }
     });
 
     it('パターンに含まれるタイトルが欠損している場合、エラーを返却すること', () => {
-      const track = createMockTrack('5', undefined);
+      const track = createMockTrack('1', undefined);
       const result = formatFlacFilename(track, DEFAULT_PATTERN, DEFAULT_PADDING);
 
       expect(result.type).toBe('error');
       if (result.type === 'error') {
-        expect(result.error.type).toBe('MISSING_TITLE');
+        expect(result.error.type).toBe('MISSING_REQUIRED_TAG');
+        expect(result.error.options.detail).toBe(TAG_PLACEHOLDERS.TITLE);
+      }
+    });
+
+    it('パターンにアルバム名が欠損している場合、エラーを返却すること', () => {
+      const track = createMockTrack('1', 'Title', undefined);
+      const result = formatFlacFilename(
+        track,
+        `${TAG_PLACEHOLDERS.ALBUM} - ${TAG_PLACEHOLDERS.TITLE}`,
+        2
+      );
+
+      expect(result.type).toBe('error');
+      if (result.type === 'error') {
+        expect(result.error.type).toBe('MISSING_REQUIRED_TAG');
+        expect(result.error.options.detail).toBe(TAG_PLACEHOLDERS.ALBUM);
+      }
+    });
+
+    it('パターンに一つもタグが含まれていない場合、エラーを返却すること', () => {
+      const track = createMockTrack('1', 'Title');
+      const result = formatFlacFilename(track, 'fixed-filename', 2);
+
+      expect(result.type).toBe('error');
+      if (result.type === 'error') {
+        expect(result.error.type).toBe('INVALID_RENAME_PATTERN');
       }
     });
   });
