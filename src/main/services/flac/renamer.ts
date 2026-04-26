@@ -1,11 +1,11 @@
 import { success } from '@domain/common/result';
-import { TagResult } from '@domain/flac/types';
-import { tagErrors } from '@domain/flac/errors';
+import { AppResult } from '@domain/flac/types';
+import { appErrors } from '@domain/flac/errors';
 import type { FlacTrack } from '@domain/flac/models';
 import { formatFlacFilename } from '@domain/flac/filename-formatter';
 import path from 'path';
 import fs from 'fs/promises';
-import { toTagResultFailure } from '@main/utils/error-handler';
+import { toAppResultFailure } from '@main/utils/error-handler';
 import { ensureFileExists } from '@main/utils/fs';
 import { settingsRepository } from '@main/infrastructure/repositories/settings-repository';
 
@@ -14,7 +14,7 @@ import { settingsRepository } from '@main/infrastructure/repositories/settings-r
  * @param oldPath 現在の絶対パス
  * @param newPath 新しい絶対パス
  */
-export const renameFile = async (oldPath: string, newPath: string): Promise<TagResult<void>> => {
+export const renameFile = async (oldPath: string, newPath: string): Promise<AppResult<void>> => {
   if (oldPath === newPath) {
     return success(undefined);
   }
@@ -26,7 +26,7 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<TagR
   try {
     await fs.rename(oldPath, newPath);
   } catch (error: unknown) {
-    return toTagResultFailure(error, tagErrors.writeFailed, { path: oldPath });
+    return toAppResultFailure(error, appErrors.writeFailed, { path: oldPath });
   }
 
   return success(undefined);
@@ -36,7 +36,7 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<TagR
  * トラックのメタデータに基づいて、リネーム後のフルパスを算出します。
  * @param track トラック情報
  */
-export const resolveRenamedPath = (track: FlacTrack): TagResult<string> => {
+export const resolveRenamedPath = (track: FlacTrack): AppResult<string> => {
   const { renamePattern, trackNumberPadding } = settingsRepository.settings;
   const filenameResult = formatFlacFilename(track, {
     pattern: renamePattern,

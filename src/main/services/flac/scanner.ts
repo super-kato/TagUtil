@@ -1,10 +1,10 @@
 import { success } from '@domain/common/result';
 import { ResolvedPath } from '@domain/common/system';
-import { ScanResult, TagResult } from '@domain/flac/types';
-import { tagErrors } from '@domain/flac/errors';
+import { ScanResult, AppResult } from '@domain/flac/types';
+import { appErrors } from '@domain/flac/errors';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
-import { toTagResultFailure } from '@main/utils/error-handler';
+import { toAppResultFailure } from '@main/utils/error-handler';
 import { determinePathType, resolvePaths } from './path-resolver';
 
 /**
@@ -26,13 +26,13 @@ interface ScanContext {
  * @param targetPaths 探索対象のパスの配列
  * @returns 見つかった FLAC ファイルの絶対パスの配列と制限フラグを含むオブジェクト
  */
-export const scanDirectory = async (targetPaths: string[]): Promise<TagResult<ScanResult>> => {
+export const scanDirectory = async (targetPaths: string[]): Promise<AppResult<ScanResult>> => {
   try {
     const result = await collectTracksFromPaths(targetPaths);
     return success({ paths: formatResultPaths(result.paths), isLimited: result.isLimited });
   } catch (error: unknown) {
     const representativePath = targetPaths[0] ?? '';
-    return toTagResultFailure(error, tagErrors.scanFailed, { path: representativePath });
+    return toAppResultFailure(error, appErrors.scanFailed, { path: representativePath });
   }
 };
 

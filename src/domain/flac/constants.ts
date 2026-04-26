@@ -1,7 +1,7 @@
 /**
- * タグ操作におけるエラー種別のリテラル一覧。
+ * アプリケーションにおけるエラー種別のリテラル一覧。
  */
-export const TAG_ERROR_TYPES = [
+export const APP_ERROR_TYPES = [
   'FILE_NOT_FOUND',
   'PERMISSION_DENIED',
   'PARSE_FAILED',

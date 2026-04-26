@@ -1,11 +1,11 @@
-import { isTagError, type TagError } from './errors';
+import { isAppError, type AppError } from './errors';
 import { MESSAGES } from '@domain/common/messages';
 
 /**
- * TagError 型を人間が読めるメッセージに変換します。
+ * AppError 型を人間が読めるメッセージに変換します。
  */
-const translateTagError = (error: TagError): string => {
-  const label = MESSAGES.TAG_ERRORS[error.type] || 'Unknown error';
+const translateAppError = (error: AppError): string => {
+  const label = MESSAGES.APP_ERRORS[error.type] || 'Unknown error';
   const detail = error.options.detail;
 
   return detail ? `${label}: ${detail}` : label;
@@ -15,9 +15,9 @@ const translateTagError = (error: TagError): string => {
  * エラーオブジェクトを人間が読めるメッセージに変換します。
  * メインプロセスのロギングやレンダラープロセスのUI表示の両方で利用されます。
  */
-export const formatTagError = (error: unknown): string => {
-  if (isTagError(error)) {
-    return translateTagError(error);
+export const formatAppError = (error: unknown): string => {
+  if (isAppError(error)) {
+    return translateAppError(error);
   } else if (error instanceof Error) {
     return error.message;
   } else {

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
-import { hasErrorCode, toTagResultFailure } from './error-handler';
-import { tagErrors } from '@domain/flac/errors';
+import { hasErrorCode, toAppResultFailure } from './error-handler';
+import { appErrors } from '@domain/flac/errors';
 
 describe('error-handler', () => {
   afterEach(() => {
@@ -30,14 +30,14 @@ describe('error-handler', () => {
     });
   });
 
-  describe('toTagResultFailure', () => {
+  describe('toAppResultFailure', () => {
     const path = '/test/path.flac';
-    const factory = tagErrors.fileNotFound;
+    const factory = appErrors.fileNotFound;
 
-    it('Error オブジェクトを TagResult の Failure（失敗）に正しく変換できること', () => {
+    it('Error オブジェクトを AppResult の Failure（失敗）に正しく変換できること', () => {
       const error = new Error('Original error message');
 
-      const result = toTagResultFailure(error, factory, { path });
+      const result = toAppResultFailure(error, factory, { path });
 
       expect(result.type).toBe('error');
       if (result.type === 'error') {
@@ -47,10 +47,10 @@ describe('error-handler', () => {
       }
     });
 
-    it('文字列のエラーメッセージを TagResult の Failure に正しく変換できること', () => {
+    it('文字列のエラーメッセージを AppResult の Failure に正しく変換できること', () => {
       const error = 'Something went wrong';
 
-      const result = toTagResultFailure(error, factory, { path });
+      const result = toAppResultFailure(error, factory, { path });
 
       expect(result.type).toBe('error');
       if (result.type === 'error') {

@@ -5,8 +5,8 @@ export const MESSAGES = {
   /** スキャン件数制限に達した場合の警告メッセージ */
   SCAN_LIMIT_EXCEEDED: 'Scan limit reached. Some files were skipped.',
 
-  /** タグ操作に関連するエラーメッセージ */
-  TAG_ERRORS: {
+  /** アプリケーションにおけるエラーメッセージ */
+  APP_ERRORS: {
     FILE_NOT_FOUND: 'File not found',
     PERMISSION_DENIED: 'Permission denied',
     PARSE_FAILED: 'Failed to parse metadata',

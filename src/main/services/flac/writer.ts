@@ -1,10 +1,10 @@
 import { failure, success } from '@domain/common/result';
-import { TagResult } from '@domain/flac/types';
-import { tagErrors } from '@domain/flac/errors';
+import { AppResult } from '@domain/flac/types';
+import { appErrors } from '@domain/flac/errors';
 import { FlacMetadata, FlacTrack } from '@domain/flac/models';
 import { writeFlacTags } from 'flac-tagger';
 import fs from 'node:fs/promises';
-import { hasErrorCode, toTagResultFailure } from '@main/utils/error-handler';
+import { hasErrorCode, toAppResultFailure } from '@main/utils/error-handler';
 import { withAtomicWrite } from '@main/utils/file-utils';
 import { mergeMetadataWithTags } from './mappers/flac-write-mapper';
 import { resolvePictureForWrite } from './mappers/flac-write-picture-resolver';
@@ -13,7 +13,7 @@ import { readRawData } from './reader';
 /**
  * 指定されたパスのFLACファイルへメタデータを書き込みます。
  */
-export const writeMetadata = async (track: FlacTrack): Promise<TagResult<void>> => {
+export const writeMetadata = async (track: FlacTrack): Promise<AppResult<void>> => {
   const { path, metadata } = track;
   // 1. バリデーション
   const existResult = await ensureFileExists(path);
@@ -30,7 +30,7 @@ export const writeMetadata = async (track: FlacTrack): Promise<TagResult<void>> 
   try {
     await performWrite(path, metadata);
   } catch (error: unknown) {
-    return toTagResultFailure(error, tagErrors.writeFailed, { path });
+    return toAppResultFailure(error, appErrors.writeFailed, { path });
   }
 
   return success(undefined);
@@ -39,14 +39,14 @@ export const writeMetadata = async (track: FlacTrack): Promise<TagResult<void>> 
 /**
  * ファイルが存在することを確認します。
  */
-const ensureFileExists = async (path: string): Promise<TagResult<void>> => {
+const ensureFileExists = async (path: string): Promise<AppResult<void>> => {
   try {
     await fs.access(path);
   } catch (error: unknown) {
     if (hasErrorCode(error, 'ENOENT')) {
-      return failure(tagErrors.fileNotFound({ path }));
+      return failure(appErrors.fileNotFound({ path }));
     }
-    return toTagResultFailure(error, tagErrors.writeFailed, { path });
+    return toAppResultFailure(error, appErrors.writeFailed, { path });
   }
 
   return success(undefined);
@@ -55,14 +55,14 @@ const ensureFileExists = async (path: string): Promise<TagResult<void>> => {
 /**
  * ファイルが書き込み可能であることを確認します。
  */
-const ensureFileWritable = async (path: string): Promise<TagResult<void>> => {
+const ensureFileWritable = async (path: string): Promise<AppResult<void>> => {
   try {
     await fs.access(path, fs.constants.W_OK);
   } catch (error: unknown) {
     if (hasErrorCode(error, 'EACCES') || hasErrorCode(error, 'EPERM')) {
-      return failure(tagErrors.permissionDenied({ path, detail: '(Read-only file)' }));
+      return failure(appErrors.permissionDenied({ path, detail: '(Read-only file)' }));
     }
-    return toTagResultFailure(error, tagErrors.writeFailed, { path });
+    return toAppResultFailure(error, appErrors.writeFailed, { path });
   }
 
   return success(undefined);

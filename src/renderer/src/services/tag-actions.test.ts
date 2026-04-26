@@ -9,7 +9,7 @@ import { tagEditor } from './tag-editor';
 import type { FlacMetadata } from '@domain/flac/models';
 import { logStore } from '@renderer/stores/log-store.svelte';
 import { failure, success } from '@domain/common/result';
-import type { TagError } from '@domain/flac/errors';
+import type { AppError } from '@domain/flac/errors';
 
 vi.mock('@renderer/stores/log-store.svelte', () => ({
   logStore: {
@@ -201,7 +201,7 @@ describe('tagActions', () => {
 
   describe('error and edge cases', () => {
     it('スキャンエラー時にレンダラー側でログを重複して記録しないこと', async () => {
-      const error: TagError = { type: 'SCAN_FAILED', options: { path: '/dir' } };
+      const error: AppError = { type: 'SCAN_FAILED', options: { path: '/dir' } };
       vi.mocked(tagRepository.loadTracksFromPaths).mockResolvedValue(failure(error));
 
       await tagActions.loadFromPaths(['/dir']);
@@ -222,7 +222,7 @@ describe('tagActions', () => {
     });
 
     it('一括保存エラー時にレンダラー側でログを重複して記録しないこと', async () => {
-      const error: TagError = { type: 'WRITE_FAILED', options: { path: 'a.flac' } };
+      const error: AppError = { type: 'WRITE_FAILED', options: { path: 'a.flac' } };
       vi.mocked(tagRepository.saveTracks).mockResolvedValue(failure(error));
       trackStore.tracks = [new TrackRecord('a.flac', {})];
       trackStore.tracks[0].metadata.title = 'New';
@@ -233,7 +233,7 @@ describe('tagActions', () => {
     });
 
     it('画像選択エラー時にレンダラー側でログを重複して記録しないこと', async () => {
-      const error: TagError = { type: 'PICK_IMAGE_FAILED', options: { path: '' } };
+      const error: AppError = { type: 'PICK_IMAGE_FAILED', options: { path: '' } };
       vi.spyOn(tagRepository, 'pickImage').mockResolvedValue(failure(error));
 
       await tagActions.pickAndApplyPicture();

@@ -1,6 +1,6 @@
 import { MESSAGES } from '@domain/common/messages';
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
-import type { TagResult } from '@domain/flac/types';
+import type { AppResult } from '@domain/flac/types';
 import type { FlacTrack } from '@domain/flac/models';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { logStore } from '@renderer/stores/log-store.svelte';
@@ -13,7 +13,7 @@ import { tagEditor } from './tag-editor';
  * スキャン処理の共通的なフローを制御するヘルパー関数。
  */
 const handleScanOperation = async (
-  operation: () => Promise<TagResult<{ tracks: FlacTrack[]; isLimited: boolean } | null>>
+  operation: () => Promise<AppResult<{ tracks: FlacTrack[]; isLimited: boolean } | null>>
 ): Promise<void> => {
   uiState.startLoading();
 
