@@ -10,15 +10,15 @@ import { formatLogTime } from '@shared/utils/date';
 class Logger extends EventEmitter {
   static readonly #LOG_EVENT = 'log';
 
-  public info(message: string, context?: string): void {
+  public info(message: string, context: string): void {
     this.#log('INFO', message, context);
   }
 
-  public warn(message: string, context?: string): void {
+  public warn(message: string, context: string): void {
     this.#log('WARN', message, context);
   }
 
-  public error(message: string, context?: string): void {
+  public error(message: string, context: string): void {
     this.#log('ERROR', message, context);
   }
 
@@ -36,14 +36,13 @@ class Logger extends EventEmitter {
    * @param message メッセージ
    * @param context コンテキスト
    */
-  #log(level: LogLevel, message: string, context?: string): void {
+  #log(level: LogLevel, message: string, context: string): void {
     const logMessage = createLogMessage(level, message, context);
     this.emit(Logger.#LOG_EVENT, logMessage);
 
     // 標準出力にも出す
     const timestamp = formatLogTime(logMessage.timestamp);
-    const contextPart = context ? ` [${context}]` : '';
-    console.log(`[${timestamp}] [${level}]${contextPart} ${message}`);
+    console.log(`[${timestamp}] [${level}] [${context}] ${message}`);
   }
 }
 
