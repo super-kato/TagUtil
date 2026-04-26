@@ -15,10 +15,7 @@ const { mockStore } = vi.hoisted(() => {
 
 vi.mock('electron-store', () => {
   return {
-    // eslint-disable-next-line prefer-arrow-callback
-    default: vi.fn().mockImplementation(function () {
-      return mockStore;
-    })
+    default: vi.fn().mockImplementation(() => mockStore)
   };
 });
 
