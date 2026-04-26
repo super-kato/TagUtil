@@ -116,29 +116,17 @@
   }
 
   .btn {
-    padding: 0.5rem;
-    border-radius: var(--radius-md);
-    border: none;
-    cursor: pointer;
-    font-size: 0.85rem;
-    transition: filter 0.2s;
+    height: 2.25rem;
     display: flex;
     align-items: center;
-    justify-content: center;
-  }
-
-  .btn:hover {
-    filter: brightness(1.2);
-  }
-
-  .btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .primary,
-  .secondary,
-  .revert {
+    gap: 0.5rem;
+    padding: 0 0.85rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-primary);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
     background-color: var(--bg-button);
     color: var(--text-secondary);
   }
@@ -154,6 +142,11 @@
 
   .revert:enabled {
     color: var(--accent-warning);
+  }
+
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 
   .divider {
