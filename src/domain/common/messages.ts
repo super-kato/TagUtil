@@ -2,6 +2,9 @@
  * アプリケーション共通のメッセージ定義。
  */
 export const MESSAGES = {
+  /** スキャン件数制限に達した場合の警告メッセージ */
+  SCAN_LIMIT_EXCEEDED: 'Scan limit reached. Some files were skipped.',
+
   /** アプリケーションにおけるエラーメッセージ */
   APP_ERRORS: {
     PARSE_FAILED: 'Failed to parse metadata',
@@ -10,7 +13,5 @@ export const MESSAGES = {
     PICK_IMAGE_FAILED: 'Failed to pick image',
     MISSING_REQUIRED_TAG: 'Missing required tag for renaming',
     INVALID_RENAME_PATTERN: 'Invalid rename pattern (must contain at least one tag)'
-  },
-  /** その他警告メッセージ */
-  SCAN_LIMIT_EXCEEDED: 'Too many files found. Only the first 1000 files were loaded.'
+  }
 } as const;
