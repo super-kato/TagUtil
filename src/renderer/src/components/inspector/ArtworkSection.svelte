@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Image, Music, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { IS_MAC } from '@renderer/constants/platform';
+  import { IS_MAC } from '@renderer/infrastructure/adapters/platform-adapter';
   import { tagActions } from '@renderer/services/tag-actions';
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';

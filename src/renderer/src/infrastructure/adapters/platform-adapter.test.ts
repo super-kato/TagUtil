@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getPlatform } from './platform-adapter';
+import { initializePlatform, IS_MAC } from './platform-adapter';
 
 describe('platform-adapter', () => {
   beforeEach(() => {
@@ -10,13 +10,19 @@ describe('platform-adapter', () => {
     });
   });
 
-  it('メインプロセスの getPlatform を呼び出し、結果を返すこと', async () => {
-    const mockPlatform = { isMac: true };
-    vi.mocked(window.api.getPlatform).mockResolvedValue(mockPlatform);
+  it('Windows 環境の場合、initializePlatform 呼び出し後に IS_MAC が false になること', async () => {
+    vi.mocked(window.api.getPlatform).mockResolvedValue({ isMac: false });
 
-    const result = await getPlatform();
+    await initializePlatform();
 
-    expect(window.api.getPlatform).toHaveBeenCalled();
-    expect(result).toEqual(mockPlatform);
+    expect(IS_MAC).toBe(false);
+  });
+
+  it('Mac 環境の場合、initializePlatform 呼び出し後に IS_MAC が true になること', async () => {
+    vi.mocked(window.api.getPlatform).mockResolvedValue({ isMac: true });
+
+    await initializePlatform();
+
+    expect(IS_MAC).toBe(true);
   });
 });

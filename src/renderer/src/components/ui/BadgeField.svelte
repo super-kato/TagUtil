@@ -1,7 +1,7 @@
 <script lang="ts">
   import { X, ChevronDown } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { IS_MAC } from '@renderer/constants/platform';
+  import { IS_MAC } from '@renderer/infrastructure/adapters/platform-adapter';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
   interface Props {
