@@ -1,11 +1,12 @@
 <script lang="ts">
-  import { UI_TOKENS } from '@renderer/constants/design-system';
   import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from '@lucide/svelte';
-  import { tagActions } from '@renderer/services/tag-actions';
+  import { tooltip } from '@renderer/actions/tooltip';
+  import { UI_TOKENS } from '@renderer/constants/design-system';
   import { fileActions } from '@renderer/services/file-actions';
+  import { tagActions } from '@renderer/services/tag-actions';
+  import { modalStore } from '@renderer/stores/modal-store.svelte';
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
-  import { modalStore } from '@renderer/stores/modal-store.svelte';
 
   const handleRenameClick = async (): Promise<void> => {
     const ok = await modalStore.confirm({
@@ -44,7 +45,7 @@
       class="btn secondary"
       onclick={tagActions.openAndScanDirectory}
       disabled={uiState.isLoading}
-      title="Open Directory"
+      use:tooltip={'Open Directory'}
     >
       <FolderOpen size={UI_TOKENS.icons.size} />
     </button>
@@ -53,7 +54,7 @@
       class="btn secondary"
       onclick={handleRenameClick}
       disabled={!canRename}
-      title="Rename Files from Metadata"
+      use:tooltip={'Rename Files from Metadata'}
     >
       <FilePen size={UI_TOKENS.icons.size} />
     </button>
@@ -61,7 +62,7 @@
       class="btn revert"
       onclick={() => tagActions.revertSelected()}
       disabled={!canRevert}
-      title="Revert Changes"
+      use:tooltip={'Revert Changes'}
     >
       <RotateCcw size={UI_TOKENS.icons.size} />
     </button>
@@ -70,7 +71,7 @@
       class:glow-pulse={canSave}
       onclick={() => tagActions.saveAllModified()}
       disabled={!canSave}
-      title="Save Changes"
+      use:tooltip={'Save Changes'}
     >
       {#if uiState.isLoading}
         <Disc3 size={UI_TOKENS.icons.size} class="spin" />

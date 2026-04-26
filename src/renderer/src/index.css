@@ -183,3 +183,48 @@ body {
 .field-row .field {
   flex: 1;
 }
+
+/* --- カスタムツールチップ (CSS Anchor Positioning & Popover) --- */
+.custom-tooltip-popover {
+  /* 固定位置指定をAnchor Positioningに移譲 */
+  position: absolute;
+  inset: auto;
+  position-area: top center;
+  position-try-fallbacks: flip-block;
+  margin: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  background-color: rgba(30, 30, 30, 0.95);
+  color: var(--text-primary);
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-md);
+  font-size: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+
+  /* Popover API 用のアニメーション設定 */
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    display 0.2s ease allow-discrete,
+    overlay 0.2s ease allow-discrete;
+
+  max-width: 700px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.custom-tooltip-popover:popover-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@starting-style {
+  .custom-tooltip-popover:popover-open {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
