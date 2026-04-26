@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { format } from 'node:util';
 import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
-import { formatLogTime } from '@shared/utils/date';
+import { formatTimeWithMs } from '@shared/utils/date';
 
 /**
  * ロガーに渡されるオプション引数。
@@ -51,8 +51,8 @@ class Logger extends EventEmitter {
     this.emit(Logger.#LOG_EVENT, logMessage);
 
     // 標準出力にも出す
-    const timestamp = formatLogTime(logMessage.timestamp);
-    console.log(`[${timestamp}] [${params.level}] [${params.context}] ${formattedMessage}`);
+    const timePrefix = `[${formatTimeWithMs(logMessage.timestamp)}]`;
+    console.log(`${timePrefix} [${params.level}] [${params.context}] ${formattedMessage}`);
   }
 }
 
