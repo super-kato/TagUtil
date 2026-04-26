@@ -1,7 +1,11 @@
 <script lang="ts">
   import { tagActions } from '@renderer/services/tag-actions';
   import { trackStore } from '@renderer/stores/track-store.svelte';
-  import { getSingleFieldValue, handleSingleInput } from './tag-field-handlers';
+  import {
+    getSingleFieldValue,
+    handleSingleFieldChange,
+    handleEnterToBlur
+  } from './tag-field-handlers';
 </script>
 
 {#if trackStore.commonMetadata}
@@ -24,7 +28,8 @@
           id="trackNumber"
           type="text"
           value={getSingleFieldValue('trackNumber')}
-          oninput={(e) => handleSingleInput('trackNumber', e)}
+          onblur={(e) => handleSingleFieldChange('trackNumber', e)}
+          onkeydown={handleEnterToBlur}
           placeholder="#"
           disabled={trackStore.selectedTracks.length > 1}
           class:disabled={trackStore.selectedTracks.length > 1}
@@ -34,7 +39,8 @@
           id="trackTotal"
           type="text"
           value={getSingleFieldValue('trackTotal')}
-          oninput={(e) => handleSingleInput('trackTotal', e)}
+          onblur={(e) => handleSingleFieldChange('trackTotal', e)}
+          onkeydown={handleEnterToBlur}
           placeholder="Tracks"
         />
       </div>
@@ -47,7 +53,8 @@
           id="discNumber"
           type="text"
           value={getSingleFieldValue('discNumber')}
-          oninput={(e) => handleSingleInput('discNumber', e)}
+          onblur={(e) => handleSingleFieldChange('discNumber', e)}
+          onkeydown={handleEnterToBlur}
           placeholder="#"
         />
         <span class="separator">/</span>
@@ -55,7 +62,8 @@
           id="discTotal"
           type="text"
           value={getSingleFieldValue('discTotal')}
-          oninput={(e) => handleSingleInput('discTotal', e)}
+          onblur={(e) => handleSingleFieldChange('discTotal', e)}
+          onkeydown={handleEnterToBlur}
           placeholder="Discs"
         />
       </div>
@@ -67,7 +75,8 @@
         id="date"
         type="text"
         value={getSingleFieldValue('date')}
-        oninput={(e) => handleSingleInput('date', e)}
+        onblur={(e) => handleSingleFieldChange('date', e)}
+        onkeydown={handleEnterToBlur}
         placeholder="YYYY"
       />
     </div>

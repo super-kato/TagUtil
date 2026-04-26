@@ -5,7 +5,8 @@
   import MultiValueField from '@renderer/components/ui/MultiValueField.svelte';
   import {
     getSingleFieldValue,
-    handleSingleInput,
+    handleSingleFieldChange,
+    handleEnterToBlur,
     getMultiFieldValues
   } from './tag-field-handlers';
 </script>
@@ -22,7 +23,8 @@
         id="title"
         type="text"
         value={getSingleFieldValue('title')}
-        oninput={(e) => handleSingleInput('title', e)}
+        onblur={(e) => handleSingleFieldChange('title', e)}
+        onkeydown={handleEnterToBlur}
         placeholder="Title"
         disabled={trackStore.selectedTracks.length > 1}
         class:disabled={trackStore.selectedTracks.length > 1}
@@ -45,7 +47,8 @@
         id="album"
         type="text"
         value={getSingleFieldValue('album')}
-        oninput={(e) => handleSingleInput('album', e)}
+        onblur={(e) => handleSingleFieldChange('album', e)}
+        onkeydown={handleEnterToBlur}
         placeholder="Album"
       />
     </div>
@@ -67,7 +70,8 @@
         id="catalogNumber"
         type="text"
         value={getSingleFieldValue('catalogNumber')}
-        oninput={(e) => handleSingleInput('catalogNumber', e)}
+        onblur={(e) => handleSingleFieldChange('catalogNumber', e)}
+        onkeydown={handleEnterToBlur}
         placeholder="Catalog Number (e.g. ABCD-1234)"
       />
     </div>

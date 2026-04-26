@@ -29,6 +29,8 @@ export interface KeyboardAction {
    * false を返すと、キーが一致していてもアクションは実行されません。
    */
   enabled?: (e: KeyboardEvent) => boolean;
+  /** trueの場合、IME入力中（isComposing: true）のイベントを無視します。 */
+  ignoreComposition?: boolean;
 }
 
 /**
@@ -51,6 +53,11 @@ export class KeyboardHandler {
   async handle(e: KeyboardEvent): Promise<void> {
     const action = this.actions.find((a) => this.matches(e, a.combo));
     if (!action) {
+      return;
+    }
+
+    // IME入力中かつ無視オプションが有効な場合はスキップ
+    if (action.ignoreComposition && e.isComposing) {
       return;
     }
 

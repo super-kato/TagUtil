@@ -2,6 +2,7 @@
   import { Plus, X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
+  import { handleEnterToBlur } from '@renderer/components/inspector/tag-field-handlers';
 
   interface Props {
     label: string;
@@ -59,6 +60,7 @@
             type="text"
             {value}
             onchange={(e) => handleDivergentUpdate(value, e)}
+            onkeydown={handleEnterToBlur}
             placeholder="Value"
           />
           <button
@@ -91,7 +93,8 @@
             type="text"
             {value}
             placeholder={i === 0 && children ? '' : placeholder}
-            oninput={(e) => handleUpdate(i, e)}
+            onblur={(e) => handleUpdate(i, e)}
+            onkeydown={handleEnterToBlur}
           />
           <button
             type="button"
