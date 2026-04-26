@@ -1,7 +1,12 @@
 import { EventEmitter } from 'node:events';
 import { format } from 'node:util';
-import { LogLevel, LogHandler, createLogMessage } from '@domain/common/log';
-import { formatLogTime } from '@shared/utils/date';
+import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
+import { formatTimeWithMs } from '@shared/utils/date';
+
+/**
+ * ロガーに渡されるオプション引数。
+ */
+type LoggerOptions = Omit<LogParams, 'level'>;
 
 /**
  * アプリケーション全体のログ管理を行うクラス。
@@ -11,16 +16,16 @@ import { formatLogTime } from '@shared/utils/date';
 class Logger extends EventEmitter {
   static readonly #LOG_EVENT = 'log';
 
-  public info(message: string, ...args: unknown[]): void {
-    this.#log('INFO', message, ...args);
+  public info(options: LoggerOptions, ...args: unknown[]): void {
+    this.#log({ ...options, level: 'INFO' }, ...args);
   }
 
-  public warn(message: string, ...args: unknown[]): void {
-    this.#log('WARN', message, ...args);
+  public warn(options: LoggerOptions, ...args: unknown[]): void {
+    this.#log({ ...options, level: 'WARN' }, ...args);
   }
 
-  public error(message: string, ...args: unknown[]): void {
-    this.#log('ERROR', message, ...args);
+  public error(options: LoggerOptions, ...args: unknown[]): void {
+    this.#log({ ...options, level: 'ERROR' }, ...args);
   }
 
   /**
@@ -33,18 +38,21 @@ class Logger extends EventEmitter {
 
   /**
    * ログを出力し、イベントを発火させます。
-   * @param level ログレベル
-   * @param message メッセージ
+   * @param params ログパラメータ
    * @param args 追加の引数
    */
-  #log(level: LogLevel, message: string, ...args: unknown[]): void {
-    const formattedMessage = format(message, ...args);
-    const logMessage = createLogMessage(level, formattedMessage);
+  #log(params: LogParams, ...args: unknown[]): void {
+    const formattedMessage = format(params.message, ...args);
+    const logMessage = createLogMessage({
+      level: params.level,
+      context: params.context,
+      message: formattedMessage
+    });
     this.emit(Logger.#LOG_EVENT, logMessage);
 
     // 標準出力にも出す
-    const timestamp = formatLogTime(logMessage.timestamp);
-    console.log(`[${timestamp}] [${level}] ${formattedMessage}`);
+    const timePrefix = `[${formatTimeWithMs(logMessage.timestamp)}]`;
+    console.log(`${timePrefix} [${params.level}] [${params.context}] ${formattedMessage}`);
   }
 }
 

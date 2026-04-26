@@ -1,6 +1,9 @@
-import { createLogMessage, type LogMessage } from '@domain/common/log';
+import { createLogMessage, type LogMessage, type LogParams } from '@domain/common/log';
 
 const DEFAULT_MAX_LOGS = 100;
+
+/** ログ追加時のオプション（レベルを除くパラメータ） */
+type LogOptions = Omit<LogParams, 'level'>;
 
 /**
  * レンダラープロセス側のログを保持するストア。
@@ -26,25 +29,27 @@ class LogStore {
    */
   addLog(log: LogMessage): void {
     this.#logEntries.push(log);
-    if (this.#logEntries.length > this.#MAX_LOGS) {
-      this.#logEntries.shift();
+    if (this.#logEntries.length <= this.#MAX_LOGS) {
+      return;
     }
+
+    this.#logEntries.shift();
   }
 
   /**
-   * レンダラープロセス側で発生したエラーをログに追加します。
-   * @param message エラーメッセージ
+   * エラーログを追加します。
+   * @param options ログオプション
    */
-  addError(message: string): void {
-    this.addLog(createLogMessage('ERROR', message));
+  addError(options: LogOptions): void {
+    this.addLog(createLogMessage({ ...options, level: 'ERROR' }));
   }
 
   /**
-   * レンダラープロセス側で発生した警告をログに追加します。
-   * @param message 警告メッセージ
+   * 警告ログを追加します。
+   * @param options ログオプション
    */
-  addWarn(message: string): void {
-    this.addLog(createLogMessage('WARN', message));
+  addWarn(options: LogOptions): void {
+    this.addLog(createLogMessage({ ...options, level: 'WARN' }));
   }
 }
 

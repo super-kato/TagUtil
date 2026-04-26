@@ -6,7 +6,7 @@
   import { IS_MAC } from '@renderer/constants/platform';
   import { logStore } from '@renderer/stores/log-store.svelte';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
-  import { formatLogTime } from '@shared/utils/date';
+  import { formatTimeWithMs } from '@shared/utils/date';
   import { onDestroy, type Component } from 'svelte';
   import { slide } from 'svelte/transition';
 
@@ -72,7 +72,10 @@
           {#if ICON}
             <ICON size={UI_TOKENS.icons.size} />
           {/if}
-          <span class="log-message">{displayState.message}</span>
+          <span class="log-message">
+            <span class="log-context">[{displayState.context}]</span>
+            {displayState.message}
+          </span>
         </div>
       {:else}
         <div class="status-item ready">
@@ -92,11 +95,14 @@
         {#each logStore.logs as log (log.id)}
           {@const ICON = levelIcons.get(log.level)}
           <div class="log-entry {log.level}">
-            <span class="log-time">[{formatLogTime(log.timestamp)}]</span>
+            <span class="timestamp">[{formatTimeWithMs(log.timestamp)}]</span>
             <div class="log-level-icon">
               <ICON size={UI_TOKENS.icons.sizeSmall} />
             </div>
-            <span class="log-text" use:tooltip={log.message}>{log.message}</span>
+            <span class="log-text" use:tooltip={log.message}>
+              <span class="log-context">[{log.context}]</span>
+              {log.message}
+            </span>
           </div>
         {/each}
       </div>
@@ -169,8 +175,13 @@
     color: var(--text-primary);
   }
 
+  .log-context {
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
   .expand-icon {
-    color: var(--text-dim);
+    color: var(--text-muted);
     display: flex;
     align-items: center;
     padding: 0.25rem;

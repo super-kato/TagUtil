@@ -1,8 +1,8 @@
 /**
- * ログ表示用の時刻フォーマット。
+ * タイムスタンプを指定された形式の時刻文字列に変換します。
  * 日本時間 (Asia/Tokyo) で HH:mm:ss.SSS 形式を返します。
  */
-export const formatLogTime = (timestamp: number): string => {
+export const formatTimeWithMs = (timestamp: number): string => {
   const date = new Date(timestamp);
   const options: Intl.DateTimeFormatOptions = {
     hour: '2-digit',

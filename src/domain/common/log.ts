@@ -14,11 +14,19 @@ export interface LogMessage {
   id: string;
   /** ログレベル */
   level: LogLevel;
+  /** コンテキスト（処理の識別子など） */
+  context: string;
   /** メッセージ内容 */
   message: string;
   /** タイムスタンプ（ミリ秒） */
   timestamp: number;
 }
+
+/**
+ * ログメッセージ生成のためのパラメータ。
+ * LogMessage から自動生成されるプロパティを除いたものです。
+ */
+export type LogParams = Pick<LogMessage, 'level' | 'context' | 'message'>;
 
 /**
  * ログメッセージを受け取るハンドラーの型定義。
@@ -27,15 +35,15 @@ export type LogHandler = (message: LogMessage) => void;
 
 /**
  * 標準的なログメッセージオブジェクトを生成します。
- * @param level ログレベル
- * @param message メッセージ内容
+ * @param params ログパラメータ
  * @returns 生成された LogMessage オブジェクト
  */
-export const createLogMessage = (level: LogLevel, message: string): LogMessage => {
+export const createLogMessage = (params: LogParams): LogMessage => {
   return {
     id: generateId(),
-    level,
-    message,
+    level: params.level,
+    context: params.context,
+    message: params.message,
     timestamp: getCurrentTimestamp()
   };
 };

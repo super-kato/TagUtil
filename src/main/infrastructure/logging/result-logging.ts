@@ -1,6 +1,6 @@
+import { formatTagError } from '@domain/flac/tag-error-formatter';
 import { type TagResult } from '@domain/flac/types';
 import { logger } from '@services/platform/logger';
-import { formatTagError } from '@domain/flac/tag-error-formatter';
 
 /**
  * 処理の実行結果（成功/失敗/例外）に基づいたロギングを行うラッパー関数。
@@ -16,22 +16,20 @@ export const withResultLogging = async <R extends TagResult<unknown>>(
   task: () => Promise<R>,
   ...params: unknown[]
 ): Promise<R> => {
-  const paramInfo = params.join(', ');
-  const header = paramInfo ? `[${context}] ${paramInfo}` : `[${context}]`;
-
   let result: R;
   try {
     result = await task();
   } catch (error: unknown) {
-    logger.error(`${header}: ${formatTagError(error)}`);
+    logger.error({ context, message: formatTagError(error) }, ...params);
     throw error;
   }
 
   if (result.type === 'success') {
-    logger.info(header);
-  } else {
-    logger.warn(`${header}: ${formatTagError(result.error)}`);
+    logger.info({ context, message: '' }, ...params);
+    return result;
   }
+
+  logger.warn({ context, message: formatTagError(result.error) }, ...params);
 
   return result;
 };

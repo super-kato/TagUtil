@@ -14,12 +14,13 @@ describe('Logger', () => {
       const handler = vi.fn();
       logger.onLog(handler);
 
-      logger.info('test info message');
+      logger.info({ context: 'test', message: 'test info message' });
 
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
           id: expect.any(String),
           level: 'INFO',
+          context: 'test',
           message: 'test info message',
           timestamp: expect.any(Number)
         })
@@ -30,12 +31,13 @@ describe('Logger', () => {
       const handler = vi.fn();
       logger.onLog(handler);
 
-      logger.warn('test warn message');
+      logger.warn({ context: 'test', message: 'test warn message' });
 
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
           id: expect.any(String),
           level: 'WARN',
+          context: 'test',
           message: 'test warn message'
         })
       );
@@ -45,22 +47,25 @@ describe('Logger', () => {
       const handler = vi.fn();
       logger.onLog(handler);
 
-      logger.error('test error message');
+      logger.error({ context: 'test', message: 'test error message' });
 
       expect(handler).toHaveBeenCalledWith(
         expect.objectContaining({
           id: expect.any(String),
           level: 'ERROR',
+          context: 'test',
           message: 'test error message'
         })
       );
     });
 
     it('console.log にも出力されること', () => {
-      logger.info('console test');
+      logger.info({ context: 'console', message: 'console test' });
       expect(console.log).toHaveBeenCalled();
       // 出力フォーマットの断片を確認
-      expect(console.log).toHaveBeenCalledWith(expect.stringContaining('[INFO] console test'));
+      expect(console.log).toHaveBeenCalledWith(
+        expect.stringContaining('[INFO] [console] console test')
+      );
     });
   });
 
@@ -72,7 +77,7 @@ describe('Logger', () => {
       logger.onLog(handler1);
       logger.onLog(handler2);
 
-      logger.info('multi listener test');
+      logger.info({ context: 'multi', message: 'multi listener test' });
 
       expect(handler1).toHaveBeenCalled();
       expect(handler2).toHaveBeenCalled();

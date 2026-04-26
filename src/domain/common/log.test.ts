@@ -10,11 +10,12 @@ describe('Log ユーティリティ (Domain)', () => {
   describe('createLogMessage', () => {
     it('正しい構造のログメッセージを生成すること', () => {
       const message = 'Test message';
-      const log = createLogMessage('INFO', message);
+      const log = createLogMessage({ level: 'INFO', context: 'TestContext', message });
 
       expect(log.id).toBeDefined();
       expect(typeof log.id).toBe('string');
       expect(log.level).toBe('INFO');
+      expect(log.context).toBe('TestContext');
       expect(log.message).toBe(message);
       expect(log.timestamp).toBe(Date.now());
     });
