@@ -5,7 +5,7 @@
   import { uiState } from '@renderer/stores/ui-state.svelte';
   import { KeyboardHandler, type KeyboardAction } from '@renderer/utils/keyboard-handler';
 
-  import { IS_MAC } from '@renderer/constants/platform';
+  import { IS_MAC } from '@renderer/infrastructure/adapters/platform-adapter';
   import { isInputFocused } from '@renderer/utils/dom-utils';
 
   const rawActions: KeyboardAction[] = [

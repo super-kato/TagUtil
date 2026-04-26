@@ -2,7 +2,7 @@ import type { EditableSingleKey, FieldState } from '@domain/editor/batch-metadat
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { tagActions } from '@renderer/services/tag-actions';
 
-import { IS_MAC } from '@renderer/constants/platform';
+import { IS_MAC } from '@renderer/infrastructure/adapters/platform-adapter';
 import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
 /**
