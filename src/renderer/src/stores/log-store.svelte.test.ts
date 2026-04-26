@@ -16,7 +16,13 @@ describe('LogStore', () => {
   });
 
   it('addLog でログを追加できること', () => {
-    const log = { id: '1', level: 'INFO' as const, message: 'Test message', timestamp: Date.now() };
+    const log = {
+      id: '1',
+      level: 'INFO' as const,
+      context: 'Test',
+      message: 'Test message',
+      timestamp: Date.now()
+    };
     logStore.addLog(log);
 
     expect(logStore.logs).toHaveLength(1);
@@ -25,13 +31,13 @@ describe('LogStore', () => {
   });
 
   it('addError でエラーログを追加できること', () => {
-    logStore.addError('Error message');
+    logStore.addError({ context: 'Test', message: 'Error message' });
     expect(logStore.latestLog?.level).toBe('ERROR');
     expect(logStore.latestLog?.message).toBe('Error message');
   });
 
   it('addWarn で警告ログを追加できること', () => {
-    logStore.addWarn('Warn message');
+    logStore.addWarn({ context: 'Test', message: 'Warn message' });
     expect(logStore.latestLog?.level).toBe('WARN');
     expect(logStore.latestLog?.message).toBe('Warn message');
   });
@@ -42,6 +48,7 @@ describe('LogStore', () => {
       logStore.addLog({
         id: `${i}`,
         level: 'INFO',
+        context: 'Test',
         message: `Message ${i}`,
         timestamp: Date.now()
       });

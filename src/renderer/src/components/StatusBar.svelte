@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { LogLevel } from '@domain/common/log';
-  import { ChevronUp, CircleAlert, Info, TriangleAlert, type LucideProps } from '@lucide/svelte';
+  import { ChevronUp, X, Check, TriangleAlert, type LucideProps } from '@lucide/svelte';
   import { tooltip } from '@renderer/actions/tooltip';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
@@ -11,9 +11,9 @@
   import { slide } from 'svelte/transition';
 
   const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
-    ['INFO', Info],
+    ['INFO', Check],
     ['WARN', TriangleAlert],
-    ['ERROR', CircleAlert]
+    ['ERROR', X]
   ] as const);
 
   let isExpanded = $state(false);
@@ -94,7 +94,7 @@
       <div class="log-list" bind:this={logListElement}>
         {#each logStore.logs as log (log.id)}
           {@const ICON = levelIcons.get(log.level)}
-          <div class="log-entry {log.level}">
+          <div class="log-entry {log.level.toLowerCase()}">
             <span class="timestamp">[{formatTimeWithMs(log.timestamp)}]</span>
             <div class="log-level-icon">
               <ICON size={UI_TOKENS.icons.sizeSmall} />
@@ -159,16 +159,21 @@
 
   .status-item.error {
     color: var(--accent-error);
-    font-weight: 600;
   }
 
   .status-item.warn {
     color: var(--accent-warning);
-    font-weight: 500;
   }
 
   .status-item.ready {
     color: var(--text-muted);
+  }
+
+  .status-item.error .log-message,
+  .status-item.warn .log-message,
+  .status-item.error .log-context,
+  .status-item.warn .log-context {
+    color: inherit;
   }
 
   .log-message {
@@ -220,17 +225,26 @@
   .log-entry {
     display: flex;
     gap: 0.75rem;
-    align-items: baseline;
+    align-items: center;
     font-size: 0.7rem;
     line-height: 1.5;
-    padding: 0.1rem 0.4rem;
+    padding: 0.15rem 0.4rem;
     border-radius: 2px;
     width: fit-content;
     min-width: 100%;
+    transition: background-color 0.2s ease;
   }
 
   .log-entry:hover {
     background-color: var(--bg-hover);
+  }
+
+  .log-entry.warn:hover {
+    background-color: var(--accent-warning-hover);
+  }
+
+  .log-entry.error:hover {
+    background-color: var(--accent-error-hover);
   }
 
   .log-time {
@@ -246,14 +260,25 @@
     flex-shrink: 0;
   }
 
-  .log-entry.info .log-level-icon {
-    color: #4da6ff;
-  }
-  .log-entry.warn .log-level-icon {
+  .log-entry.warn {
+    background-color: var(--accent-warning-dim);
     color: var(--accent-warning);
   }
-  .log-entry.error .log-level-icon {
+
+  .log-entry.error {
+    background-color: var(--accent-error-dim);
     color: var(--accent-error);
+  }
+
+  .log-entry.warn .timestamp,
+  .log-entry.warn .log-context,
+  .log-entry.warn .log-level-icon,
+  .log-entry.warn .log-text,
+  .log-entry.error .timestamp,
+  .log-entry.error .log-context,
+  .log-entry.error .log-level-icon,
+  .log-entry.error .log-text {
+    color: inherit;
   }
 
   .log-text {
