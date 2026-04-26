@@ -26,22 +26,28 @@ describe('result-logging', () => {
       expect(logger.info).toHaveBeenCalledWith({ context: 'test-ctx', message: '' });
     });
 
-    it('複数の補足メッセージを渡した場合、カンマ区切りでログに含まれること', async () => {
+    it('複数の補足メッセージを渡した場合、ロガーの引数として渡されること', async () => {
       const task = vi.fn().mockResolvedValue(success('data'));
 
       await withResultLogging('test-ctx', task, 'param1', 'param2');
 
-      expect(logger.info).toHaveBeenCalledWith({ context: 'test-ctx', message: 'param1, param2' });
+      expect(logger.info).toHaveBeenCalledWith(
+        { context: 'test-ctx', message: '' },
+        'param1',
+        'param2'
+      );
     });
 
-    it('補足メッセージに配列を渡した場合、カンマ区切りでログに含まれること', async () => {
+    it('補足メッセージに配列を渡した場合、ロガーの引数としてそのまま渡されること', async () => {
       const task = vi.fn().mockResolvedValue(success('data'));
       const paths = ['path/a', 'path/b'];
 
       await withResultLogging('test-ctx', task, paths);
 
-      // Array.prototype.join() により、配列の要素がカンマ区切りで出力される
-      expect(logger.info).toHaveBeenCalledWith({ context: 'test-ctx', message: 'path/a,path/b' });
+      expect(logger.info).toHaveBeenCalledWith(
+        { context: 'test-ctx', message: '' },
+        paths
+      );
     });
 
     it('処理が失敗（Error型を返却）した場合、エラーログを出力すること', async () => {
