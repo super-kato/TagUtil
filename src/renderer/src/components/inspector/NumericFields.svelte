@@ -28,7 +28,7 @@
           id="trackNumber"
           type="text"
           value={getSingleFieldValue('trackNumber')}
-          onblur={(e) => handleSingleFieldChange('trackNumber', e)}
+          oninput={(e) => handleSingleFieldChange('trackNumber', e)}
           onkeydown={handleEnterToBlur}
           placeholder="#"
           disabled={trackStore.selectedTracks.length > 1}
@@ -39,7 +39,7 @@
           id="trackTotal"
           type="text"
           value={getSingleFieldValue('trackTotal')}
-          onblur={(e) => handleSingleFieldChange('trackTotal', e)}
+          oninput={(e) => handleSingleFieldChange('trackTotal', e)}
           onkeydown={handleEnterToBlur}
           placeholder="Tracks"
         />
@@ -53,7 +53,7 @@
           id="discNumber"
           type="text"
           value={getSingleFieldValue('discNumber')}
-          onblur={(e) => handleSingleFieldChange('discNumber', e)}
+          oninput={(e) => handleSingleFieldChange('discNumber', e)}
           onkeydown={handleEnterToBlur}
           placeholder="#"
         />
@@ -62,7 +62,7 @@
           id="discTotal"
           type="text"
           value={getSingleFieldValue('discTotal')}
-          onblur={(e) => handleSingleFieldChange('discTotal', e)}
+          oninput={(e) => handleSingleFieldChange('discTotal', e)}
           onkeydown={handleEnterToBlur}
           placeholder="Discs"
         />
@@ -75,7 +75,7 @@
         id="date"
         type="text"
         value={getSingleFieldValue('date')}
-        onblur={(e) => handleSingleFieldChange('date', e)}
+        oninput={(e) => handleSingleFieldChange('date', e)}
         onkeydown={handleEnterToBlur}
         placeholder="YYYY"
       />

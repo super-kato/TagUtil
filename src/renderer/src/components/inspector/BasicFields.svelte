@@ -23,7 +23,7 @@
         id="title"
         type="text"
         value={getSingleFieldValue('title')}
-        onblur={(e) => handleSingleFieldChange('title', e)}
+        oninput={(e) => handleSingleFieldChange('title', e)}
         onkeydown={handleEnterToBlur}
         placeholder="Title"
         disabled={trackStore.selectedTracks.length > 1}
@@ -47,7 +47,7 @@
         id="album"
         type="text"
         value={getSingleFieldValue('album')}
-        onblur={(e) => handleSingleFieldChange('album', e)}
+        oninput={(e) => handleSingleFieldChange('album', e)}
         onkeydown={handleEnterToBlur}
         placeholder="Album"
       />
@@ -70,7 +70,7 @@
         id="catalogNumber"
         type="text"
         value={getSingleFieldValue('catalogNumber')}
-        onblur={(e) => handleSingleFieldChange('catalogNumber', e)}
+        oninput={(e) => handleSingleFieldChange('catalogNumber', e)}
         onkeydown={handleEnterToBlur}
         placeholder="Catalog Number (e.g. ABCD-1234)"
       />
