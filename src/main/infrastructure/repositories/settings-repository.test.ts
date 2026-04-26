@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SettingsRepository } from './settings-repository';
 
 const { mockStore } = vi.hoisted(() => {
@@ -15,9 +15,7 @@ const { mockStore } = vi.hoisted(() => {
 
 vi.mock('electron-store', () => {
   return {
-    default: vi.fn().mockImplementation(function () {
-      return mockStore;
-    })
+    default: vi.fn().mockImplementation(() => mockStore)
   };
 });
 
