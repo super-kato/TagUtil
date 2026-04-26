@@ -47,14 +47,7 @@ const scanAndLoadTracks = async (): Promise<
 const saveTracks = async (tracks: FlacTrack[]): Promise<string[]> => {
   const tasks = tracks.map((track) => () => window.api.writeMetadata(track));
   const results = await pooledAll(tasks);
-  const successes: string[] = [];
-  for (const result of results) {
-    if (result.type !== 'success') {
-      continue;
-    }
-    successes.push(result.value);
-  }
-  return successes;
+  return results.filter((x) => x.type === 'success').map((x) => x.value);
 };
 
 const pickImage = async (): Promise<AppResult<Picture | null>> => {
