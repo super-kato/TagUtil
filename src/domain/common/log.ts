@@ -24,15 +24,9 @@ export interface LogMessage {
 
 /**
  * ログメッセージ生成のためのパラメータ。
+ * LogMessage から自動生成されるプロパティを除いたものです。
  */
-export interface LogParams {
-  /** ログレベル */
-  level: LogLevel;
-  /** コンテキスト（処理の識別子など） */
-  context: string;
-  /** メッセージ内容 */
-  message: string;
-}
+export type LogParams = Pick<LogMessage, 'level' | 'context' | 'message'>;
 
 /**
  * ログメッセージを受け取るハンドラーの型定義。
