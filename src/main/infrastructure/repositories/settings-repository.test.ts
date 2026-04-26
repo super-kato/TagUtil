@@ -1,53 +1,42 @@
-import { DEFAULT_SETTINGS } from './settings-repository';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SettingsRepository } from './settings-repository';
+import Store from 'electron-store';
 
-const { mockStore } = vi.hoisted(() => ({
-  mockStore: {
-    store: {
-      renamePattern: '{trackNumber} - {title}',
-      trackNumberPadding: 2
-    },
-    set: vi.fn(),
-    get: vi.fn()
-  }
-}));
-
-vi.mock('electron-store', () => {
-  return {
-    default: class {
-      store = mockStore.store;
-      set = mockStore.set;
-      get = mockStore.get;
-    }
-  };
-});
+vi.mock('electron-store');
 
 describe('SettingsRepository', () => {
+  let repository: SettingsRepository;
+  let mockStore: any;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    mockStore = {
+      get: vi.fn(),
+      set: vi.fn(),
+      store: {
+        theme: 'default'
+      }
+    };
+    vi.mocked(Store).mockImplementation(() => mockStore);
+    repository = new SettingsRepository();
   });
 
   it('初期値が設定されること', () => {
-    const repo = new SettingsRepository();
-    expect(repo.settings).toEqual(DEFAULT_SETTINGS);
+    mockStore.get.mockReturnValue(undefined);
+    const settings = repository.getSettings();
+    expect(settings.theme).toBe('default');
   });
 
-  it('updateSettings でストアが更新されること', () => {
-    const repo = new SettingsRepository();
-    const update = { trackNumberPadding: 5 };
-
-    repo.updateSettings(update);
-
-    expect(mockStore.set).toHaveBeenCalledWith('trackNumberPadding', 5);
+  it('設定を保存できること', () => {
+    const newSettings = { theme: 'dark' as const };
+    repository.saveSettings(newSettings);
+    expect(mockStore.set).toHaveBeenCalledWith('settings', newSettings);
   });
 
-  it('undefined の値は更新されないこと', () => {
-    const repo = new SettingsRepository();
-    const update = { trackNumberPadding: undefined };
-
-    repo.updateSettings(update);
-
-    expect(mockStore.set).not.toHaveBeenCalled();
+  it('保存された設定を取得できること', () => {
+    const savedSettings = { theme: 'dark' as const };
+    mockStore.get.mockReturnValue(savedSettings);
+    const settings = repository.getSettings();
+    expect(settings).toEqual(savedSettings);
   });
 });

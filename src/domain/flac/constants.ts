@@ -2,8 +2,6 @@
  * アプリケーションにおけるエラー種別のリテラル一覧。
  */
 export const APP_ERROR_TYPES = [
-  'FILE_NOT_FOUND',
-  'PERMISSION_DENIED',
   'PARSE_FAILED',
   'WRITE_FAILED',
   'SCAN_FAILED',

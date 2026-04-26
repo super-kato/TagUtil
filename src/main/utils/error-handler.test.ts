@@ -32,7 +32,7 @@ describe('error-handler', () => {
 
   describe('toAppResultFailure', () => {
     const path = '/test/path.flac';
-    const factory = appErrors.fileNotFound;
+    const factory = appErrors.writeFailed;
 
     it('Error オブジェクトを AppResult の Failure（失敗）に正しく変換できること', () => {
       const error = new Error('Original error message');
@@ -41,7 +41,7 @@ describe('error-handler', () => {
 
       expect(result.type).toBe('error');
       if (result.type === 'error') {
-        expect(result.error.type).toBe('FILE_NOT_FOUND');
+        expect(result.error.type).toBe('WRITE_FAILED');
         expect(result.error.options.path).toBe(path);
         expect(result.error.options.detail).toBe('Original error message');
       }
