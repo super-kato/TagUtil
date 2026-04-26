@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { UI_TOKENS } from '@renderer/constants/design-system';
   import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from '@lucide/svelte';
-  import { tagActions } from '@renderer/services/tag-actions';
+  import { UI_TOKENS } from '@renderer/constants/design-system';
   import { fileActions } from '@renderer/services/file-actions';
+  import { tagActions } from '@renderer/services/tag-actions';
+  import { modalStore } from '@renderer/stores/modal-store.svelte';
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
-  import { modalStore } from '@renderer/stores/modal-store.svelte';
 
   const handleRenameClick = async (): Promise<void> => {
     const ok = await modalStore.confirm({

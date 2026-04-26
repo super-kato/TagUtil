@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { trackStore } from '@renderer/stores/track-store.svelte';
+import { uiState } from '@renderer/stores/ui-state.svelte';
+import { selectionState } from '@renderer/stores/selection-state.svelte';
+import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { tagActions } from './tag-actions';
 import { tagEditor } from './tag-editor';
 import type { FlacMetadata } from '@domain/flac/types';
@@ -11,8 +14,10 @@ describe('tagActions', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // 全てのテストで共通の selectedTracks を提供
-    vi.spyOn(trackStore, 'selectedTracks', 'get').mockReturnValue(mockTracks);
+    // ストアの実体を使用し、状態をセットアップ
+    trackStore.tracks = [...mockTracks];
+    selectionState.items.clear();
+    mockTracks.forEach((t) => selectionState.items.add(t));
   });
 
   describe('applySelectedMultiFieldChange', () => {
@@ -53,6 +58,118 @@ describe('tagActions', () => {
       tagActions.removeSelectedMultiFieldValue('artist', 'Remove Me');
 
       expect(removeSpy).toHaveBeenCalledWith(mockTracks, 'artist', 'Remove Me');
+    });
+  });
+
+  describe('revertSelected', () => {
+    it('変更がある選択中トラックを元に戻すこと', async () => {
+      const track = mockTracks[0];
+      track.metadata.title = 'Modified';
+      expect(track.isModified).toBe(true);
+
+      const startLoadingSpy = vi.spyOn(uiState, 'startLoading');
+      const stopLoadingSpy = vi.spyOn(uiState, 'stopLoading');
+      const readMetadataSpy = vi.spyOn(tagRepository, 'readMetadata').mockResolvedValue({
+        type: 'success',
+        value: { path: track.path, metadata: { title: 'Original' } }
+      });
+
+      await tagActions.revertSelected();
+
+      expect(startLoadingSpy).toHaveBeenCalled();
+      expect(readMetadataSpy).toHaveBeenCalledWith(track.path);
+      expect(track.metadata.title).toBe('Original');
+      expect(track.isModified).toBe(false);
+      expect(stopLoadingSpy).toHaveBeenCalled();
+    });
+
+    it('変更がない場合は何もしないこと', async () => {
+      const track = mockTracks[0];
+      track.markAsSaved();
+      const readMetadataSpy = vi.spyOn(tagRepository, 'readMetadata');
+
+      await tagActions.revertSelected();
+
+      expect(readMetadataSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('saveAllModified', () => {
+    it('変更がある全トラックを保存すること', async () => {
+      const track = mockTracks[0];
+      track.metadata.title = 'New Title';
+      expect(track.isModified).toBe(true);
+
+      const startLoadingSpy = vi.spyOn(uiState, 'startLoading');
+      const stopLoadingSpy = vi.spyOn(uiState, 'stopLoading');
+      const saveTracksSpy = vi.spyOn(tagRepository, 'saveTracks').mockResolvedValue({
+        type: 'success',
+        value: undefined
+      });
+
+      await tagActions.saveAllModified();
+
+      expect(startLoadingSpy).toHaveBeenCalled();
+      expect(saveTracksSpy).toHaveBeenCalledWith([track.toFlacTrack()]);
+      expect(track.isModified).toBe(false);
+      expect(stopLoadingSpy).toHaveBeenCalled();
+    });
+
+    it('変更がない場合は保存処理をスキップすること', async () => {
+      const track = mockTracks[0];
+      track.markAsSaved();
+      const saveTracksSpy = vi.spyOn(tagRepository, 'saveTracks');
+
+      await tagActions.saveAllModified();
+
+      expect(saveTracksSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('openAndScanDirectory', () => {
+    it('リポジトリを呼び出し、取得したトラックをストアに保存すること', async () => {
+      const startLoadingSpy = vi.spyOn(uiState, 'startLoading');
+      const stopLoadingSpy = vi.spyOn(uiState, 'stopLoading');
+      const scanSpy = vi.spyOn(tagRepository, 'scanAndLoadTracks').mockResolvedValue({
+        type: 'success',
+        value: { tracks: [{ path: 'test.flac', metadata: { title: 'Test' } }], isLimited: false }
+      });
+
+      await tagActions.openAndScanDirectory();
+
+      expect(startLoadingSpy).toHaveBeenCalled();
+      expect(scanSpy).toHaveBeenCalled();
+      expect(trackStore.tracks.length).toBe(1);
+      expect(trackStore.tracks[0].path).toBe('test.flac');
+      expect(stopLoadingSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('pickAndApplyPicture', () => {
+    it('画像を選択し、エディタを介して適用すること', async () => {
+      const picture = { format: 'image/jpeg', sourcePath: 'img.jpg', hash: 'h' };
+      vi.spyOn(tagRepository, 'pickImage').mockResolvedValue({ type: 'success', value: picture });
+      const applySpy = vi.spyOn(tagEditor, 'applyPicture');
+
+      await tagActions.pickAndApplyPicture();
+
+      expect(applySpy).toHaveBeenCalledWith(mockTracks, picture);
+    });
+  });
+
+  describe('applyAutoNumbering', () => {
+    it('エディタの自動採番を呼び出すこと', () => {
+      const applySpy = vi.spyOn(tagEditor, 'applyAutoNumbering');
+      tagActions.applyAutoNumbering();
+      expect(applySpy).toHaveBeenCalledWith(mockTracks);
+    });
+  });
+
+  describe('removeArtwork', () => {
+    it('エディタの画像削除を呼び出すこと', () => {
+      const removeSpy = vi.spyOn(tagEditor, 'removePicture');
+      tagActions.removeArtwork();
+      expect(removeSpy).toHaveBeenCalledWith(mockTracks);
     });
   });
 });

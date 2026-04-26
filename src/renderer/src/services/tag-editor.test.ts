@@ -67,30 +67,42 @@ describe('tagEditor', () => {
     });
   });
 
-  describe('updateSingleField', () => {
-    it('単一値フィールドを更新すること', () => {
-      const track = createMockTrack('file1.flac');
-      tagEditor.updateSingleField([track], 'album', 'New Album');
-      expect(track.metadata.album).toBe('New Album');
+  describe('updateMultiField', () => {
+    it('指定したインデックスの値を更新すること', () => {
+      const track = createMockTrack('file1.flac', ['Rock', 'Pop']);
+      tagEditor.updateMultiField([track], 'genre', 1, 'Jazz');
+      expect(track.metadata.genre).toStrictEqual(['Rock', 'Jazz']);
     });
   });
 
-  describe('applyAutoNumbering', () => {
-    it('選択されたトラックに連番と総数を設定すること', () => {
-      const tracks = [
-        createMockTrack('file1.flac'),
-        createMockTrack('file2.flac'),
-        createMockTrack('file3.flac')
-      ];
+  describe('applyPicture', () => {
+    it('すべてのトラックに同じ画像情報を適用すること', () => {
+      const tracks = [createMockTrack('file1.flac'), createMockTrack('file2.flac')];
+      const picture = {
+        format: 'image/jpeg',
+        sourcePath: '/path/to/image.jpg',
+        hash: 'mock-hash'
+      };
 
-      tagEditor.applyAutoNumbering(tracks);
+      tagEditor.applyPicture(tracks, picture);
 
-      expect(tracks[0].metadata.trackNumber).toBe('1');
-      expect(tracks[0].metadata.trackTotal).toBe('3');
-      expect(tracks[1].metadata.trackNumber).toBe('2');
-      expect(tracks[1].metadata.trackTotal).toBe('3');
-      expect(tracks[2].metadata.trackNumber).toBe('3');
-      expect(tracks[2].metadata.trackTotal).toBe('3');
+      expect(tracks[0].metadata.picture).toStrictEqual(picture);
+      expect(tracks[1].metadata.picture).toStrictEqual(picture);
+    });
+  });
+
+  describe('removePicture', () => {
+    it('すべてのトラックから画像を削除すること', () => {
+      const tracks = [createMockTrack('file1.flac')];
+      tracks[0].metadata.picture = {
+        format: 'image/jpeg',
+        sourcePath: '/path/to/image.jpg',
+        hash: 'mock-hash'
+      };
+
+      tagEditor.removePicture(tracks);
+
+      expect(tracks[0].metadata.picture).toBeNull();
     });
   });
 });
