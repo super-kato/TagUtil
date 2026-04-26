@@ -49,6 +49,11 @@ export class KeyboardHandler {
    * キーボードイベントを処理します。
    */
   async handle(e: KeyboardEvent): Promise<void> {
+    // IME入力中（変換中）のイベントは無視する
+    if (e.isComposing) {
+      return;
+    }
+
     const action = this.actions.find((a) => this.matches(e, a.combo));
     if (!action) {
       return;
