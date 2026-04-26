@@ -1,53 +1,45 @@
 <script lang="ts">
-  import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { themeStore } from '@renderer/stores/theme-store.svelte';
-  import { selectionState } from '@renderer/stores/selection-state.svelte';
-  import StatusBar from './StatusBar.svelte';
-  import Toolbar from './Toolbar.svelte';
-  import TrackGrid from './TrackGrid.svelte';
-  import Inspector from './Inspector.svelte';
-  import ConfirmationDialog from './ui/ConfirmationDialog.svelte';
+  import Inspector from './components/Inspector.svelte';
+  import StatusBar from './components/StatusBar.svelte';
+  import Toolbar from './components/Toolbar.svelte';
+  import TrackGrid from './components/TrackGrid.svelte';
+  import KeyboardShortcuts from './components/KeyboardShortcuts.svelte';
+  import ConfirmationDialog from './components/ui/ConfirmationDialog.svelte';
+  import TooltipContainer from './components/ui/TooltipContainer.svelte';
+  import { logRepository } from '@renderer/infrastructure/repositories/log-repository';
+  import { onMount } from 'svelte';
+  import { logStore } from './stores/log-store.svelte';
 
-  $effect(() => {
-    // テーマをHTML要素のデータ属性として適用
-    document.documentElement.dataset.theme = themeStore.current;
-  });
+  onMount(() => logRepository.subscribe((log) => logStore.addLog(log)));
 </script>
 
-<div class="app-container">
-  <Toolbar />
+<KeyboardShortcuts />
 
-  <main class="main-layout">
-    <div class="content-area">
-      <TrackGrid />
-    </div>
+<div
+  class="app-container no-focus-glow"
+  role="region"
+  aria-label="Application container"
+  tabindex="-1"
+>
+  <section class="main-content">
+    <Toolbar />
+    <TrackGrid />
+    <StatusBar />
+  </section>
 
-    <Inspector />
-  </main>
-
-  <StatusBar />
-
+  <Inspector />
   <ConfirmationDialog />
+  <TooltipContainer />
 </div>
 
 <style>
   .app-container {
+    display: flex;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--bg-body);
-    color: var(--text-primary);
-    overflow: hidden;
+    position: relative;
   }
 
-  .main-layout {
-    flex: 1;
-    display: flex;
-    overflow: hidden;
-    min-height: 0;
-  }
-
-  .content-area {
+  .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
