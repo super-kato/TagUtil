@@ -167,8 +167,17 @@
     font-weight: 500;
   }
 
+  .status-item.info {
+    color: var(--accent-info);
+  }
+
   .status-item.ready {
     color: var(--text-muted);
+  }
+
+  .status-item.error .log-message,
+  .status-item.warn .log-message {
+    color: inherit;
   }
 
   .log-message {
@@ -220,13 +229,14 @@
   .log-entry {
     display: flex;
     gap: 0.75rem;
-    align-items: baseline;
+    align-items: center;
     font-size: 0.7rem;
     line-height: 1.5;
-    padding: 0.1rem 0.4rem;
+    padding: 0.15rem 0.4rem;
     border-radius: 2px;
     width: fit-content;
     min-width: 100%;
+    transition: background-color 0.2s ease;
   }
 
   .log-entry:hover {
@@ -247,12 +257,26 @@
   }
 
   .log-entry.info .log-level-icon {
-    color: #4da6ff;
+    color: var(--accent-info);
+  }
+
+  .log-entry.warn {
+    background-color: var(--accent-warning-dim);
   }
   .log-entry.warn .log-level-icon {
     color: var(--accent-warning);
   }
+  .log-entry.warn .log-text {
+    color: var(--accent-warning);
+  }
+
+  .log-entry.error {
+    background-color: var(--accent-error-dim);
+  }
   .log-entry.error .log-level-icon {
+    color: var(--accent-error);
+  }
+  .log-entry.error .log-text {
     color: var(--accent-error);
   }
 
