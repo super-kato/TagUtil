@@ -1,4 +1,5 @@
 import type { Action } from 'svelte/action';
+import { generateId } from '@shared/utils/id';
 
 /**
  * グローバルなツールチップ要素のID。
@@ -6,10 +7,6 @@ import type { Action } from 'svelte/action';
  */
 const TOOLTIP_ID = 'global-tooltip';
 const POPOVER_CLASS = 'custom-tooltip-popover';
-
-const RANDOM_BASE = 36;
-const ID_START = 2;
-const ID_END = 9;
 
 /**
  * ツールチップを表示するためのSvelte Action。
@@ -19,8 +16,7 @@ export const tooltip: Action<HTMLElement, string | undefined> = (node, text) => 
   let currentText = text;
 
   // 各要素に一意のアンカー名を付与するためのID
-  const uniqueId = Math.random().toString(RANDOM_BASE).substring(ID_START, ID_END);
-  const anchorName = `--tooltip-anchor-${uniqueId}`;
+  const anchorName = `--tooltip-anchor-${generateId()}`;
 
   const ensureTooltipElement = (): HTMLElement => {
     let el = document.getElementById(TOOLTIP_ID);
