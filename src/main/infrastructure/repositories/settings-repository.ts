@@ -8,7 +8,8 @@ import { TAG_PLACEHOLDERS } from '@domain/flac/constants';
  */
 export const DEFAULT_SETTINGS: AppSettings = {
   renamePattern: `${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`,
-  trackNumberPadding: 2
+  trackNumberPadding: 2,
+  theme: 'default'
 };
 
 /**

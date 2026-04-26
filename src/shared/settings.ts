@@ -6,4 +6,6 @@ export interface AppSettings {
   renamePattern: string;
   /** トラック番号のパディング桁数 */
   trackNumberPadding: number;
+  /** カラーテーマ ('default' | 'pop') */
+  theme: 'default' | 'pop';
 }
