@@ -1,89 +1,82 @@
 import type { Action } from 'svelte/action';
 
-/** ツールチップと要素の間のオフセット (px) */
-const TOOLTIP_OFFSET = 8;
-/** 画面端からの最小マージン (px) */
-const SCREEN_MARGIN = 8;
-/** 中央配置などの計算に使用する除数 */
-const DIVISOR_HALF = 2;
+/**
+ * グローバルなツールチップ要素のID。
+ * アプリ全体で1つのポップオーバー要素を使い回します。
+ */
+const TOOLTIP_ID = 'global-tooltip';
+const POPOVER_CLASS = 'custom-tooltip-popover';
+
+const RANDOM_BASE = 36;
+const ID_START = 2;
+const ID_END = 9;
 
 /**
  * ツールチップを表示するためのSvelte Action。
- * HTML標準の title 属性の代わりに使用し、OSや親要素の overflow に依存しない表示を提供します。
+ * CSS Anchor Positioning API を活用し、位置計算をブラウザに委譲します。
  */
 export const tooltip: Action<HTMLElement, string | undefined> = (node, text) => {
-  let tooltipElement: HTMLDivElement | null = null;
   let currentText = text;
 
-  const createTooltip = (): void => {
-    if (!currentText || tooltipElement) {
+  // 各要素に一意のアンカー名を付与するためのID
+  const uniqueId = Math.random().toString(RANDOM_BASE).substring(ID_START, ID_END);
+  const anchorName = `--tooltip-anchor-${uniqueId}`;
+
+  const ensureTooltipElement = (): HTMLElement => {
+    let el = document.getElementById(TOOLTIP_ID);
+    if (!el) {
+      el = document.createElement('div');
+      el.id = TOOLTIP_ID;
+      el.setAttribute('popover', 'manual');
+      el.className = POPOVER_CLASS;
+      document.body.appendChild(el);
+    }
+    return el;
+  };
+
+  const show = (): void => {
+    if (!currentText) {
       return;
     }
 
-    tooltipElement = document.createElement('div');
-    tooltipElement.className = 'custom-tooltip';
-    tooltipElement.textContent = currentText;
-    document.body.appendChild(tooltipElement);
+    const el = ensureTooltipElement();
+    el.textContent = currentText;
 
-    const rect = node.getBoundingClientRect();
-    const tooltipRect = tooltipElement.getBoundingClientRect();
+    // アンカーの設定
+    node.style.setProperty('anchor-name', anchorName);
+    el.style.setProperty('position-anchor', anchorName);
 
-    // デフォルトは要素の中央上部
-    let top = rect.top - tooltipRect.height - TOOLTIP_OFFSET;
-    let left = rect.left + rect.width / DIVISOR_HALF - tooltipRect.width / DIVISOR_HALF;
+    el.showPopover();
 
-    // 画面上端を越える場合は下に表示
-    if (top < 0) {
-      top = rect.bottom + TOOLTIP_OFFSET;
-    }
-
-    // 画面左右端を越えないように調整
-    if (left < SCREEN_MARGIN) {
-      left = SCREEN_MARGIN;
-    } else if (left + tooltipRect.width > window.innerWidth - SCREEN_MARGIN) {
-      left = window.innerWidth - tooltipRect.width - SCREEN_MARGIN;
-    }
-
-    tooltipElement.style.top = `${top}px`;
-    tooltipElement.style.left = `${left}px`;
-
-    // フェードイン（1フレーム待ってからクラスを付与）
+    // フェードイン用のクラス付与
     requestAnimationFrame(() => {
-      if (tooltipElement) {
-        tooltipElement.classList.add('visible');
-      }
+      el.classList.add('visible');
     });
   };
 
-  const removeTooltip = (): void => {
-    if (tooltipElement) {
-      tooltipElement.remove();
-      tooltipElement = null;
+  const hide = (): void => {
+    const el = document.getElementById(TOOLTIP_ID);
+    if (el) {
+      el.classList.remove('visible');
+      el.hidePopover();
     }
   };
 
-  const handleMouseEnter = (): void => {
-    createTooltip();
-  };
-
-  const handleMouseLeave = (): void => {
-    removeTooltip();
-  };
-
-  node.addEventListener('mouseenter', handleMouseEnter);
-  node.addEventListener('mouseleave', handleMouseLeave);
+  node.addEventListener('mouseenter', show);
+  node.addEventListener('mouseleave', hide);
 
   return {
     update(newText) {
       currentText = newText;
-      if (tooltipElement) {
-        tooltipElement.textContent = newText ?? '';
+      const el = document.getElementById(TOOLTIP_ID);
+      if (el && el.classList.contains('visible')) {
+        el.textContent = newText ?? '';
       }
     },
     destroy() {
-      removeTooltip();
-      node.removeEventListener('mouseenter', handleMouseEnter);
-      node.removeEventListener('mouseleave', handleMouseLeave);
+      hide();
+      node.removeEventListener('mouseenter', show);
+      node.removeEventListener('mouseleave', hide);
     }
   };
 };

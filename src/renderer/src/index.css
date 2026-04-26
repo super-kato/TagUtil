@@ -184,10 +184,19 @@ body {
   flex: 1;
 }
 
-/* --- カスタムツールチップ --- */
-.custom-tooltip {
+/* --- カスタムツールチップ (CSS Anchor Positioning & Popover) --- */
+.custom-tooltip-popover {
+  /* 固定位置指定をAnchor Positioningに移譲 */
   position: fixed;
-  z-index: 1000;
+  margin: 0;
+  inset: auto;
+
+  /* アンカーに対する配置設定 */
+  position-area: top center;
+  position-try-fallbacks: flip-block, flip-inline;
+  margin-bottom: 8px; /* TOOLTIP_OFFSET 相当 */
+
+  /* ポップオーバーの基本スタイル */
   padding: 0.4rem 0.6rem;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
@@ -196,17 +205,27 @@ body {
   border: 1px solid var(--border-secondary);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   pointer-events: none;
+
+  /* アニメーション */
   opacity: 0;
   transform: translateY(4px);
   transition:
     opacity 0.15s ease,
-    transform 0.15s ease;
+    transform 0.15s ease,
+    display 0.15s ease allow-discrete,
+    overlay 0.15s ease allow-discrete;
+
   max-width: 300px;
   word-wrap: break-word;
   white-space: pre-wrap;
 }
 
-.custom-tooltip.visible {
+/* ポップオーバーのデフォルトの枠線を消去 */
+.custom-tooltip-popover:popover-open {
+  border: 1px solid var(--border-secondary);
+}
+
+.custom-tooltip-popover.visible {
   opacity: 1;
   transform: translateY(0);
 }
