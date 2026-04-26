@@ -36,6 +36,12 @@
     const input = e.target as HTMLInputElement;
     onApplyChange?.(oldValue, input.value);
   };
+
+  const handleKeyDown = (e: KeyboardEvent): void => {
+    if (e.key === 'Enter') {
+      (e.target as HTMLElement).blur();
+    }
+  };
 </script>
 
 <div class="multi-value-field field">
@@ -59,6 +65,7 @@
             type="text"
             {value}
             onchange={(e) => handleDivergentUpdate(value, e)}
+            onkeydown={handleKeyDown}
             placeholder="Value"
           />
           <button
@@ -91,7 +98,8 @@
             type="text"
             {value}
             placeholder={i === 0 && children ? '' : placeholder}
-            oninput={(e) => handleUpdate(i, e)}
+            onblur={(e) => handleUpdate(i, e)}
+            onkeydown={handleKeyDown}
           />
           <button
             type="button"

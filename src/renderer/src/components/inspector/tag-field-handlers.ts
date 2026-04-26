@@ -3,11 +3,22 @@ import { trackStore } from '@renderer/stores/track-store.svelte';
 import { tagActions } from '@renderer/services/tag-actions';
 
 /**
- * 単一値フィールドの入力イベントを処理し、trackStore を更新します。
+ * 単一値フィールドの変更イベントを処理し、trackStore を更新します。
+ * 通常、blur または Enter キー押下時に呼び出されます。
  */
-export const handleSingleInput = (key: EditableSingleKey, e: Event): void => {
+export const handleSingleFieldChange = (key: EditableSingleKey, e: Event): void => {
   const input = e.target as HTMLInputElement;
   tagActions.updateSelectedSingleField(key, input.value);
+};
+
+/**
+ * Enterキーが押された際、入力欄からフォーカスを外します。
+ * これにより blur イベントが発火し、変更が確定されます。
+ */
+export const handleEnterKey = (e: KeyboardEvent): void => {
+  if (e.key === 'Enter') {
+    (e.target as HTMLElement).blur();
+  }
 };
 
 /**
