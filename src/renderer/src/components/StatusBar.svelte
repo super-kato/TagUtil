@@ -81,7 +81,7 @@
         <div class="status-item ready">
           <span>Ready</span>
         </div>
-      {/if}
+      /if}
     </div>
 
     <div class="expand-icon" class:is-expanded={isExpanded}>
@@ -94,7 +94,7 @@
       <div class="log-list" bind:this={logListElement}>
         {#each logStore.logs as log (log.id)}
           {@const ICON = levelIcons.get(log.level)}
-          <div class="log-entry {log.level}">
+          <div class="log-entry {log.level.toLowerCase()}">
             <span class="timestamp">[{formatTimeWithMs(log.timestamp)}]</span>
             <div class="log-level-icon">
               <ICON size={UI_TOKENS.icons.sizeSmall} />
