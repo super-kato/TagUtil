@@ -2,6 +2,9 @@ import type { EditableSingleKey, FieldState } from '@domain/editor/batch-metadat
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { tagActions } from '@renderer/services/tag-actions';
 
+import { IS_MAC } from '@renderer/constants/platform';
+import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
+
 /**
  * 単一値フィールドの変更イベントを処理し、trackStore を更新します。
  * 通常、blur または Enter キー押下時に呼び出されます。
@@ -11,14 +14,18 @@ export const handleSingleFieldChange = (key: EditableSingleKey, e: Event): void 
   tagActions.updateSelectedSingleField(key, input.value);
 };
 
+const enterHandler = new KeyboardHandler(IS_MAC, [
+  {
+    combo: { key: 'Enter' },
+    handler: (e) => (e.target as HTMLElement).blur()
+  }
+]);
+
 /**
  * Enterキーが押された際、入力欄からフォーカスを外します。
- * これにより blur イベントが発火し、変更が確定されます。
  */
 export const handleEnterKey = (e: KeyboardEvent): void => {
-  if (e.key === 'Enter') {
-    (e.target as HTMLElement).blur();
-  }
+  void enterHandler.handle(e);
 };
 
 /**

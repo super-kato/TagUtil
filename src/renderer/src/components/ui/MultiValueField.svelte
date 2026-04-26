@@ -2,6 +2,8 @@
   import { Plus, X } from '@lucide/svelte';
   import type { Snippet } from 'svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
+  import { IS_MAC } from '@renderer/constants/platform';
+  import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
   interface Props {
     label: string;
@@ -37,11 +39,12 @@
     onApplyChange?.(oldValue, input.value);
   };
 
-  const handleKeyDown = (e: KeyboardEvent): void => {
-    if (e.key === 'Enter') {
-      (e.target as HTMLElement).blur();
+  const enterHandler = new KeyboardHandler(IS_MAC, [
+    {
+      combo: { key: 'Enter' },
+      handler: (e) => (e.target as HTMLElement).blur()
     }
-  };
+  ]);
 </script>
 
 <div class="multi-value-field field">
@@ -65,7 +68,7 @@
             type="text"
             {value}
             onchange={(e) => handleDivergentUpdate(value, e)}
-            onkeydown={handleKeyDown}
+            onkeydown={(e) => enterHandler.handle(e)}
             placeholder="Value"
           />
           <button
@@ -99,7 +102,7 @@
             {value}
             placeholder={i === 0 && children ? '' : placeholder}
             onblur={(e) => handleUpdate(i, e)}
-            onkeydown={handleKeyDown}
+            onkeydown={(e) => enterHandler.handle(e)}
           />
           <button
             type="button"
