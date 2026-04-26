@@ -58,21 +58,25 @@ export const tooltip: Action<HTMLElement, string | undefined> = (node, text) => 
     }
   };
 
+  const handleUpdate = (newText: string | undefined): void => {
+    currentText = newText;
+    const el = document.getElementById(TOOLTIP_ID);
+    if (el && el.classList.contains('visible')) {
+      el.textContent = newText ?? '';
+    }
+  };
+
+  const handleDestroy = (): void => {
+    hide();
+    node.removeEventListener('mouseenter', show);
+    node.removeEventListener('mouseleave', hide);
+  };
+
   node.addEventListener('mouseenter', show);
   node.addEventListener('mouseleave', hide);
 
   return {
-    update(newText) {
-      currentText = newText;
-      const el = document.getElementById(TOOLTIP_ID);
-      if (el && el.classList.contains('visible')) {
-        el.textContent = newText ?? '';
-      }
-    },
-    destroy() {
-      hide();
-      node.removeEventListener('mouseenter', show);
-      node.removeEventListener('mouseleave', hide);
-    }
+    update: handleUpdate,
+    destroy: handleDestroy
   };
 };
