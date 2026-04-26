@@ -8,8 +8,6 @@ export interface AppErrorOptions {
   path?: string;
   /** エラーの詳細情報（スタックトレースやライブラリエラーなど） */
   detail?: string;
-  /** 追加のメタデータ */
-  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -28,7 +26,7 @@ export type AppError =
  */
 const createFactory =
   (type: (typeof APP_ERROR_TYPES)[number]) =>
-  (options: AppErrorOptions = {}): AppError =>
+  (options: AppErrorOptions): AppError =>
     ({
       type,
       options
