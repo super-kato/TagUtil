@@ -1,5 +1,5 @@
 import { success } from '@domain/common/result';
-import type { TagResult } from '@domain/flac/types';
+import type { AppResult } from '@domain/flac/types';
 import type { FlacTrack, Picture } from '@domain/flac/models';
 import { pooledAll } from '@renderer/utils/concurrency';
 
@@ -8,13 +8,13 @@ import { pooledAll } from '@renderer/utils/concurrency';
  * Electron IPC経由でメインプロセスのサービスと通信します。
  */
 
-const readMetadata = async (path: string): Promise<TagResult<FlacTrack>> => {
+const readMetadata = async (path: string): Promise<AppResult<FlacTrack>> => {
   return await window.api.readMetadata(path);
 };
 
 const loadTracksFromPaths = async (
   targetPaths: string[]
-): Promise<TagResult<{ tracks: FlacTrack[]; isLimited: boolean }>> => {
+): Promise<AppResult<{ tracks: FlacTrack[]; isLimited: boolean }>> => {
   const scanResult = await window.api.scanDirectory(targetPaths);
   if (scanResult.type === 'error') {
     return scanResult;
@@ -35,7 +35,7 @@ const loadTracksFromPaths = async (
 };
 
 const scanAndLoadTracks = async (): Promise<
-  TagResult<{ tracks: FlacTrack[]; isLimited: boolean } | null>
+  AppResult<{ tracks: FlacTrack[]; isLimited: boolean } | null>
 > => {
   const dirPath = await window.api.selectDirectory();
   if (!dirPath) {
@@ -44,7 +44,7 @@ const scanAndLoadTracks = async (): Promise<
   return await loadTracksFromPaths([dirPath]);
 };
 
-const saveTracks = async (tracks: FlacTrack[]): Promise<TagResult<void>> => {
+const saveTracks = async (tracks: FlacTrack[]): Promise<AppResult<void>> => {
   const results = await pooledAll(tracks.map((track) => () => window.api.writeMetadata(track)));
 
   for (const result of results) {
@@ -56,11 +56,11 @@ const saveTracks = async (tracks: FlacTrack[]): Promise<TagResult<void>> => {
   return success(undefined);
 };
 
-const pickImage = async (): Promise<TagResult<Picture | null>> => {
+const pickImage = async (): Promise<AppResult<Picture | null>> => {
   return await window.api.pickImage();
 };
 
-const getImageInfo = async (path: string): Promise<TagResult<Picture>> => {
+const getImageInfo = async (path: string): Promise<AppResult<Picture>> => {
   return await window.api.getImageInfo(path);
 };
 

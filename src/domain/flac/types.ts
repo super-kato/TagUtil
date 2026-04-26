@@ -1,5 +1,5 @@
 import type { Result } from '@domain/common/result';
-import type { TagError } from './errors';
+import type { AppError } from './errors';
 
 /**
  * ディレクトリのスキャン結果を表すインターフェース。
@@ -12,7 +12,7 @@ export interface ScanResult {
 }
 
 /**
- * タグ取得・更新操作の戻り値型。
+ * アプリケーションの各操作の戻り値型。
  * Result型を利用した、例外を投げないエラーハンドリングを強制します。
  */
-export type TagResult<T> = Result<T, TagError>;
+export type AppResult<T> = Result<T, AppError>;

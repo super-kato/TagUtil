@@ -1,5 +1,5 @@
 import { success, type Result } from '@domain/common/result';
-import type { TagError } from '@domain/flac/errors';
+import type { AppError } from '@domain/flac/errors';
 import { generateNewPath } from '@renderer/infrastructure/adapters/path-adapter';
 import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
@@ -58,7 +58,7 @@ const executeRenameLoop = async (selected: TrackRecord[]): Promise<Map<string, T
  * 単一のトラックに対して、ファイル名生成、パス計算、リネーム実行、再読み込みの一連の処理を行います。
  * 成功した場合は新しい TrackRecord を返し、スキップ（変更不要など）時は null を返します。
  */
-const renameTrack = async (track: TrackRecord): Promise<Result<TrackRecord | null, TagError>> => {
+const renameTrack = async (track: TrackRecord): Promise<Result<TrackRecord | null, AppError>> => {
   // 1. メタデータに基づいた新しいパスの生成（フォーマットとパス結合を一括で行う）
   const pathResult = await generateNewPath(track.toFlacTrack());
   if (pathResult.type === 'error') {

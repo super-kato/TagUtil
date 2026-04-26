@@ -1,4 +1,4 @@
-import type { TagResult } from '@domain/flac/types';
+import type { AppResult } from '@domain/flac/types';
 import type { FlacTrack } from '@domain/flac/models';
 
 /**
@@ -10,6 +10,6 @@ import type { FlacTrack } from '@domain/flac/models';
  * @param track トラック情報
  * @returns 生成された新しいフルパス
  */
-export const generateNewPath = async (track: FlacTrack): Promise<TagResult<string>> => {
+export const generateNewPath = async (track: FlacTrack): Promise<AppResult<string>> => {
   return await window.api.generateNewPath(track);
 };

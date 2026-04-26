@@ -1,5 +1,5 @@
 import { success } from '@domain/common/result';
-import { TagResult } from '@domain/flac/types';
+import { AppResult } from '@domain/flac/types';
 import { Picture } from '@domain/flac/models';
 import { readFile } from 'node:fs/promises';
 import { computeMd5 } from '@main/utils/crypto';
@@ -30,7 +30,7 @@ export const extractEmbeddedImage = async (
  * 指定されたパスの画像ファイルから Picture オブジェクトを生成して返します。
  * @param filePath 画像ファイルの絶対パス
  */
-export const getImageInfo = async (filePath: string): Promise<TagResult<Picture>> => {
+export const getImageInfo = async (filePath: string): Promise<AppResult<Picture>> => {
   return success({
     format: getMimeTypeFromPath(filePath),
     sourcePath: filePath,
@@ -42,7 +42,7 @@ export const getImageInfo = async (filePath: string): Promise<TagResult<Picture>
  * 画像ファイル選択ダイアログを表示し、選択された画像のパス情報を返します。
  * @returns 選択された画像のパス情報。キャンセルされた場合は Result(null)。
  */
-export const pickImage = async (): Promise<TagResult<Picture | null>> => {
+export const pickImage = async (): Promise<AppResult<Picture | null>> => {
   const filePath = await pickImageFile();
 
   if (!filePath) {

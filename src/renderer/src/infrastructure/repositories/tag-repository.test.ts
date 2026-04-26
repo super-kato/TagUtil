@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { tagRepository } from './tag-repository';
 import { success, failure } from '@domain/common/result';
 import type { FlacTrack } from '@domain/flac/models';
-import type { TagError } from '@domain/flac/errors';
+import type { AppError } from '@domain/flac/errors';
 
 describe('tag-repository', () => {
   beforeEach(() => {
@@ -53,7 +53,7 @@ describe('tag-repository', () => {
     });
 
     it('スキャンに失敗した場合はエラーを返すこと', async () => {
-      const error: TagError = {
+      const error: AppError = {
         type: 'SCAN_FAILED',
         options: { path: '/dir' }
       };
@@ -81,7 +81,7 @@ describe('tag-repository', () => {
     });
 
     it('一部が失敗しても全ての保存を試行し、最初のエラーを返すこと', async () => {
-      const error: TagError = {
+      const error: AppError = {
         type: 'WRITE_FAILED',
         options: { path: 'b.flac' }
       };

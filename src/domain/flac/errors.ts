@@ -1,15 +1,15 @@
-import { TAG_ERROR_TYPES } from './constants';
+import { APP_ERROR_TYPES } from './constants';
 
 /**
- * タグ操作におけるエラー種別のリテラル型。
+ * アプリケーションにおけるエラー種別のリテラル型。
  * 判別共用体 (Discriminated Union) の識別に利用します。
  */
-export type TagErrorType = (typeof TAG_ERROR_TYPES)[number];
+export type AppErrorType = (typeof APP_ERROR_TYPES)[number];
 
 /**
- * タグ操作におけるエラーの付随情報（メタデータ）。
+ * アプリケーションにおけるエラーの付随情報（メタデータ）。
  */
-export interface TagErrorOptions {
+export interface AppErrorOptions {
   /** 対象となったファイルやディレクトリのパス */
   path: string;
   /** 追加の詳細メッセージ（例: OSのエラーメッセージ、ライブラリの例外内容） */
@@ -17,33 +17,33 @@ export interface TagErrorOptions {
 }
 
 /**
- * タグ操作における詳細なエラー定義（判別共用体）。
+ * アプリケーションにおける詳細なエラー定義（判別共用体）。
  */
-export type TagError =
-  | { type: 'FILE_NOT_FOUND'; options: TagErrorOptions }
-  | { type: 'PERMISSION_DENIED'; options: TagErrorOptions }
-  | { type: 'PARSE_FAILED'; options: TagErrorOptions }
-  | { type: 'WRITE_FAILED'; options: TagErrorOptions }
-  | { type: 'SCAN_FAILED'; options: TagErrorOptions }
-  | { type: 'PICK_IMAGE_FAILED'; options: TagErrorOptions }
-  | { type: 'MISSING_REQUIRED_TAG'; options: TagErrorOptions }
-  | { type: 'INVALID_RENAME_PATTERN'; options: TagErrorOptions };
+export type AppError =
+  | { type: 'FILE_NOT_FOUND'; options: AppErrorOptions }
+  | { type: 'PERMISSION_DENIED'; options: AppErrorOptions }
+  | { type: 'PARSE_FAILED'; options: AppErrorOptions }
+  | { type: 'WRITE_FAILED'; options: AppErrorOptions }
+  | { type: 'SCAN_FAILED'; options: AppErrorOptions }
+  | { type: 'PICK_IMAGE_FAILED'; options: AppErrorOptions }
+  | { type: 'MISSING_REQUIRED_TAG'; options: AppErrorOptions }
+  | { type: 'INVALID_RENAME_PATTERN'; options: AppErrorOptions };
 
 /**
- * TagError を生成する共通のファクトリ関数。
+ * AppError を生成する共通のファクトリ関数。
  */
 const createFactory =
-  (type: TagErrorType) =>
-  (options: TagErrorOptions): TagError =>
+  (type: AppErrorType) =>
+  (options: AppErrorOptions): AppError =>
     ({
       type,
       options
-    }) as TagError;
+    }) as AppError;
 
 /**
- * TagError かどうかの型ガード
+ * AppError かどうかの型ガード
  */
-export const isTagError = (error: unknown): error is TagError => {
+export const isAppError = (error: unknown): error is AppError => {
   return (
     !!error &&
     typeof error === 'object' &&
@@ -56,7 +56,7 @@ export const isTagError = (error: unknown): error is TagError => {
 /**
  * 型安全にエラーオブジェクトを生成するためのファクトリ。
  */
-export const tagErrors = {
+export const appErrors = {
   fileNotFound: createFactory('FILE_NOT_FOUND'),
   permissionDenied: createFactory('PERMISSION_DENIED'),
   parseFailed: createFactory('PARSE_FAILED'),

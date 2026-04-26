@@ -1,5 +1,5 @@
 import type { LogHandler } from '@domain/common/log';
-import type { ScanResult, TagResult } from '@domain/flac/types';
+import type { ScanResult, AppResult } from '@domain/flac/types';
 import type { FlacTrack, Picture } from '@domain/flac/models';
 import type { Platform } from './platform';
 import type { AppSettings } from './settings';
@@ -47,29 +47,29 @@ export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
  */
 export interface IpcApi {
   /** 指定されたパスの FLAC メタデータを読み取ります */
-  readMetadata: (filePath: string) => Promise<TagResult<FlacTrack>>;
+  readMetadata: (filePath: string) => Promise<AppResult<FlacTrack>>;
   /** 指定されたパスの FLAC メタデータを書き込みます */
-  writeMetadata: (track: FlacTrack) => Promise<TagResult<void>>;
+  writeMetadata: (track: FlacTrack) => Promise<AppResult<void>>;
   /** フォルダ選択ダイアログを表示し、選択されたパスを返します */
   selectDirectory: () => Promise<string | null>;
   /** 指定されたパス（ファイルまたはディレクトリ）内のFLACファイルのパスリストを返します */
-  scanDirectory: (targetPaths: string[]) => Promise<TagResult<ScanResult>>;
+  scanDirectory: (targetPaths: string[]) => Promise<AppResult<ScanResult>>;
   /** 画像ファイルを選択し、メタデータ用の Picture オブジェクトを返します */
-  pickImage: () => Promise<TagResult<Picture | null>>;
+  pickImage: () => Promise<AppResult<Picture | null>>;
   /** 指定したパスの画像ファイルから Picture オブジェクトを生成して返します */
-  getImageInfo: (filePath: string) => Promise<TagResult<Picture>>;
+  getImageInfo: (filePath: string) => Promise<AppResult<Picture>>;
   /** ファイルをリネーム（移動）します */
-  renameFile: (oldPath: string, newPath: string) => Promise<TagResult<void>>;
+  renameFile: (oldPath: string, newPath: string) => Promise<AppResult<void>>;
   /** メタデータに基づいて新しいファイルパスを生成します */
-  generateNewPath: (track: FlacTrack) => Promise<TagResult<string>>;
+  generateNewPath: (track: FlacTrack) => Promise<AppResult<string>>;
   /** File オブジェクトから OS 上のファイルシステムパスを取得します */
   getPathForFile: (file: File) => string;
   /** 実行環境のプラットフォームを取得します */
   getPlatform: () => Promise<Platform>;
   /** アプリケーション設定を取得します */
-  getSettings: () => Promise<TagResult<AppSettings>>;
+  getSettings: () => Promise<AppResult<AppSettings>>;
   /** アプリケーション設定を更新します */
-  updateSettings: (settings: Partial<AppSettings>) => Promise<TagResult<void>>;
+  updateSettings: (settings: Partial<AppSettings>) => Promise<AppResult<void>>;
   /** ログメッセージを受信した時のコールバックを登録します */
   onLogMessage: (callback: LogHandler) => Unsubscribe;
 }

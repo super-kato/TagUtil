@@ -7,7 +7,7 @@ import { tagRepository } from '@renderer/infrastructure/repositories/tag-reposit
 import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
 import { success, failure } from '@domain/common/result';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
-import { tagErrors } from '@domain/flac/errors';
+import { appErrors } from '@domain/flac/errors';
 import type { FlacMetadata, FlacTrack } from '@domain/flac/models';
 import * as pathAdapter from '@renderer/infrastructure/adapters/path-adapter';
 
@@ -62,7 +62,7 @@ describe('fileActions', () => {
       selectionState.selectSingle(mockTrack, 0);
 
       vi.mocked(pathAdapter.generateNewPath).mockResolvedValue(
-        failure(tagErrors.parseFailed({ path: 'old.flac' }))
+        failure(appErrors.parseFailed({ path: 'old.flac' }))
       );
 
       await fileActions.renameSelectedFiles();

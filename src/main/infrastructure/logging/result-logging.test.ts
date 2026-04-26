@@ -1,6 +1,6 @@
 import { failure, success } from '@domain/common/result';
 import { logger } from '@services/platform/logger';
-import * as formatter from '@domain/flac/tag-error-formatter';
+import * as formatter from '@domain/flac/app-error-formatter';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { withResultLogging } from './result-logging';
 
@@ -11,7 +11,7 @@ describe('result-logging', () => {
     vi.spyOn(logger, 'info').mockImplementation(() => {});
     vi.spyOn(logger, 'error').mockImplementation(() => {});
     // formatter をスパイ（パスが間違っていれば import 時点でエラーになる）
-    vi.spyOn(formatter, 'formatTagError').mockImplementation((err) =>
+    vi.spyOn(formatter, 'formatAppError').mockImplementation((err) =>
       err instanceof Error ? err.message : String(err)
     );
   });
@@ -51,7 +51,7 @@ describe('result-logging', () => {
       const error = { type: 'PARSE_FAILED', options: { path: 'file.flac' } };
       const task = vi.fn().mockResolvedValue(failure(error));
       vi.spyOn(logger, 'warn').mockImplementation(() => {});
-      vi.mocked(formatter.formatTagError).mockReturnValue('Formatted Error Message');
+      vi.mocked(formatter.formatAppError).mockReturnValue('Formatted Error Message');
 
       const result = await withResultLogging('test-ctx', task);
 
@@ -60,13 +60,13 @@ describe('result-logging', () => {
         context: 'test-ctx',
         message: 'Formatted Error Message'
       });
-      expect(formatter.formatTagError).toHaveBeenCalledWith(error);
+      expect(formatter.formatAppError).toHaveBeenCalledWith(error);
     });
 
     it('例外が発生した場合、例外ログを出力して再スローすること', async () => {
       const error = new Error('Unexpected crash');
       const task = vi.fn().mockRejectedValue(error);
-      vi.mocked(formatter.formatTagError).mockReturnValue('Formatted Exception Message');
+      vi.mocked(formatter.formatAppError).mockReturnValue('Formatted Exception Message');
 
       await expect(withResultLogging('test-ctx', task)).rejects.toThrow('Unexpected crash');
 
@@ -74,7 +74,7 @@ describe('result-logging', () => {
         context: 'test-ctx',
         message: 'Formatted Exception Message'
       });
-      expect(formatter.formatTagError).toHaveBeenCalledWith(error);
+      expect(formatter.formatAppError).toHaveBeenCalledWith(error);
     });
   });
 });
