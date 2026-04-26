@@ -18,14 +18,6 @@ class ThemeStore {
   async setTheme(theme: Theme): Promise<void> {
     await settingsStore.update({ theme });
   }
-
-  /**
-   * テーマを切り替えます。
-   */
-  async toggleTheme(): Promise<void> {
-    const nextTheme = this.current === 'default' ? 'light' : 'default';
-    await this.setTheme(nextTheme);
-  }
 }
 
 export const themeStore = new ThemeStore();
