@@ -43,8 +43,8 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: #1e1e1e;
-    border-right: 1px solid #333;
+    background-color: var(--bg-main);
+    border-right: 1px solid var(--border-primary);
     overflow: clip;
     min-height: 0;
     min-width: 0;

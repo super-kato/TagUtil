@@ -32,4 +32,19 @@ export class SettingsStore {
 
     this.#current = result.value;
   }
+
+  /**
+   * 設定を更新し、永続化します。
+   * @param settings 更新する設定値（部分更新）
+   */
+  async update(settings: Partial<AppSettings>): Promise<void> {
+    const result = await settingsRepository.updateSettings(settings);
+    if (result.type !== 'success') {
+      return;
+    }
+
+    await this.refresh();
+  }
 }
+
+export const settingsStore = new SettingsStore();

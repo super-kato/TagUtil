@@ -2,9 +2,9 @@
   /* 背景色: 深い順 */
   --bg-body: #121212;
   --bg-main: #1e1e1e;
-  --bg-inspector: #1e1e1e;
-  --bg-header: #1e1e1e;
   --bg-secondary: #252525;
+  --bg-button: #3d3d3d;
+  --bg-button-hover: #4d4d4d;
 
   /* 境界線と装飾 */
   --border-primary: #444;
@@ -23,7 +23,6 @@
   --accent-modified: #ff9500;
   --accent-error: #ff3b30;
   --accent-warning: #ff9f0a;
-  --accent-info: #4de800; /* 緑系のINFOカラー */
 
   /* 透過済みカラーのプリセット (HEX Alpha) */
   --bg-overlay: #1e1e1ee6;
@@ -34,7 +33,6 @@
   --accent-primary-dim: #adff2f1a;
   --accent-error-dim: #ff3b301a;
   --accent-warning-dim: #ff9f0a1a;
-  --accent-info-dim: #4de8001a;
   --accent-error-hover: #ff3b3033;
   --accent-warning-hover: #ff9f0a33;
 
@@ -48,6 +46,34 @@
   /* フォーカスエフェクト */
   --focus-ring: 0 0 0 2px var(--accent-primary-dim);
   --focus-glow: 0 0 6px var(--selection-glow);
+}
+
+:root[data-theme='light'] {
+  --bg-body: #fdfdfd;
+  --bg-main: #ffffff;
+  --bg-secondary: #f0f2f5;
+  --bg-button: #f0f2f5;
+  --bg-button-hover: #e4e6e9;
+
+  --border-primary: #e8e8e8;
+  --border-secondary: #dcdcdc;
+  --scrollbar-thumb: #dcdcdc;
+  --scrollbar-thumb-hover: #cfcfcf;
+
+  --text-primary: #1a1a1a;
+  --text-secondary: #444444;
+  --text-muted: #666666;
+  --text-dim: #888888;
+
+  --accent-primary: #9b59b6; /* パープル */
+  --accent-modified: #ffb6c1; /* ライトピンク */
+  --accent-error: #dc3545;
+  --accent-warning: #ffc107;
+
+  --selection-glow: rgba(155, 89, 182, 0.3);
+  --accent-primary-dim: rgba(155, 89, 182, 0.05);
+  --selection-bg: rgba(155, 89, 182, 0.08);
+  --bg-hover: rgba(0, 0, 0, 0.03);
 }
 
 *,
