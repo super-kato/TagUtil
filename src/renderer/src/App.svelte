@@ -9,8 +9,13 @@
   import { logRepository } from '@renderer/infrastructure/repositories/log-repository';
   import { onMount } from 'svelte';
   import { logStore } from './stores/log-store.svelte';
+  import { themeStore } from './stores/theme-store.svelte';
 
   onMount(() => logRepository.subscribe((log) => logStore.addLog(log)));
+
+  $effect(() => {
+    document.documentElement.dataset.theme = themeStore.current;
+  });
 </script>
 
 <KeyboardShortcuts />

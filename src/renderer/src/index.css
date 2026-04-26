@@ -50,6 +50,33 @@
   --focus-glow: 0 0 6px var(--selection-glow);
 }
 
+:root[data-theme='pop'] {
+  --bg-body: #0f0c29;
+  --bg-main: #24243e;
+  --bg-inspector: #302b63;
+  --bg-header: #24243e;
+  --bg-secondary: #3b3b5c;
+
+  --border-primary: #5c5c8a;
+  --border-secondary: #7a7ab5;
+
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0ff;
+  --text-muted: #aaaacc;
+  --text-dim: #8888aa;
+
+  --accent-primary: #00f2ff; /* シアン */
+  --accent-modified: #ff00ff; /* マゼンタ */
+  --accent-error: #ff4d4d;
+  --accent-warning: #ffcc00;
+  --accent-info: #00ffcc;
+
+  --selection-glow: #00f2ffcc;
+  --accent-primary-dim: #00f2ff33;
+  --selection-bg: #ffffff1a;
+  --bg-hover: #ffffff10;
+}
+
 *,
 *::before,
 *::after {

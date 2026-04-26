@@ -1,9 +1,10 @@
 <script lang="ts">
-  import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from '@lucide/svelte';
+  import { Disc3, FilePen, FolderOpen, Palette, RotateCcw, Save, Tag } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { fileActions } from '@renderer/services/file-actions';
   import { tagActions } from '@renderer/services/tag-actions';
   import { modalStore } from '@renderer/stores/modal-store.svelte';
+  import { themeStore } from '@renderer/stores/theme-store.svelte';
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
 
@@ -47,6 +48,13 @@
       title="Open Directory"
     >
       <FolderOpen size={UI_TOKENS.icons.size} />
+    </button>
+    <button
+      class="btn secondary"
+      onclick={() => themeStore.toggleTheme()}
+      title="Toggle Theme"
+    >
+      <Palette size={UI_TOKENS.icons.size} />
     </button>
     <div class="divider"></div>
     <button
