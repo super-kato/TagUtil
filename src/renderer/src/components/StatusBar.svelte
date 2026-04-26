@@ -73,9 +73,7 @@
             <ICON size={UI_TOKENS.icons.size} />
           {/if}
           <span class="log-message">
-            {#if displayState.context}
-              <span class="log-context">[{displayState.context}]</span>
-            {/if}
+            <span class="log-context">[{displayState.context}]</span>
             {displayState.message}
           </span>
         </div>
@@ -102,9 +100,7 @@
               <ICON size={UI_TOKENS.icons.sizeSmall} />
             </div>
             <span class="log-text" use:tooltip={log.message}>
-              {#if log.context}
-                <span class="log-context">[{log.context}]</span>
-              {/if}
+              <span class="log-context">[{log.context}]</span>
               {log.message}
             </span>
           </div>
