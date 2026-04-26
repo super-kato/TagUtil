@@ -159,12 +159,10 @@
 
   .status-item.error {
     color: var(--accent-error);
-    font-weight: 600;
   }
 
   .status-item.warn {
     color: var(--accent-warning);
-    font-weight: 500;
   }
 
   .status-item.ready {
