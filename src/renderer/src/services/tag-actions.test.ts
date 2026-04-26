@@ -200,13 +200,13 @@ describe('tagActions', () => {
   });
 
   describe('error and edge cases', () => {
-    it('スキャンエラー時にエラーをログに記録すること', async () => {
+    it('スキャンエラー時にレンダラー側でログを重複して記録しないこと', async () => {
       const error: TagError = { type: 'SCAN_FAILED', options: { path: '/dir' } };
       vi.mocked(tagRepository.loadTracksFromPaths).mockResolvedValue(failure(error));
 
       await tagActions.loadFromPaths(['/dir']);
 
-      expect(logStore.addError).toHaveBeenCalled();
+      expect(logStore.addError).not.toHaveBeenCalled();
     });
 
     it('スキャン件数制限を超えた場合に警告をログに記録すること', async () => {
@@ -221,24 +221,24 @@ describe('tagActions', () => {
       );
     });
 
-    it('一括保存エラー時にエラーを記録すること', async () => {
+    it('一括保存エラー時にレンダラー側でログを重複して記録しないこと', async () => {
       const error: TagError = { type: 'WRITE_FAILED', options: { path: 'a.flac' } };
       vi.mocked(tagRepository.saveTracks).mockResolvedValue(failure(error));
       trackStore.tracks = [new TrackRecord('a.flac', {})];
-      trackStore.tracks[0].metadata.title = 'New'; // 変更ありにする
+      trackStore.tracks[0].metadata.title = 'New';
 
       await tagActions.saveAllModified();
 
-      expect(logStore.addError).toHaveBeenCalled();
+      expect(logStore.addError).not.toHaveBeenCalled();
     });
 
-    it('画像選択エラー時にエラーを記録すること', async () => {
+    it('画像選択エラー時にレンダラー側でログを重複して記録しないこと', async () => {
       const error: TagError = { type: 'PICK_IMAGE_FAILED', options: { path: '' } };
       vi.spyOn(tagRepository, 'pickImage').mockResolvedValue(failure(error));
 
       await tagActions.pickAndApplyPicture();
 
-      expect(logStore.addError).toHaveBeenCalled();
+      expect(logStore.addError).not.toHaveBeenCalled();
     });
   });
 });

@@ -8,7 +8,6 @@ import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
 import { tagEditor } from './tag-editor';
-import { formatTagError } from '@domain/flac/tag-error-formatter';
 
 /**
  * スキャン処理の共通的なフローを制御するヘルパー関数。
@@ -22,7 +21,6 @@ const handleScanOperation = async (
     const result = await operation();
 
     if (result.type === 'error') {
-      logStore.addError({ message: formatTagError(result.error), context: 'TagActions' });
       return;
     }
     if (!result.value) {
@@ -92,7 +90,6 @@ const removeSelectedMultiFieldValue = (key: EditableMultiKey, value: string): vo
 const pickAndApplyPicture = async (): Promise<void> => {
   const result = await tagRepository.pickImage();
   if (result.type === 'error') {
-    logStore.addError({ message: formatTagError(result.error), context: 'TagActions' });
     return;
   }
   if (result.value) {
@@ -106,7 +103,6 @@ const pickAndApplyPicture = async (): Promise<void> => {
 const applyPictureFromPath = async (path: string): Promise<void> => {
   const result = await tagRepository.getImageInfo(path);
   if (result.type === 'error') {
-    logStore.addError({ message: formatTagError(result.error), context: 'TagActions' });
     return;
   }
   if (result.value) {
@@ -172,7 +168,6 @@ const saveAllModified = async (): Promise<void> => {
     const result = await tagRepository.saveTracks(rawData);
 
     if (result.type === 'error') {
-      logStore.addError({ message: formatTagError(result.error), context: 'TagActions' });
       return;
     }
 
