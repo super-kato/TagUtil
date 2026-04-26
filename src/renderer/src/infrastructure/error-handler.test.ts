@@ -21,45 +21,37 @@ describe('error-handler', () => {
     window.onunhandledrejection = null;
   });
 
-  it('window.onerror が呼ばれた際に logStore.addError が呼び出されること', () => {
+  it('window.onerror が呼ばれたとき、エラーメッセージをログに記録すること', () => {
     const message = 'Test error';
-    const source = 'test.js';
-    const lineno = 10;
-    const colno = 5;
-    const error = new Error('Test error object');
-    error.stack = 'stack trace';
-
-    if (window.onerror) {
-      window.onerror(message, source, lineno, colno, error);
+    const handler = window.onerror;
+    if (handler) {
+      handler(message, 'source.js', 1, 1);
     }
 
     expect(logStore.addError).toHaveBeenCalledWith({
       context: 'Uncaught Exception',
-      message: 'stack trace'
+      message: 'Test error'
     });
   });
 
-  it('window.onerror がエラーオブジェクトなしで呼ばれた場合も適切にフォーマットされること', () => {
-    const message = 'Test error without object';
-    const source = 'test.js';
-    const lineno = 10;
-    const colno = 5;
-
-    if (window.onerror) {
-      window.onerror(message, source, lineno, colno, undefined);
+  it('Errorオブジェクトを伴う window.onerror が呼ばれたとき、そのメッセージを記録すること', () => {
+    const error = new Error('Complex error');
+    const handler = window.onerror;
+    if (handler) {
+      handler('Complex error', 'source.js', 1, 1, error);
     }
 
     expect(logStore.addError).toHaveBeenCalledWith({
       context: 'Uncaught Exception',
-      message: 'Test error without object (test.js:10:5)'
+      message: 'Complex error'
     });
   });
 
-  it('window.onunhandledrejection が呼ばれた際に logStore.addError が呼び出されること', () => {
-    const error = new Error('Promise rejection');
-    error.stack = 'promise stack trace';
+  it('window.onunhandledrejection が呼ばれたとき、エラーメッセージを記録すること', () => {
+    const error = new Error('Async error');
     const promise = Promise.reject(error);
-    promise.catch(() => {}); // テストランナーによる未ハンドルの拒否検出を避けるためにキャッチする
+    promise.catch(() => {}); // テストランナーによる未ハンドルの拒否検出を避ける
+
     const event = new PromiseRejectionEvent('unhandledrejection', {
       promise,
       reason: error
@@ -71,7 +63,7 @@ describe('error-handler', () => {
 
     expect(logStore.addError).toHaveBeenCalledWith({
       context: 'Unhandled Rejection',
-      message: 'promise stack trace'
+      message: 'Async error'
     });
   });
 

@@ -6,7 +6,7 @@ import { formatLogTime } from '@shared/utils/date';
 /**
  * ロガーに渡されるオプション引数。
  */
-export type LoggerOptions = Omit<LogParams, 'level'>;
+type LoggerOptions = Omit<LogParams, 'level'>;
 
 /**
  * アプリケーション全体のログ管理を行うクラス。

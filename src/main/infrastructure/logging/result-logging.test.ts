@@ -44,10 +44,7 @@ describe('result-logging', () => {
 
       await withResultLogging('test-ctx', task, paths);
 
-      expect(logger.info).toHaveBeenCalledWith(
-        { context: 'test-ctx', message: '' },
-        paths
-      );
+      expect(logger.info).toHaveBeenCalledWith({ context: 'test-ctx', message: '' }, paths);
     });
 
     it('処理が失敗（Error型を返却）した場合、エラーログを出力すること', async () => {
