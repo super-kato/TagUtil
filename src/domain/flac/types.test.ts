@@ -6,18 +6,6 @@ describe('flac types', () => {
   const options = { path: '/test.flac', detail: 'error' };
 
   describe('appErrors', () => {
-    it('fileNotFound が正しい AppError を生成すること', () => {
-      const error = appErrors.fileNotFound(options);
-      expect(error.type).toBe('FILE_NOT_FOUND');
-      expect(error.options).toEqual(options);
-    });
-
-    it('permissionDenied が正しい AppError を生成すること', () => {
-      const error = appErrors.permissionDenied(options);
-      expect(error.type).toBe('PERMISSION_DENIED');
-      expect(error.options).toEqual(options);
-    });
-
     it('parseFailed が正しい AppError を生成すること', () => {
       const error = appErrors.parseFailed(options);
       expect(error.type).toBe('PARSE_FAILED');
@@ -44,7 +32,7 @@ describe('flac types', () => {
 
     it('全ての APP_ERROR_TYPES が網羅されていること (型レベルの確認を補完)', () => {
       APP_ERROR_TYPES.forEach((type) => {
-        // type が "FILE_NOT_FOUND" 形式なので、キャメルケースに変換してチェック
+        // type が "PARSE_FAILED" 形式なので、キャメルケースに変換してチェック
         const camelCaseType = type.toLowerCase().replace(/_([a-z])/g, (_, g) => g.toUpperCase());
         const key = camelCaseType.charAt(0).toLowerCase() + camelCaseType.slice(1);
 

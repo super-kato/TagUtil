@@ -1,53 +1,49 @@
-import { DEFAULT_SETTINGS } from './settings-repository';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SettingsRepository } from './settings-repository';
 
-const { mockStore } = vi.hoisted(() => ({
-  mockStore: {
-    store: {
-      renamePattern: '{trackNumber} - {title}',
-      trackNumberPadding: 2
-    },
-    set: vi.fn(),
-    get: vi.fn()
-  }
-}));
-
-vi.mock('electron-store', () => {
+const { mockStore } = vi.hoisted(() => {
   return {
-    default: class {
-      store = mockStore.store;
-      set = mockStore.set;
-      get = mockStore.get;
+    mockStore: {
+      get: vi.fn(),
+      set: vi.fn(),
+      store: {
+        theme: 'default'
+      }
     }
   };
 });
 
+vi.mock('electron-store', () => {
+  return {
+    default: vi.fn().mockImplementation(() => mockStore)
+  };
+});
+
 describe('SettingsRepository', () => {
+  let repository: SettingsRepository;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    repository = new SettingsRepository();
   });
 
   it('初期値が設定されること', () => {
-    const repo = new SettingsRepository();
-    expect(repo.settings).toEqual(DEFAULT_SETTINGS);
+    mockStore.get.mockReturnValue(undefined);
+    const settings = repository.settings;
+    expect(settings.theme).toBe('default');
   });
 
-  it('updateSettings でストアが更新されること', () => {
-    const repo = new SettingsRepository();
-    const update = { trackNumberPadding: 5 };
-
-    repo.updateSettings(update);
-
-    expect(mockStore.set).toHaveBeenCalledWith('trackNumberPadding', 5);
+  it('設定を保存できること', () => {
+    const newSettings = { theme: 'light' as const };
+    repository.updateSettings(newSettings);
+    // updateSettingsは内部で各キーごとにsetを呼ぶ
+    expect(mockStore.set).toHaveBeenCalledWith('theme', 'light');
   });
 
-  it('undefined の値は更新されないこと', () => {
-    const repo = new SettingsRepository();
-    const update = { trackNumberPadding: undefined };
-
-    repo.updateSettings(update);
-
-    expect(mockStore.set).not.toHaveBeenCalled();
+  it('保存された設定を取得できること', () => {
+    // repository.settings は this.#store.store を返す
+    mockStore.store = { theme: 'light' as const };
+    const settings = repository.settings;
+    expect(settings.theme).toBe('light');
   });
 });

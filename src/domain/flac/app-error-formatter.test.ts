@@ -6,10 +6,10 @@ describe('エラーフォーマッター', () => {
   describe('formatAppError', () => {
     it('AppError オブジェクトを適切に翻訳すること', () => {
       const error: AppError = {
-        type: 'FILE_NOT_FOUND',
+        type: 'WRITE_FAILED',
         options: { path: 'test.flac' }
       };
-      expect(formatAppError(error)).toBe('File not found');
+      expect(formatAppError(error)).toBe('Failed to write metadata');
     });
 
     it('AppError に詳細情報がある場合、それを含めること', () => {

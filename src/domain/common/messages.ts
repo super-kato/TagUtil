@@ -1,5 +1,5 @@
 /**
- * アプリケーション内で使用される共通メッセージの定義。
+ * アプリケーション共通のメッセージ定義。
  */
 export const MESSAGES = {
   /** スキャン件数制限に達した場合の警告メッセージ */
@@ -7,8 +7,6 @@ export const MESSAGES = {
 
   /** アプリケーションにおけるエラーメッセージ */
   APP_ERRORS: {
-    FILE_NOT_FOUND: 'File not found',
-    PERMISSION_DENIED: 'Permission denied',
     PARSE_FAILED: 'Failed to parse metadata',
     WRITE_FAILED: 'Failed to write metadata',
     SCAN_FAILED: 'Failed to scan directory',

@@ -4,7 +4,6 @@ import { appErrors } from '@domain/flac/errors';
 import { FlacTrack } from '@domain/flac/models';
 import * as readerImpl from 'music-metadata';
 import { toAppResultFailure } from '@main/utils/error-handler';
-import { ensureFileExists } from '@main/utils/fs';
 import { mapToFlacMetadata, toRawFlacData } from './mappers/flac-read-mapper';
 import { RawFlacData } from './types';
 
@@ -15,7 +14,6 @@ import { RawFlacData } from './types';
  */
 export const readMetadata = async (filePath: string): Promise<AppResult<FlacTrack>> => {
   try {
-    await ensureFileExists(filePath);
     const rawData = await readRawData(filePath);
     const metadata = mapToFlacMetadata(rawData, filePath);
     return success({ path: filePath, metadata });

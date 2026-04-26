@@ -1,18 +1,12 @@
 import { APP_ERROR_TYPES } from './constants';
 
 /**
- * アプリケーションにおけるエラー種別のリテラル型。
- * 判別共用体 (Discriminated Union) の識別に利用します。
- */
-export type AppErrorType = (typeof APP_ERROR_TYPES)[number];
-
-/**
- * アプリケーションにおけるエラーの付随情報（メタデータ）。
+ * AppError 生成時に指定可能なオプション。
  */
 export interface AppErrorOptions {
-  /** 対象となったファイルやディレクトリのパス */
-  path: string;
-  /** 追加の詳細メッセージ（例: OSのエラーメッセージ、ライブラリの例外内容） */
+  /** エラーが発生した対象ファイルのパス */
+  path?: string;
+  /** エラーの詳細情報（スタックトレースやライブラリエラーなど） */
   detail?: string;
 }
 
@@ -20,8 +14,6 @@ export interface AppErrorOptions {
  * アプリケーションにおける詳細なエラー定義（判別共用体）。
  */
 export type AppError =
-  | { type: 'FILE_NOT_FOUND'; options: AppErrorOptions }
-  | { type: 'PERMISSION_DENIED'; options: AppErrorOptions }
   | { type: 'PARSE_FAILED'; options: AppErrorOptions }
   | { type: 'WRITE_FAILED'; options: AppErrorOptions }
   | { type: 'SCAN_FAILED'; options: AppErrorOptions }
@@ -33,7 +25,7 @@ export type AppError =
  * AppError を生成する共通のファクトリ関数。
  */
 const createFactory =
-  (type: AppErrorType) =>
+  (type: (typeof APP_ERROR_TYPES)[number]) =>
   (options: AppErrorOptions): AppError =>
     ({
       type,
@@ -41,15 +33,17 @@ const createFactory =
     }) as AppError;
 
 /**
- * AppError かどうかの型ガード
+ * 指定されたオブジェクトが AppError 型であるかどうかを判定するガード関数。
  */
 export const isAppError = (error: unknown): error is AppError => {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+  const candidate = error as Record<string, unknown>;
   return (
-    !!error &&
-    typeof error === 'object' &&
-    'type' in error &&
-    'options' in error &&
-    typeof (error as { options: unknown }).options === 'object'
+    typeof candidate.type === 'string' &&
+    typeof candidate.options === 'object' &&
+    candidate.options !== null
   );
 };
 
@@ -57,8 +51,6 @@ export const isAppError = (error: unknown): error is AppError => {
  * 型安全にエラーオブジェクトを生成するためのファクトリ。
  */
 export const appErrors = {
-  fileNotFound: createFactory('FILE_NOT_FOUND'),
-  permissionDenied: createFactory('PERMISSION_DENIED'),
   parseFailed: createFactory('PARSE_FAILED'),
   writeFailed: createFactory('WRITE_FAILED'),
   scanFailed: createFactory('SCAN_FAILED'),
