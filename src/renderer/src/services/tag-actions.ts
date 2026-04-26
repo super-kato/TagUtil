@@ -7,6 +7,7 @@ import { logStore } from '@renderer/stores/log-store.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
+import { pooledAll } from '@renderer/utils/concurrency';
 import { tagEditor } from './tag-editor';
 
 /**
@@ -136,15 +137,19 @@ const revertSelected = async (): Promise<void> => {
   uiState.startLoading();
 
   try {
-    for (const track of modifiedSelected) {
+    const tasks = modifiedSelected.map((track) => async () => {
       const result = await tagRepository.readMetadata(track.path);
-      if (result.type === 'error') {
-        break;
-      }
+      return { track, result };
+    });
 
-      // 取得したドメインモデルを UI モデルに反映
-      track.metadata = result.value.metadata;
-      track.markAsSaved();
+    const results = await pooledAll(tasks);
+
+    for (const { track, result } of results) {
+      if (result.type === 'success') {
+        // 取得したドメインモデルを UI モデルに反映
+        track.metadata = result.value.metadata;
+        track.markAsSaved();
+      }
     }
   } finally {
     uiState.stopLoading();
@@ -165,14 +170,13 @@ const saveAllModified = async (): Promise<void> => {
   try {
     // インフラ層に渡すためにドメインモデルの配列に整形
     const rawData = modified.map((t) => t.toFlacTrack());
-    const result = await tagRepository.saveTracks(rawData);
+    const { successes } = await tagRepository.saveTracks(rawData);
 
-    if (result.type === 'error') {
-      return;
-    }
-
+    const successPaths = new Set(successes);
     for (const track of modified) {
-      track.markAsSaved();
+      if (successPaths.has(track.path)) {
+        track.markAsSaved();
+      }
     }
   } finally {
     uiState.stopLoading();

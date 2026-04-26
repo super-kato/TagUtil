@@ -63,6 +63,9 @@ describe('writer', () => {
       const result = await writeMetadata(mockTrack);
 
       expect(result.type).toBe('success');
+      if (result.type === 'success') {
+        expect(result.value).toBe(mockTrack.path);
+      }
       expect(withAtomicWrite).toHaveBeenCalled();
     });
 

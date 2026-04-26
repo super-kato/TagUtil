@@ -68,7 +68,7 @@ describe('tag-repository', () => {
 
   describe('saveTracks', () => {
     it('全てのトラックに対して保存を試行すること', async () => {
-      vi.mocked(window.api.writeMetadata).mockResolvedValue(success(undefined));
+      vi.mocked(window.api.writeMetadata).mockImplementation(async (track) => success(track.path));
       const tracks: FlacTrack[] = [
         { path: 'a.flac', metadata: {} },
         { path: 'b.flac', metadata: {} }
@@ -76,19 +76,20 @@ describe('tag-repository', () => {
 
       const result = await tagRepository.saveTracks(tracks);
 
-      expect(result.type).toBe('success');
+      expect(result.successes).toHaveLength(2);
+      expect(result.errors).toHaveLength(0);
       expect(window.api.writeMetadata).toHaveBeenCalledTimes(2);
     });
 
-    it('一部が失敗しても全ての保存を試行し、最初のエラーを返すこと', async () => {
+    it('一部が失敗しても全ての保存を試行し、エラーを集約すること', async () => {
       const error: AppError = {
         type: 'WRITE_FAILED',
         options: { path: 'b.flac' }
       };
       vi.mocked(window.api.writeMetadata)
-        .mockResolvedValueOnce(success(undefined))
+        .mockResolvedValueOnce(success('a.flac'))
         .mockResolvedValueOnce(failure(error))
-        .mockResolvedValueOnce(success(undefined));
+        .mockResolvedValueOnce(success('c.flac'));
 
       const tracks: FlacTrack[] = [
         { path: 'a.flac', metadata: {} },
@@ -98,7 +99,9 @@ describe('tag-repository', () => {
 
       const result = await tagRepository.saveTracks(tracks);
 
-      expect(result.type).toBe('error');
+      expect(result.successes).toEqual(['a.flac', 'c.flac']);
+      expect(result.errors).toHaveLength(1);
+      expect(result.errors[0].path).toBe('b.flac');
       // 一つが失敗しても全てのトラックに対して書き込みを試行する
       expect(window.api.writeMetadata).toHaveBeenCalledTimes(3);
     });
