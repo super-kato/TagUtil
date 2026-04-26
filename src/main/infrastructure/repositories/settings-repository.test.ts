@@ -1,4 +1,4 @@
-import { DEFAULT_SETTINGS } from '@shared/settings';
+import { DEFAULT_SETTINGS } from './settings-repository';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SettingsRepository } from './settings-repository';
 

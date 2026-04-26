@@ -1,8 +1,13 @@
 import { failure, success } from '@domain/common/result';
-import { TAG_PLACEHOLDERS } from '@shared/constants/placeholders';
 import { ValuesOf } from '@shared/types';
 import { sanitize } from '@shared/utils/filename';
-import { tagErrors, type FlacMetadata, type FlacTrack, type TagResult } from './types';
+import {
+  TAG_PLACEHOLDERS,
+  tagErrors,
+  type FlacMetadata,
+  type FlacTrack,
+  type TagResult
+} from './types';
 
 type ResolverOptions = { trackNumberPadding: number };
 

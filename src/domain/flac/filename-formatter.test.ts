@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formatFlacFilename } from './filename-formatter';
-import { TAG_PLACEHOLDERS } from '@shared/constants/placeholders';
+import { TAG_PLACEHOLDERS } from './types';
 import type { FlacTrack } from './types';
 
 describe('filename-formatter', () => {
