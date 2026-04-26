@@ -1,3 +1,5 @@
+import { TAG_PLACEHOLDERS } from './constants/placeholders';
+
 /**
  * アプリケーションのユーザー設定の型定義。
  */
@@ -11,7 +13,7 @@ export interface AppSettings {
 /**
  * デフォルトの設定値。
  */
-export const DEFAULT_SETTINGS = {
-  renamePattern: '{trackNumber} - {title}',
+export const DEFAULT_SETTINGS: AppSettings = {
+  renamePattern: `${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`,
   trackNumberPadding: 2
-} as const satisfies AppSettings;
+};

@@ -1,15 +1,20 @@
 import { failure, success } from '@domain/common/result';
+import { TAG_PLACEHOLDERS } from '@shared/constants/placeholders';
 import { ValuesOf } from '@shared/types';
 import { sanitize } from '@shared/utils/filename';
-import {
-  TAG_PLACEHOLDERS,
-  tagErrors,
-  type FlacMetadata,
-  type FlacTrack,
-  type TagResult
-} from './types';
+import { tagErrors, type FlacMetadata, type FlacTrack, type TagResult } from './types';
 
 type ResolverOptions = { trackNumberPadding: number };
+
+/**
+ * リネーム生成のオプション。
+ */
+export interface FormatOptions {
+  /** リネームパターン（例: "{trackNumber} - {title}"） */
+  pattern: string;
+  /** トラック番号のパディング桁数 */
+  trackNumberPadding: number;
+}
 
 /**
  * 各プレースホルダのリゾルバ関数の定義。
@@ -30,21 +35,17 @@ const PLACEHOLDER_RESOLVERS: Record<
 /**
  * メタデータに基づいてFLACのファイル名を生成します。
  * @param track トラック情報
- * @param pattern リネームパターン（例: "{trackNumber} - {title}"）
- * @param trackNumberPadding トラック番号のパディング桁数
+ * @param options 生成オプション
  */
-export const formatFlacFilename = (
-  track: FlacTrack,
-  pattern: string,
-  trackNumberPadding: number
-): TagResult<string> => {
+export const formatFlacFilename = (track: FlacTrack, options: FormatOptions): TagResult<string> => {
   const { metadata } = track;
+  const { pattern, trackNumberPadding } = options;
   let filename = pattern;
 
+  const placeholders = Object.values(TAG_PLACEHOLDERS) as ValuesOf<typeof TAG_PLACEHOLDERS>[];
+
   // パターンに少なくとも1つのプレースホルダが含まれているかチェック
-  const hasPlaceholder = Object.keys(PLACEHOLDER_RESOLVERS).some((placeholder) =>
-    pattern.includes(placeholder)
-  );
+  const hasPlaceholder = placeholders.some((placeholder) => pattern.includes(placeholder));
 
   if (!hasPlaceholder) {
     return failure(tagErrors.invalidRenamePattern({ path: track.path }));
@@ -52,11 +53,12 @@ export const formatFlacFilename = (
 
   // 置換処理とバリデーション
   // パターンに含まれるすべてのプレースホルダについて、値が存在するかチェックする
-  for (const [placeholder, resolver] of Object.entries(PLACEHOLDER_RESOLVERS)) {
+  for (const placeholder of placeholders) {
     if (!pattern.includes(placeholder)) {
       continue;
     }
 
+    const resolver = PLACEHOLDER_RESOLVERS[placeholder];
     const value = resolver(metadata, { trackNumberPadding });
 
     // 値が空（または未定義）の場合はエラー

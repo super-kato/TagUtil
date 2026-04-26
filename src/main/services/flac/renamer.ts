@@ -36,7 +36,10 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<TagR
  */
 export const resolveRenamedPath = (track: FlacTrack): TagResult<string> => {
   const { renamePattern, trackNumberPadding } = settingsRepository.settings;
-  const filenameResult = formatFlacFilename(track, renamePattern, trackNumberPadding);
+  const filenameResult = formatFlacFilename(track, {
+    pattern: renamePattern,
+    trackNumberPadding
+  });
   if (filenameResult.type === 'error') {
     return filenameResult;
   }

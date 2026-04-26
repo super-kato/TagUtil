@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { formatFlacFilename } from './filename-formatter';
-import { TAG_PLACEHOLDERS, type FlacTrack } from './types';
+import { TAG_PLACEHOLDERS } from '@shared/constants/placeholders';
+import type { FlacTrack } from './types';
 
 describe('filename-formatter', () => {
   const createMockTrack = (
@@ -28,7 +29,10 @@ describe('filename-formatter', () => {
   describe('formatFlacFilename', () => {
     it('トラック番号とタイトルがある場合、正しくフォーマットされること', () => {
       const track = createMockTrack('1', 'Song Title');
-      const result = formatFlacFilename(track, DEFAULT_PATTERN, DEFAULT_PADDING);
+      const result = formatFlacFilename(track, {
+        pattern: DEFAULT_PATTERN,
+        trackNumberPadding: DEFAULT_PADDING
+      });
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -38,7 +42,10 @@ describe('filename-formatter', () => {
 
     it('トラック番号が2桁以上の場合、そのまま表示されること', () => {
       const track = createMockTrack('12', 'Longer Track');
-      const result = formatFlacFilename(track, DEFAULT_PATTERN, DEFAULT_PADDING);
+      const result = formatFlacFilename(track, {
+        pattern: DEFAULT_PATTERN,
+        trackNumberPadding: DEFAULT_PADDING
+      });
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -48,7 +55,7 @@ describe('filename-formatter', () => {
 
     it('カスタムパディングが適用されること', () => {
       const track = createMockTrack('1', 'Song Title');
-      const result = formatFlacFilename(track, DEFAULT_PATTERN, 3);
+      const result = formatFlacFilename(track, { pattern: DEFAULT_PATTERN, trackNumberPadding: 3 });
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -58,11 +65,10 @@ describe('filename-formatter', () => {
 
     it('アルバム名を含むカスタムパターンが機能すること', () => {
       const track = createMockTrack('1', 'Title', 'My Album');
-      const result = formatFlacFilename(
-        track,
-        `${TAG_PLACEHOLDERS.ALBUM} - ${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`,
-        2
-      );
+      const result = formatFlacFilename(track, {
+        pattern: `${TAG_PLACEHOLDERS.ALBUM} - ${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`,
+        trackNumberPadding: 2
+      });
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -72,11 +78,10 @@ describe('filename-formatter', () => {
 
     it('複数値のアーティストが正しく結合されること', () => {
       const track = createMockTrack('1', 'Title', undefined, ['Artist A', 'Artist B']);
-      const result = formatFlacFilename(
-        track,
-        `${TAG_PLACEHOLDERS.ARTIST} - ${TAG_PLACEHOLDERS.TITLE}`,
-        2
-      );
+      const result = formatFlacFilename(track, {
+        pattern: `${TAG_PLACEHOLDERS.ARTIST} - ${TAG_PLACEHOLDERS.TITLE}`,
+        trackNumberPadding: 2
+      });
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -86,7 +91,10 @@ describe('filename-formatter', () => {
 
     it('メタデータに禁止文字が含まれる場合、サニタイズされること', () => {
       const track = createMockTrack('1', 'What?');
-      const result = formatFlacFilename(track, DEFAULT_PATTERN, DEFAULT_PADDING);
+      const result = formatFlacFilename(track, {
+        pattern: DEFAULT_PATTERN,
+        trackNumberPadding: DEFAULT_PADDING
+      });
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -96,7 +104,10 @@ describe('filename-formatter', () => {
 
     it('トラック番号が欠損しているがパターンに含まれていない場合、成功すること', () => {
       const track = createMockTrack(undefined, 'Title Only');
-      const result = formatFlacFilename(track, TAG_PLACEHOLDERS.TITLE, 2);
+      const result = formatFlacFilename(track, {
+        pattern: TAG_PLACEHOLDERS.TITLE,
+        trackNumberPadding: 2
+      });
 
       expect(result.type).toBe('success');
       if (result.type === 'success') {
@@ -106,7 +117,10 @@ describe('filename-formatter', () => {
 
     it('パターンに含まれるトラック番号が欠損している場合、エラーを返却すること', () => {
       const track = createMockTrack(undefined, 'Title');
-      const result = formatFlacFilename(track, DEFAULT_PATTERN, DEFAULT_PADDING);
+      const result = formatFlacFilename(track, {
+        pattern: DEFAULT_PATTERN,
+        trackNumberPadding: DEFAULT_PADDING
+      });
 
       expect(result.type).toBe('error');
       if (result.type === 'error') {
@@ -117,7 +131,10 @@ describe('filename-formatter', () => {
 
     it('パターンに含まれるタイトルが欠損している場合、エラーを返却すること', () => {
       const track = createMockTrack('1', undefined);
-      const result = formatFlacFilename(track, DEFAULT_PATTERN, DEFAULT_PADDING);
+      const result = formatFlacFilename(track, {
+        pattern: DEFAULT_PATTERN,
+        trackNumberPadding: DEFAULT_PADDING
+      });
 
       expect(result.type).toBe('error');
       if (result.type === 'error') {
@@ -128,11 +145,10 @@ describe('filename-formatter', () => {
 
     it('パターンにアルバム名が欠損している場合、エラーを返却すること', () => {
       const track = createMockTrack('1', 'Title', undefined);
-      const result = formatFlacFilename(
-        track,
-        `${TAG_PLACEHOLDERS.ALBUM} - ${TAG_PLACEHOLDERS.TITLE}`,
-        2
-      );
+      const result = formatFlacFilename(track, {
+        pattern: `${TAG_PLACEHOLDERS.ALBUM} - ${TAG_PLACEHOLDERS.TITLE}`,
+        trackNumberPadding: 2
+      });
 
       expect(result.type).toBe('error');
       if (result.type === 'error') {
@@ -143,7 +159,10 @@ describe('filename-formatter', () => {
 
     it('パターンに一つもタグが含まれていない場合、エラーを返却すること', () => {
       const track = createMockTrack('1', 'Title');
-      const result = formatFlacFilename(track, 'fixed-filename', 2);
+      const result = formatFlacFilename(track, {
+        pattern: 'fixed-filename',
+        trackNumberPadding: 2
+      });
 
       expect(result.type).toBe('error');
       if (result.type === 'error') {

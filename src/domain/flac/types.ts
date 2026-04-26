@@ -1,4 +1,5 @@
 import type { Result } from '@domain/common/result';
+import { TAG_PLACEHOLDERS } from '@shared/constants/placeholders';
 
 /**
  * FLACファイルの技術情報（STREAMINFO）。
@@ -179,18 +180,11 @@ export const tagErrors = {
   /** リネームパターンが無効な場合（タグが含まれていない等）のエラー */
   invalidRenamePattern: createFactory('INVALID_RENAME_PATTERN')
 } as const;
-
 /**
  * リネームパターンで使用されるプレースホルダの定義。
+ * 実態は shared/constants/placeholders に定義されています。
  */
-export const TAG_PLACEHOLDERS = {
-  TRACK_NUMBER: '{trackNumber}',
-  TITLE: '{title}',
-  ALBUM: '{album}',
-  ARTIST: '{artist}',
-  YEAR: '{year}',
-  GENRE: '{genre}'
-} as const;
+export { TAG_PLACEHOLDERS };
 
 /**
  * タグ取得・更新操作の戻り値型。
