@@ -170,9 +170,10 @@ const saveAllModified = async (): Promise<void> => {
 
     const successPaths = new Set(successes);
     for (const track of modified) {
-      if (successPaths.has(track.path)) {
-        track.markAsSaved();
+      if (!successPaths.has(track.path)) {
+        continue;
       }
+      track.markAsSaved();
     }
   } finally {
     uiState.stopLoading();
