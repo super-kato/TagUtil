@@ -25,7 +25,7 @@ const enterHandler = new KeyboardHandler(IS_MAC, [
  * Enterキーが押された際、入力欄からフォーカスを外します。
  */
 export const handleEnterKey = (e: KeyboardEvent): void => {
-  void enterHandler.handle(e);
+  enterHandler.handle(e);
 };
 
 /**
