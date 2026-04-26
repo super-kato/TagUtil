@@ -1,6 +1,7 @@
 import type { LogHandler } from '@domain/common/log';
 import type { FlacTrack, Picture, ScanResult, TagResult } from '@domain/flac/types';
 import type { Platform } from './platform';
+import type { AppSettings } from './settings';
 import type { Unsubscribe } from './types';
 
 /**
@@ -31,7 +32,11 @@ export const IPC_CHANNELS = {
   /** ログメッセージの通知 */
   ON_LOG_MESSAGE: 'app:on-log-message',
   /** 実行環境のプラットフォームを取得 */
-  GET_PLATFORM: 'app:get-platform'
+  GET_PLATFORM: 'app:get-platform',
+  /** アプリケーション設定の取得 */
+  GET_SETTINGS: 'app:get-settings',
+  /** アプリケーション設定の更新 */
+  UPDATE_SETTINGS: 'app:update-settings'
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -60,6 +65,10 @@ export interface IpcApi {
   getPathForFile: (file: File) => string;
   /** 実行環境のプラットフォームを取得します */
   getPlatform: () => Promise<Platform>;
+  /** アプリケーション設定を取得します */
+  getSettings: () => Promise<AppSettings>;
+  /** アプリケーション設定を更新します */
+  updateSettings: (settings: Partial<AppSettings>) => Promise<void>;
   /** ログメッセージを受信した時のコールバックを登録します */
   onLogMessage: (callback: LogHandler) => Unsubscribe;
 }

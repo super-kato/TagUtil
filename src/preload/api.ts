@@ -57,6 +57,8 @@ export const api: IpcApi = {
    */
   getPathForFile: (file: File) => webUtils.getPathForFile(file),
   getPlatform: () => ipcRenderer.invoke(IPC_CHANNELS.GET_PLATFORM),
+  getSettings: () => ipcRenderer.invoke(IPC_CHANNELS.GET_SETTINGS),
+  updateSettings: (settings) => ipcRenderer.invoke(IPC_CHANNELS.UPDATE_SETTINGS, settings),
   /**
    * ログメッセージを受信した時のコールバックを登録します。
    * @param callback ログメッセージを受け取るコールバック
