@@ -28,12 +28,13 @@ export const withResultLogging = async <R extends TagResult<unknown>>(
 
   if (result.type === 'success') {
     logger.info({ context, message });
-  } else {
-    const errorMessage = message
-      ? `${message}: ${formatTagError(result.error)}`
-      : formatTagError(result.error);
-    logger.warn({ context, message: errorMessage });
+    return result;
   }
+
+  const errorMessage = message
+    ? `${message}: ${formatTagError(result.error)}`
+    : formatTagError(result.error);
+  logger.warn({ context, message: errorMessage });
 
   return result;
 };
