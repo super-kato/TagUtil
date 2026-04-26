@@ -41,7 +41,7 @@
   </div>
   <div class="actions">
     <button
-      class="btn secondary"
+      class="btn"
       onclick={tagActions.openAndScanDirectory}
       disabled={uiState.isLoading}
       title="Open Directory"
@@ -50,7 +50,7 @@
     </button>
     <div class="divider"></div>
     <button
-      class="btn secondary"
+      class="btn"
       onclick={handleRenameClick}
       disabled={!canRename}
       title="Rename Files from Metadata"
