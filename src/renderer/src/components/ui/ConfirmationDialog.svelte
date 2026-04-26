@@ -2,7 +2,6 @@
   import { Check, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { modalStore } from '@renderer/stores/modal-store.svelte';
-  import { tooltip } from '@renderer/utils/tooltip';
   import Modal from './Modal.svelte';
 </script>
 
@@ -26,7 +25,7 @@
       <button
         class="btn cancel"
         onclick={() => modalStore.handleCancel()}
-        use:tooltip={'Cancel'}
+        title="Cancel"
         aria-label="Cancel"
       >
         <X size={UI_TOKENS.icons.size} />
@@ -34,7 +33,7 @@
       <button
         class="btn confirm glow-pulse"
         onclick={() => modalStore.handleConfirm()}
-        use:tooltip={'Confirm'}
+        title="Confirm"
         aria-label="Confirm"
       >
         <Check size={UI_TOKENS.icons.size} />

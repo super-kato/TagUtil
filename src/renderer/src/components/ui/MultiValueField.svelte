@@ -3,7 +3,6 @@
   import type { Snippet } from 'svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { handleEnterToBlur } from '@renderer/components/inspector/tag-field-handlers';
-  import { tooltip } from '@renderer/utils/tooltip';
 
   interface Props {
     label: string;
@@ -47,7 +46,7 @@
       type="button"
       class="icon-button add-button no-hover-glow"
       onclick={onAdd}
-      use:tooltip={'Add value'}
+      title="Add value"
     >
       <Plus size={UI_TOKENS.icons.size} />
     </button>
@@ -68,7 +67,7 @@
             type="button"
             class="icon-button remove-button no-hover-glow"
             onclick={() => onRemove(value)}
-            use:tooltip={'Remove from all tracks'}
+            title="Remove from all tracks"
           >
             <X size={UI_TOKENS.icons.size} />
           </button>
@@ -101,7 +100,7 @@
             type="button"
             class="icon-button remove-button no-hover-glow"
             onclick={() => onRemove(value)}
-            use:tooltip={'Remove value'}
+            title="Remove value"
           >
             <X size={UI_TOKENS.icons.size} />
           </button>

@@ -3,7 +3,6 @@
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
-  import { tooltip } from '@renderer/utils/tooltip';
 
   interface Props {
     label: string;
@@ -76,7 +75,7 @@
           type="button"
           class="remove-btn no-hover-glow"
           onclick={() => onRemove(val)}
-          use:tooltip={isUniform ? 'Remove' : 'Remove from all tracks'}
+          title={isUniform ? 'Remove' : 'Remove from all tracks'}
         >
           <X size={UI_TOKENS.icons.sizeSmall} strokeWidth={UI_TOKENS.icons.strokeBold} />
         </button>

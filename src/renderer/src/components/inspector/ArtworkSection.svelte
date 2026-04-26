@@ -5,7 +5,6 @@
   import { tagActions } from '@renderer/services/tag-actions';
   import { trackStore } from '@renderer/stores/track-store.svelte';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
-  import { tooltip } from '@renderer/utils/tooltip';
 
   let imageLoadError = $state(false);
 
@@ -48,7 +47,7 @@
     onkeydown={(e) => handler.handle(e)}
     role="button"
     tabindex="0"
-    use:tooltip={'Click to change artwork'}
+    title="Click to change artwork"
   >
     {#if trackStore.commonImageUrl && !imageLoadError}
       <img
@@ -60,7 +59,7 @@
       <button
         class="remove-artwork no-hover-glow"
         onclick={handleRemoveArtwork}
-        use:tooltip={'Remove Artwork'}
+        title="Remove Artwork"
       >
         <X size={UI_TOKENS.icons.size} />
       </button>

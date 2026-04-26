@@ -6,7 +6,6 @@
   import { IS_MAC } from '@renderer/constants/platform';
   import { logStore } from '@renderer/stores/log-store.svelte';
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
-  import { tooltip } from '@renderer/utils/tooltip';
   import { formatLogTime } from '@shared/utils/date';
   import { onDestroy, type Component } from 'svelte';
   import { slide } from 'svelte/transition';
