@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { trackStore } from '@renderer/stores/track-store.svelte';
+import { uiState } from '@renderer/stores/ui-state.svelte';
+import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { tagActions } from './tag-actions';
 import { tagEditor } from './tag-editor';
 import type { FlacMetadata } from '@domain/flac/types';
@@ -13,6 +15,7 @@ describe('tagActions', () => {
     vi.clearAllMocks();
     // 全てのテストで共通の selectedTracks を提供
     vi.spyOn(trackStore, 'selectedTracks', 'get').mockReturnValue(mockTracks);
+    vi.spyOn(trackStore, 'tracks', 'get').mockReturnValue(mockTracks);
   });
 
   describe('applySelectedMultiFieldChange', () => {
@@ -53,6 +56,71 @@ describe('tagActions', () => {
       tagActions.removeSelectedMultiFieldValue('artist', 'Remove Me');
 
       expect(removeSpy).toHaveBeenCalledWith(mockTracks, 'artist', 'Remove Me');
+    });
+  });
+
+  describe('revertSelected', () => {
+    it('変更がある選択中トラックを元に戻すこと', async () => {
+      const track = mockTracks[0];
+      track.metadata.title = 'Modified';
+      expect(track.isModified).toBe(true);
+
+      const startLoadingSpy = vi.spyOn(uiState, 'startLoading');
+      const stopLoadingSpy = vi.spyOn(uiState, 'stopLoading');
+      const readMetadataSpy = vi.spyOn(tagRepository, 'readMetadata').mockResolvedValue({
+        type: 'success',
+        value: { path: track.path, metadata: { title: 'Original' } }
+      });
+
+      await tagActions.revertSelected();
+
+      expect(startLoadingSpy).toHaveBeenCalled();
+      expect(readMetadataSpy).toHaveBeenCalledWith(track.path);
+      expect(track.metadata.title).toBe('Original');
+      expect(track.isModified).toBe(false);
+      expect(stopLoadingSpy).toHaveBeenCalled();
+    });
+
+    it('変更がない場合は何もしないこと', async () => {
+      const track = mockTracks[0];
+      track.markAsSaved();
+      const readMetadataSpy = vi.spyOn(tagRepository, 'readMetadata');
+
+      await tagActions.revertSelected();
+
+      expect(readMetadataSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('saveAllModified', () => {
+    it('変更がある全トラックを保存すること', async () => {
+      const track = mockTracks[0];
+      track.metadata.title = 'New Title';
+      expect(track.isModified).toBe(true);
+
+      const startLoadingSpy = vi.spyOn(uiState, 'startLoading');
+      const stopLoadingSpy = vi.spyOn(uiState, 'stopLoading');
+      const saveTracksSpy = vi.spyOn(tagRepository, 'saveTracks').mockResolvedValue({
+        type: 'success',
+        value: undefined
+      });
+
+      await tagActions.saveAllModified();
+
+      expect(startLoadingSpy).toHaveBeenCalled();
+      expect(saveTracksSpy).toHaveBeenCalledWith([track.toFlacTrack()]);
+      expect(track.isModified).toBe(false);
+      expect(stopLoadingSpy).toHaveBeenCalled();
+    });
+
+    it('変更がない場合は保存処理をスキップすること', async () => {
+      const track = mockTracks[0];
+      track.markAsSaved();
+      const saveTracksSpy = vi.spyOn(tagRepository, 'saveTracks');
+
+      await tagActions.saveAllModified();
+
+      expect(saveTracksSpy).not.toHaveBeenCalled();
     });
   });
 });
