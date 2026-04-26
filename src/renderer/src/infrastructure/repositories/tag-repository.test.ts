@@ -86,7 +86,9 @@ describe('tag-repository', () => {
       };
       vi.mocked(window.api.writeMetadata)
         .mockResolvedValueOnce(success(undefined))
-        .mockResolvedValueOnce(failure(error));
+        .mockResolvedValueOnce(failure(error))
+        .mockResolvedValueOnce(success(undefined)); // 3番目も呼ばれる（同時実行制限内のため）
+
       const tracks: FlacTrack[] = [
         { path: 'a.flac', metadata: {} },
         { path: 'b.flac', metadata: {} },
@@ -96,7 +98,9 @@ describe('tag-repository', () => {
       const result = await tagRepository.saveTracks(tracks);
 
       expect(result.type).toBe('error');
-      expect(window.api.writeMetadata).toHaveBeenCalledTimes(2);
+      // 同時実行制限 (DEFAULT_CONCURRENCY=20) により、3つとも呼び出されるが、
+      // 内部のフラグ管理によりそれ以上の追加は抑制される（このテストケースでは3つすべて実行される）
+      expect(window.api.writeMetadata).toHaveBeenCalledTimes(3);
     });
   });
 });

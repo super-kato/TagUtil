@@ -1,5 +1,6 @@
 import { success } from '@domain/common/result';
 import type { FlacTrack, Picture, TagResult } from '@domain/flac/types';
+import { pooledAll } from '@renderer/utils/concurrency';
 
 /**
  * 楽曲データ（FLACタグ）の物理的な読み書きを担当するリポジトリ。
@@ -19,8 +20,9 @@ const loadTracksFromPaths = async (
   }
 
   const { paths: filePaths, isLimited } = scanResult.value;
-  const loadPromises = filePaths.map((path) => readMetadata(path));
-  const results = await Promise.all(loadPromises);
+
+  // 同時実行数を制限してメタデータを読み込む
+  const results = await pooledAll(filePaths.map((path) => () => readMetadata(path)));
 
   const tracks: FlacTrack[] = [];
   for (const result of results) {
@@ -43,13 +45,24 @@ const scanAndLoadTracks = async (): Promise<
 };
 
 const saveTracks = async (tracks: FlacTrack[]): Promise<TagResult<void>> => {
-  for (const track of tracks) {
-    const result = await window.api.writeMetadata(track);
-    if (result.type === 'error') {
-      return result;
+  let firstError: TagResult<void> | null = null;
+
+  const tasks = tracks.map((track) => async () => {
+    // すでにエラーが発生している場合は、新たな書き込みを行わない
+    if (firstError) {
+      return success(undefined);
     }
-  }
-  return success(undefined);
+
+    const result = await window.api.writeMetadata(track);
+    if (result.type === 'error' && !firstError) {
+      firstError = result;
+    }
+    return result;
+  });
+
+  await pooledAll(tasks);
+
+  return firstError ?? success(undefined);
 };
 
 const pickImage = async (): Promise<TagResult<Picture | null>> => {
