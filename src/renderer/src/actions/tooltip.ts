@@ -18,24 +18,17 @@ export const tooltip: Action<HTMLElement, string | undefined> = (node, text) => 
   const anchorName = `${ANCHOR_PREFIX}${generateId()}`;
 
   const show = (): void => {
-    if (!currentText || showTimer) {
+    const textToShow = currentText;
+    if (!textToShow || showTimer) {
       return;
     }
 
     showTimer = setTimeout(() => {
       // 自身のアンカー名を設定し、Store を更新して表示を依頼
       node.style.setProperty(ANCHOR_PROPERTY, anchorName);
-      tooltipStore.show(currentText!, anchorName);
+      tooltipStore.show(textToShow, anchorName);
       showTimer = undefined;
     }, SHOW_DELAY);
-  };
-
-  const hide = (): void => {
-    if (showTimer) {
-      clearTimeout(showTimer);
-      showTimer = undefined;
-    }
-    tooltipStore.hide();
   };
 
   const handleUpdate = (newText: string | undefined): void => {
@@ -50,6 +43,14 @@ export const tooltip: Action<HTMLElement, string | undefined> = (node, text) => 
       return;
     }
 
+    tooltipStore.hide();
+  };
+
+  const hide = (): void => {
+    if (showTimer) {
+      clearTimeout(showTimer);
+      showTimer = undefined;
+    }
     tooltipStore.hide();
   };
 

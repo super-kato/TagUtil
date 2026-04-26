@@ -1,6 +1,7 @@
 <script lang="ts">
   import type { LogLevel } from '@domain/common/log';
   import { ChevronUp, CircleAlert, Info, TriangleAlert, type LucideProps } from '@lucide/svelte';
+  import { tooltip } from '@renderer/actions/tooltip';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/constants/platform';
   import { logStore } from '@renderer/stores/log-store.svelte';
