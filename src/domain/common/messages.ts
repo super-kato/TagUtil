@@ -3,7 +3,7 @@
  */
 export const MESSAGES = {
   /** スキャン件数制限に達した場合の警告メッセージ */
-  SCAN_LIMIT_EXCEEDED: 'Scan limit (500 items) reached. Some files were skipped.',
+  SCAN_LIMIT_EXCEEDED: 'Scan limit reached. Some files were skipped.',
 
   /** タグ操作に関連するエラーメッセージ */
   TAG_ERRORS: {

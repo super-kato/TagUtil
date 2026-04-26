@@ -11,7 +11,7 @@ import { determinePathType, resolvePaths } from './path-resolver';
  * スキャンするファイルの最大件数。
  * パフォーマンスとメモリの観点から制限を設けます。
  */
-const MAX_SCAN_FILES = 500;
+const MAX_SCAN_FILES = 300;
 
 /**
  * 探索処理の状態を管理するコンテキスト。

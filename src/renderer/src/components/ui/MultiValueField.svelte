@@ -59,7 +59,7 @@
           <input
             type="text"
             {value}
-            onchange={(e) => handleDivergentUpdate(value, e)}
+            oninput={(e) => handleDivergentUpdate(value, e)}
             onkeydown={handleEnterToBlur}
             placeholder="Value"
           />
@@ -93,7 +93,7 @@
             type="text"
             {value}
             placeholder={i === 0 && children ? '' : placeholder}
-            onblur={(e) => handleUpdate(i, e)}
+            oninput={(e) => handleUpdate(i, e)}
             onkeydown={handleEnterToBlur}
           />
           <button
