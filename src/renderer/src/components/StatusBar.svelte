@@ -81,7 +81,7 @@
         <div class="status-item ready">
           <span>Ready</span>
         </div>
-      /if}
+      {/if}
     </div>
 
     <div class="expand-icon" class:is-expanded={isExpanded}>
