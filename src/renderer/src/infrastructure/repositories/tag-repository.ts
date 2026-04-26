@@ -21,7 +21,6 @@ const loadTracksFromPaths = async (
 
   const { paths: filePaths, isLimited } = scanResult.value;
 
-  // 同時実行数を制限してメタデータを読み込む
   const results = await pooledAll(filePaths.map((path) => () => readMetadata(path)));
 
   const tracks: FlacTrack[] = [];
