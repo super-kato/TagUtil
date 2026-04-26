@@ -62,6 +62,27 @@ describe('tooltip action', () => {
 
     node.dispatchEvent(new MouseEvent('mouseleave'));
     vi.advanceTimersByTime(SHOW_DELAY);
+    expect(showSpy).not.toHaveBeenCalled();
+  });
+
+  it('テキストが更新された場合、次の表示に反映されること', () => {
+    const showSpy = vi.spyOn(tooltipStore, 'show');
+    const action = tooltip(node, 'Old Text') as { update: (t: string) => void };
+
+    action.update('New Text');
+    node.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(SHOW_DELAY);
+
+    expect(showSpy).toHaveBeenCalledWith('New Text', expect.any(String));
+  });
+
+  it('destroy 時にイベントリスナーが解除されること', () => {
+    const showSpy = vi.spyOn(tooltipStore, 'show');
+    const action = tooltip(node, 'Test') as { destroy: () => void };
+
+    action.destroy();
+    node.dispatchEvent(new MouseEvent('mouseenter'));
+    vi.advanceTimersByTime(SHOW_DELAY);
 
     expect(showSpy).not.toHaveBeenCalled();
   });

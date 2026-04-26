@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { trackStore } from '@renderer/stores/track-store.svelte';
 import { uiState } from '@renderer/stores/ui-state.svelte';
+import { selectionState } from '@renderer/stores/selection-state.svelte';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { tagActions } from './tag-actions';
 import { tagEditor } from './tag-editor';
@@ -13,9 +14,10 @@ describe('tagActions', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // 全てのテストで共通の selectedTracks を提供
-    vi.spyOn(trackStore, 'selectedTracks', 'get').mockReturnValue(mockTracks);
-    vi.spyOn(trackStore, 'tracks', 'get').mockReturnValue(mockTracks);
+    // ストアの実体を使用し、状態をセットアップ
+    trackStore.tracks = [...mockTracks];
+    selectionState.items.clear();
+    mockTracks.forEach((t) => selectionState.items.add(t));
   });
 
   describe('applySelectedMultiFieldChange', () => {
@@ -121,6 +123,53 @@ describe('tagActions', () => {
       await tagActions.saveAllModified();
 
       expect(saveTracksSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('openAndScanDirectory', () => {
+    it('リポジトリを呼び出し、取得したトラックをストアに保存すること', async () => {
+      const startLoadingSpy = vi.spyOn(uiState, 'startLoading');
+      const stopLoadingSpy = vi.spyOn(uiState, 'stopLoading');
+      const scanSpy = vi.spyOn(tagRepository, 'scanAndLoadTracks').mockResolvedValue({
+        type: 'success',
+        value: { tracks: [{ path: 'test.flac', metadata: { title: 'Test' } }], isLimited: false }
+      });
+
+      await tagActions.openAndScanDirectory();
+
+      expect(startLoadingSpy).toHaveBeenCalled();
+      expect(scanSpy).toHaveBeenCalled();
+      expect(trackStore.tracks.length).toBe(1);
+      expect(trackStore.tracks[0].path).toBe('test.flac');
+      expect(stopLoadingSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('pickAndApplyPicture', () => {
+    it('画像を選択し、エディタを介して適用すること', async () => {
+      const picture = { format: 'image/jpeg', sourcePath: 'img.jpg', hash: 'h' };
+      vi.spyOn(tagRepository, 'pickImage').mockResolvedValue({ type: 'success', value: picture });
+      const applySpy = vi.spyOn(tagEditor, 'applyPicture');
+
+      await tagActions.pickAndApplyPicture();
+
+      expect(applySpy).toHaveBeenCalledWith(mockTracks, picture);
+    });
+  });
+
+  describe('applyAutoNumbering', () => {
+    it('エディタの自動採番を呼び出すこと', () => {
+      const applySpy = vi.spyOn(tagEditor, 'applyAutoNumbering');
+      tagActions.applyAutoNumbering();
+      expect(applySpy).toHaveBeenCalledWith(mockTracks);
+    });
+  });
+
+  describe('removeArtwork', () => {
+    it('エディタの画像削除を呼び出すこと', () => {
+      const removeSpy = vi.spyOn(tagEditor, 'removePicture');
+      tagActions.removeArtwork();
+      expect(removeSpy).toHaveBeenCalledWith(mockTracks);
     });
   });
 });
