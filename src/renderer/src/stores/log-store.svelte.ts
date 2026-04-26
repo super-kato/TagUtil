@@ -1,4 +1,4 @@
-import { createLogMessage, type LogMessage } from '@domain/common/log';
+import { createLogMessage, type LogMessage, type LogParams } from '@domain/common/log';
 
 const DEFAULT_MAX_LOGS = 100;
 
@@ -33,20 +33,18 @@ class LogStore {
 
   /**
    * レンダラープロセス側で発生したエラーをログに追加します。
-   * @param context コンテキスト
-   * @param message エラーメッセージ
+   * @param params ログパラメータ
    */
-  addError(context: string, message: string): void {
-    this.addLog(createLogMessage('ERROR', context, message));
+  addError(params: Omit<LogParams, 'level'>): void {
+    this.addLog(createLogMessage({ ...params, level: 'ERROR' }));
   }
 
   /**
    * レンダラープロセス側で発生した警告をログに追加します。
-   * @param context コンテキスト
-   * @param message 警告メッセージ
+   * @param params ログパラメータ
    */
-  addWarn(context: string, message: string): void {
-    this.addLog(createLogMessage('WARN', context, message));
+  addWarn(params: Omit<LogParams, 'level'>): void {
+    this.addLog(createLogMessage({ ...params, level: 'WARN' }));
   }
 }
 

@@ -22,17 +22,17 @@ export const withResultLogging = async <R extends TagResult<unknown>>(
   try {
     result = await task();
   } catch (error: unknown) {
-    logger.error(context, formatTagError(error));
+    logger.error({ context, message: formatTagError(error) });
     throw error;
   }
 
   if (result.type === 'success') {
-    logger.info(context, message);
+    logger.info({ context, message });
   } else {
     const errorMessage = message
       ? `${message}: ${formatTagError(result.error)}`
       : formatTagError(result.error);
-    logger.warn(context, errorMessage);
+    logger.warn({ context, message: errorMessage });
   }
 
   return result;
