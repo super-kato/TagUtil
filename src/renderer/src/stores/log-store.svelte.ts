@@ -2,6 +2,9 @@ import { createLogMessage, type LogMessage, type LogParams } from '@domain/commo
 
 const DEFAULT_MAX_LOGS = 100;
 
+/** ログ追加時のオプション（レベルを除くパラメータ） */
+type LogOptions = Omit<LogParams, 'level'>;
+
 /**
  * レンダラープロセス側のログを保持するストア。
  * 最新100件までのログを保持します。
@@ -32,19 +35,19 @@ class LogStore {
   }
 
   /**
-   * レンダラープロセス側で発生したエラーをログに追加します。
-   * @param params ログパラメータ
+   * エラーログを追加します。
+   * @param options ログオプション
    */
-  addError(params: Omit<LogParams, 'level'>): void {
-    this.addLog(createLogMessage({ ...params, level: 'ERROR' }));
+  addError(options: LogOptions): void {
+    this.addLog(createLogMessage({ ...options, level: 'ERROR' }));
   }
 
   /**
-   * レンダラープロセス側で発生した警告をログに追加します。
-   * @param params ログパラメータ
+   * 警告ログを追加します。
+   * @param options ログオプション
    */
-  addWarn(params: Omit<LogParams, 'level'>): void {
-    this.addLog(createLogMessage({ ...params, level: 'WARN' }));
+  addWarn(options: LogOptions): void {
+    this.addLog(createLogMessage({ ...options, level: 'WARN' }));
   }
 }
 
