@@ -239,6 +239,14 @@
     background-color: var(--bg-hover);
   }
 
+  .log-entry.warn:hover {
+    background-color: var(--accent-warning-hover);
+  }
+
+  .log-entry.error:hover {
+    background-color: var(--accent-error-hover);
+  }
+
   .log-time {
     color: var(--text-dim);
     flex-shrink: 0;

@@ -35,6 +35,8 @@
   --accent-error-dim: #ff3b301a;
   --accent-warning-dim: #ff9f0a1a;
   --accent-info-dim: #4de8001a;
+  --accent-error-hover: #ff3b3033;
+  --accent-warning-hover: #ff9f0a33;
 
   /* 角丸 */
   --radius-sm: 4px;
