@@ -1,3 +1,6 @@
+/**
+ * @vitest-environment jsdom
+ */
 import { success } from '@domain/common/result';
 import { settingsRepository } from '@renderer/infrastructure/repositories/settings-repository';
 import type { AppSettings } from '@shared/settings';
@@ -8,11 +11,20 @@ import { SettingsStore } from './settings-store.svelte';
 describe('SettingsStore', () => {
   const mockSettings: AppSettings = {
     renamePattern: '{trackNumber} - {title}',
-    trackNumberPadding: 2
+    trackNumberPadding: 2,
+    theme: 'default'
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // window.api の最小限のモック
+    Object.defineProperty(window, 'api', {
+      value: {
+        getSettings: vi.fn().mockResolvedValue(success(mockSettings)),
+        updateSettings: vi.fn().mockResolvedValue(success(undefined))
+      },
+      configurable: true
+    });
   });
 
   it('初期状態は undefined であり、コンストラクタで refresh が呼ばれること', async () => {

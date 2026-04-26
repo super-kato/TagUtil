@@ -1,9 +1,7 @@
-import { MESSAGES } from './messages';
-
 /**
  * アプリケーション共通のメッセージ定義。
  */
-export const COMMON_MESSAGES = {
+export const MESSAGES = {
   /** アプリケーションにおけるエラーメッセージ */
   APP_ERRORS: {
     PARSE_FAILED: 'Failed to parse metadata',
@@ -13,18 +11,6 @@ export const COMMON_MESSAGES = {
     MISSING_REQUIRED_TAG: 'Missing required tag for renaming',
     INVALID_RENAME_PATTERN: 'Invalid rename pattern (must contain at least one tag)'
   },
-
-  /** 成功メッセージ */
-  SUCCESS: {
-    SAVED: 'Successfully saved metadata',
-    RENAMED: 'Successfully renamed file'
-  },
-
-  /** 確認ダイアログ等 */
-  CONFIRM: {
-    SAVE_CHANGES: 'Save changes to the file?',
-    UNSAVED_CHANGES: 'There are unsaved changes. Do you want to discard them?'
-  }
+  /** その他警告メッセージ */
+  SCAN_LIMIT_EXCEEDED: 'Too many files found. Only the first 1000 files were loaded.'
 } as const;
-
-export const APP_MESSAGES = MESSAGES;

@@ -36,7 +36,7 @@ describe('エラーフォーマッター', () => {
         options: { path: 'test.flac' }
       };
       // 型定義上はあり得ないが、実行時の安全性のためのテスト
-      expect(formatAppError(unknownError as unknown as AppError)).toBe('Unknown error');
+      expect(formatAppError(unknownError)).toBe('Unknown error');
     });
   });
 });

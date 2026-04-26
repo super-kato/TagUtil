@@ -28,10 +28,26 @@ export type AppError =
  */
 const createFactory =
   (type: (typeof APP_ERROR_TYPES)[number]) =>
-  (options: AppErrorOptions = {}): AppError => ({
-    type,
-    options
-  }) as AppError;
+  (options: AppErrorOptions = {}): AppError =>
+    ({
+      type,
+      options
+    }) as AppError;
+
+/**
+ * 指定されたオブジェクトが AppError 型であるかどうかを判定するガード関数。
+ */
+export const isAppError = (error: unknown): error is AppError => {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+  const candidate = error as Record<string, unknown>;
+  return (
+    typeof candidate.type === 'string' &&
+    typeof candidate.options === 'object' &&
+    candidate.options !== null
+  );
+};
 
 /**
  * 型安全にエラーオブジェクトを生成するためのファクトリ。
