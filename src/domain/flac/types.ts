@@ -1,11 +1,6 @@
 import type { Result } from '@domain/common/result';
 import type { TagError } from './errors';
 
-// 再エクスポート（既存コードへの影響を最小限にするため）
-export * from './models';
-export * from './constants';
-export * from './errors';
-
 /**
  * ディレクトリのスキャン結果を表すインターフェース。
  */

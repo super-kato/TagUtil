@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { createImageUrl } from './image';
 import { IMAGE_PROTOCOL_SCHEME } from '@shared/ipc';
-import type { Picture } from '@domain/flac/types';
+import type { Picture } from '@domain/flac/models';
 
 describe('createImageUrl', () => {
   it('正しい Picture オブジェクトからカスタムプロトコルURLを生成すること', () => {

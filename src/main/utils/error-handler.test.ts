@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { hasErrorCode, toTagResultFailure } from './error-handler';
-import { tagErrors } from '@domain/flac/types';
+import { tagErrors } from '@domain/flac/errors';
 
 describe('error-handler', () => {
   afterEach(() => {

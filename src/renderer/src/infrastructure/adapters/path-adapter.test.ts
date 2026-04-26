@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { generateNewPath } from './path-adapter';
 import { success } from '@domain/common/result';
-import type { FlacTrack } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/models';
 
 describe('path-adapter', () => {
   beforeEach(() => {

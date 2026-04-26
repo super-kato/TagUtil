@@ -1,13 +1,10 @@
 import { failure, success } from '@domain/common/result';
 import { ValuesOf } from '@shared/types';
 import { sanitize } from '@shared/utils/filename';
-import {
-  TAG_PLACEHOLDERS,
-  tagErrors,
-  type FlacMetadata,
-  type FlacTrack,
-  type TagResult
-} from './types';
+import { TAG_PLACEHOLDERS } from './constants';
+import { tagErrors } from './errors';
+import type { TagResult } from './types';
+import type { FlacMetadata, FlacTrack } from './models';
 
 type ResolverOptions = { trackNumberPadding: number };
 
@@ -43,28 +40,23 @@ const PLACEHOLDER_RESOLVERS: Record<
  * @param options 生成オプション
  */
 export const formatFlacFilename = (track: FlacTrack, options: FormatOptions): TagResult<string> => {
-  const { metadata } = track;
-  const { pattern, trackNumberPadding } = options;
-  let filename = pattern;
-
   const placeholders = Object.values(TAG_PLACEHOLDERS) as ValuesOf<typeof TAG_PLACEHOLDERS>[];
 
   // パターンに少なくとも1つのプレースホルダが含まれているかチェック
-  const hasPlaceholder = placeholders.some((placeholder) => pattern.includes(placeholder));
-
+  const hasPlaceholder = placeholders.some((placeholder) => options.pattern.includes(placeholder));
   if (!hasPlaceholder) {
     return failure(tagErrors.invalidRenamePattern({ path: track.path }));
   }
 
   // 置換処理とバリデーション
-  // パターンに含まれるすべてのプレースホルダについて、値が存在するかチェックする
+  let filename = options.pattern;
   for (const placeholder of placeholders) {
-    if (!pattern.includes(placeholder)) {
+    if (!filename.includes(placeholder)) {
       continue;
     }
 
     const resolver = PLACEHOLDER_RESOLVERS[placeholder];
-    const value = resolver(metadata, { trackNumberPadding });
+    const value = resolver(track.metadata, { trackNumberPadding: options.trackNumberPadding });
 
     // 値が空（または未定義）の場合はエラー
     if (!value || value.toString().trim() === '') {

@@ -1,5 +1,5 @@
 import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
-import { FlacMetadata, Picture } from '@domain/flac/types';
+import { FlacMetadata, Picture } from '@domain/flac/models';
 import type * as readerImpl from 'music-metadata';
 import { computeMd5 } from '@main/utils/crypto';
 import { RawFlacData, RawPicture } from '@services/flac/types';

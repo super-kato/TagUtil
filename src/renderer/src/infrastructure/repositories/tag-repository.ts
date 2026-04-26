@@ -1,5 +1,6 @@
 import { success } from '@domain/common/result';
-import type { FlacTrack, Picture, TagResult } from '@domain/flac/types';
+import type { TagResult } from '@domain/flac/types';
+import type { FlacTrack, Picture } from '@domain/flac/models';
 import { pooledAll } from '@renderer/utils/concurrency';
 
 /**

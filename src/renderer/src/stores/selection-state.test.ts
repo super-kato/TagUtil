@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { selectionState } from './selection-state.svelte';
 import { TrackRecord } from './track-record.svelte';
-import type { FlacMetadata } from '@domain/flac/types';
+import type { FlacMetadata } from '@domain/flac/models';
 
 describe('SelectionState', () => {
   const m1: FlacMetadata = { title: 'T1' };

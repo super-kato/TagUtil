@@ -1,6 +1,7 @@
 import { MESSAGES } from '@domain/common/messages';
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
-import type { FlacTrack, TagResult } from '@domain/flac/types';
+import type { TagResult } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/models';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { logStore } from '@renderer/stores/log-store.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
@@ -27,7 +28,7 @@ const handleScanOperation = async (
     trackStore.tracks = rawTracks.map((t) => new TrackRecord(t.path, t.metadata));
 
     if (isLimited) {
-      logStore.addWarn(MESSAGES.SCAN_LIMIT_EXCEEDED);
+      logStore.addWarn({ message: MESSAGES.SCAN_LIMIT_EXCEEDED, context: 'TagActions' });
     }
   } finally {
     uiState.stopLoading();

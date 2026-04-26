@@ -1,6 +1,6 @@
 import type { LogHandler, LogMessage } from '@domain/common/log';
 
-import type { FlacTrack } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/models';
 import type { IpcApi } from '@shared/ipc';
 import { IPC_CHANNELS } from '@shared/ipc';
 import type { AppSettings } from '@shared/settings';

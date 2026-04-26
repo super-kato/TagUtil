@@ -2,7 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { trackStore } from './track-store.svelte';
 import { selectionState } from './selection-state.svelte';
 import { TrackRecord } from './track-record.svelte';
-import { DEFAULT_GENRES, type FlacMetadata } from '@domain/flac/types';
+import { DEFAULT_GENRES } from '@domain/flac/constants';
+import type { FlacMetadata } from '@domain/flac/models';
 
 import * as imageUtils from '@renderer/utils/image';
 

@@ -1,6 +1,6 @@
 import Store from 'electron-store';
 import type { AppSettings } from '@shared/settings';
-import { TAG_PLACEHOLDERS } from '@domain/flac/types';
+import { TAG_PLACEHOLDERS } from '@domain/flac/constants';
 
 /**
  * アプリケーションのデフォルト設定値。
@@ -36,9 +36,10 @@ export class SettingsRepository {
    */
   updateSettings(settings: Partial<AppSettings>): void {
     for (const [key, value] of Object.entries(settings)) {
-      if (value !== undefined && value !== null) {
-        this.#store.set(key, value);
+      if (value === undefined || value === null) {
+        continue;
       }
+      this.#store.set(key, value);
     }
   }
 }

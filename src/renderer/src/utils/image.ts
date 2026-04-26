@@ -1,4 +1,4 @@
-import type { Picture } from '@domain/flac/types';
+import type { Picture } from '@domain/flac/models';
 import { IMAGE_PROTOCOL_SCHEME } from '@shared/ipc';
 
 /**

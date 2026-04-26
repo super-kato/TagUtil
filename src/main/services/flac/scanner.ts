@@ -1,6 +1,7 @@
 import { success } from '@domain/common/result';
 import { ResolvedPath } from '@domain/common/system';
-import { ScanResult, tagErrors, TagResult } from '@domain/flac/types';
+import { ScanResult, TagResult } from '@domain/flac/types';
+import { tagErrors } from '@domain/flac/errors';
 import { readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { toTagResultFailure } from '@main/utils/error-handler';

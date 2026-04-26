@@ -1,4 +1,4 @@
-import { FlacTrack } from '@domain/flac/types';
+import { FlacTrack } from '@domain/flac/models';
 import { withResultLogging } from '@main/infrastructure/logging/result-logging';
 import { getImageInfo, pickImage } from '@services/flac/image';
 import { readMetadata } from '@services/flac/reader';

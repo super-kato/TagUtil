@@ -1,4 +1,4 @@
-import { Picture } from '@domain/flac/types';
+import { Picture } from '@domain/flac/models';
 import { FlacTags } from 'flac-tagger';
 import fs from 'fs/promises';
 import { RawFlacData } from '@services/flac/types';

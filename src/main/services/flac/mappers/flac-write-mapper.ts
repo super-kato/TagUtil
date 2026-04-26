@@ -1,4 +1,4 @@
-import { FlacMetadata } from '@domain/flac/types';
+import { FlacMetadata } from '@domain/flac/models';
 import { FlacTagMap, FlacTags } from 'flac-tagger';
 import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
 import { RawFlacData } from '@services/flac/types';

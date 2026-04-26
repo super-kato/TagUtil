@@ -1,5 +1,7 @@
 import { success } from '@domain/common/result';
-import { tagErrors, TagResult, type FlacTrack } from '@domain/flac/types';
+import { TagResult } from '@domain/flac/types';
+import { tagErrors } from '@domain/flac/errors';
+import type { FlacTrack } from '@domain/flac/models';
 import { formatFlacFilename } from '@domain/flac/filename-formatter';
 import path from 'path';
 import fs from 'fs/promises';

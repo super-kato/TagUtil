@@ -1,5 +1,7 @@
 import { success } from '@domain/common/result';
-import { FlacTrack, tagErrors, TagResult } from '@domain/flac/types';
+import { TagResult } from '@domain/flac/types';
+import { tagErrors } from '@domain/flac/errors';
+import { FlacTrack } from '@domain/flac/models';
 import * as readerImpl from 'music-metadata';
 import { toTagResultFailure } from '@main/utils/error-handler';
 import { ensureFileExists } from '@main/utils/fs';

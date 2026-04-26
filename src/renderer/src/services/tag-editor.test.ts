@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { tagEditor } from './tag-editor';
-import type { FlacMetadata } from '@domain/flac/types';
+import type { FlacMetadata } from '@domain/flac/models';
 
 describe('tagEditor', () => {
   const createMockTrack = (path: string, genre: string[] = []): TrackRecord => {

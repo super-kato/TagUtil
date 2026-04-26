@@ -1,5 +1,6 @@
 import { failure } from '@domain/common/result';
-import { TagError, TagErrorOptions, TagResult } from '@domain/flac/types';
+import { TagResult } from '@domain/flac/types';
+import { TagError, TagErrorOptions } from '@domain/flac/errors';
 
 /**
  * 指定されたエラーコードを持つエラーオブジェクトかどうかを判定します（Type Guard）。

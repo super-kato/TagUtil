@@ -6,7 +6,7 @@ import { selectionState } from '@renderer/stores/selection-state.svelte';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { tagActions } from './tag-actions';
 import { tagEditor } from './tag-editor';
-import type { FlacMetadata } from '@domain/flac/types';
+import type { FlacMetadata } from '@domain/flac/models';
 
 describe('tagActions', () => {
   const metadata: FlacMetadata = { title: 'T' };

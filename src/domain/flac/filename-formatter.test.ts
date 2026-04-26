@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { formatFlacFilename } from './filename-formatter';
-import { TAG_PLACEHOLDERS } from './types';
-import type { FlacTrack } from './types';
+import { TAG_PLACEHOLDERS } from './constants';
+import type { FlacTrack } from './models';
 
 describe('filename-formatter', () => {
   const createMockTrack = (
