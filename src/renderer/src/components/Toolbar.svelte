@@ -1,6 +1,5 @@
 <script lang="ts">
   import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from '@lucide/svelte';
-  import { tooltip } from '@renderer/actions/tooltip';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { fileActions } from '@renderer/services/file-actions';
   import { tagActions } from '@renderer/services/tag-actions';
@@ -45,7 +44,7 @@
       class="btn secondary"
       onclick={tagActions.openAndScanDirectory}
       disabled={uiState.isLoading}
-      use:tooltip={'Open Directory'}
+      title="Open Directory"
     >
       <FolderOpen size={UI_TOKENS.icons.size} />
     </button>
@@ -54,7 +53,7 @@
       class="btn secondary"
       onclick={handleRenameClick}
       disabled={!canRename}
-      use:tooltip={'Rename Files from Metadata'}
+      title="Rename Files from Metadata"
     >
       <FilePen size={UI_TOKENS.icons.size} />
     </button>
@@ -62,7 +61,7 @@
       class="btn revert"
       onclick={() => tagActions.revertSelected()}
       disabled={!canRevert}
-      use:tooltip={'Revert Changes'}
+      title="Revert Changes"
     >
       <RotateCcw size={UI_TOKENS.icons.size} />
     </button>
@@ -71,7 +70,7 @@
       class:glow-pulse={canSave}
       onclick={() => tagActions.saveAllModified()}
       disabled={!canSave}
-      use:tooltip={'Save Changes'}
+      title="Save Changes"
     >
       {#if uiState.isLoading}
         <Disc3 size={UI_TOKENS.icons.size} class="spin" />
