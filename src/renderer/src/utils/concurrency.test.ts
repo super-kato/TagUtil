@@ -1,15 +1,10 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { pooledAll } from './concurrency';
 
 describe('concurrency utility', () => {
   describe('pooledAll', () => {
     it('全てのタスクが実行され、結果の順序が維持されること', async () => {
-      const tasks = [
-        async () => 'A',
-        async () => 'B',
-        async () => 'C',
-        async () => 'D'
-      ];
+      const tasks = [async () => 'A', async () => 'B', async () => 'C', async () => 'D'];
 
       const results = await pooledAll(tasks);
 
