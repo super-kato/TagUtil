@@ -6,6 +6,7 @@
     handleSingleFieldChange,
     handleEnterToBlur
   } from './tag-field-handlers';
+  import { tooltip } from '@renderer/utils/tooltip';
 </script>
 
 {#if trackStore.commonMetadata}
@@ -17,7 +18,7 @@
           <button
             class="auto-btn"
             onclick={() => tagActions.applyAutoNumbering()}
-            title="Auto numbering (1, 2...)"
+            use:tooltip={'Auto numbering (1, 2...)'}
           >
             Auto
           </button>

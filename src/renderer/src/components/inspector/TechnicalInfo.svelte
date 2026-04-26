@@ -1,5 +1,6 @@
 <script lang="ts">
   import { trackStore } from '@renderer/stores/track-store.svelte';
+  import { tooltip } from '@renderer/utils/tooltip';
 
   const formatHz = (hz: number | undefined): string => {
     if (hz === undefined) {
@@ -53,7 +54,7 @@
 
     <div class="info-group">
       <div class="info-label">Location</div>
-      <div class="info-value path-text" title={track.path}>
+      <div class="info-value path-text" use:tooltip={track.path}>
         {track.path}
       </div>
     </div>
