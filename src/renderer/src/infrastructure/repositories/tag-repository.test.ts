@@ -79,14 +79,16 @@ describe('tag-repository', () => {
       expect(window.api.writeMetadata).toHaveBeenCalledTimes(2);
     });
 
-    it('途中で失敗した場合はエラーを返し、それ以降の保存を中断すること', async () => {
+    it('一部が失敗しても全ての保存を試行し、最初のエラーを返すこと', async () => {
       const error: TagError = {
         type: 'WRITE_FAILED',
         options: { path: 'b.flac' }
       };
       vi.mocked(window.api.writeMetadata)
         .mockResolvedValueOnce(success(undefined))
-        .mockResolvedValueOnce(failure(error));
+        .mockResolvedValueOnce(failure(error))
+        .mockResolvedValueOnce(success(undefined));
+
       const tracks: FlacTrack[] = [
         { path: 'a.flac', metadata: {} },
         { path: 'b.flac', metadata: {} },
@@ -96,7 +98,8 @@ describe('tag-repository', () => {
       const result = await tagRepository.saveTracks(tracks);
 
       expect(result.type).toBe('error');
-      expect(window.api.writeMetadata).toHaveBeenCalledTimes(2);
+      // 一つが失敗しても全てのトラックに対して書き込みを試行する
+      expect(window.api.writeMetadata).toHaveBeenCalledTimes(3);
     });
   });
 });

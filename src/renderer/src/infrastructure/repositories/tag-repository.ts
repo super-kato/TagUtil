@@ -1,5 +1,6 @@
 import { success } from '@domain/common/result';
 import type { FlacTrack, Picture, TagResult } from '@domain/flac/types';
+import { pooledAll } from '@renderer/utils/concurrency';
 
 /**
  * 楽曲データ（FLACタグ）の物理的な読み書きを担当するリポジトリ。
@@ -19,8 +20,8 @@ const loadTracksFromPaths = async (
   }
 
   const { paths: filePaths, isLimited } = scanResult.value;
-  const loadPromises = filePaths.map((path) => readMetadata(path));
-  const results = await Promise.all(loadPromises);
+
+  const results = await pooledAll(filePaths.map((path) => () => readMetadata(path)));
 
   const tracks: FlacTrack[] = [];
   for (const result of results) {
@@ -43,12 +44,14 @@ const scanAndLoadTracks = async (): Promise<
 };
 
 const saveTracks = async (tracks: FlacTrack[]): Promise<TagResult<void>> => {
-  for (const track of tracks) {
-    const result = await window.api.writeMetadata(track);
+  const results = await pooledAll(tracks.map((track) => () => window.api.writeMetadata(track)));
+
+  for (const result of results) {
     if (result.type === 'error') {
       return result;
     }
   }
+
   return success(undefined);
 };
 
