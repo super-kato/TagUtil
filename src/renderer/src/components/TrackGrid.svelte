@@ -41,35 +41,41 @@
   {/snippet}
   <div class="grid-wrapper no-focus-glow" tabindex="-1">
     {#if trackStore.tracks.length > 0}
-      <table class="data-grid">
-        <thead>
-          <tr>
-            <th class="col-indicator"></th>
-            <th class="col-track">#</th>
-            <th>Title</th>
-            <th>Artist</th>
-            <th>Album</th>
-          </tr>
-        </thead>
-        <tbody>
-          {#each trackStore.tracks as track, i (track)}
-            <tr
-              bind:this={rowElements[i]}
-              class="track-row"
-              class:selected={selectionState.has(track)}
-              class:modified={track.isModified}
-              onclick={(e) => handleRowClick(e, i, track)}
-              aria-selected={selectionState.has(track)}
-            >
-              <td class="indicator-cell"></td>
-              <td class="track-cell">{track.metadata.trackNumber ?? ''}</td>
-              <td>{track.metadata.title}</td>
-              <td>{track.metadata.artist}</td>
-              <td>{track.metadata.album}</td>
+      <div class="grid-header">
+        <table class="data-grid">
+          <thead>
+            <tr class="header-row">
+              <th class="col-indicator"></th>
+              <th class="col-track">#</th>
+              <th class="col-title">Title</th>
+              <th class="col-artist">Artist</th>
+              <th class="col-album">Album</th>
             </tr>
-          {/each}
-        </tbody>
-      </table>
+          </thead>
+        </table>
+      </div>
+      <div class="grid-body">
+        <table class="data-grid">
+          <tbody>
+            {#each trackStore.tracks as track, i (track)}
+              <tr
+                bind:this={rowElements[i]}
+                class="track-row"
+                class:selected={selectionState.has(track)}
+                class:modified={track.isModified}
+                onclick={(e) => handleRowClick(e, i, track)}
+                aria-selected={selectionState.has(track)}
+              >
+                <td class="indicator-cell"></td>
+                <td class="track-cell">{track.metadata.trackNumber ?? ''}</td>
+                <td class="text-cell">{track.metadata.title}</td>
+                <td class="text-cell">{track.metadata.artist}</td>
+                <td class="text-cell">{track.metadata.album}</td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
+      </div>
     {:else}
       <div class="empty-state">
         <button
@@ -90,10 +96,21 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
     background-color: var(--bg-main);
     user-select: none;
     min-height: 0;
+  }
+
+  .grid-header {
+    background-color: var(--bg-header);
+    border-bottom: 1px solid var(--border-primary);
+    scrollbar-gutter: stable;
+  }
+
+  .grid-body {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 
   .data-grid {
@@ -105,14 +122,18 @@
   .data-grid th {
     text-align: left;
     padding: 0.75rem 1rem;
-    background-color: var(--bg-header);
-    position: sticky;
-    top: 0;
     color: var(--text-muted);
     text-transform: uppercase;
     font-size: 0.7rem;
     letter-spacing: 0.05rem;
-    z-index: 10;
+  }
+
+  .header-row,
+  .track-row {
+    display: grid;
+    /* カラム構成: インジケーター(6px), トラック番号(3.5rem), タイトル(3fr), アーティスト(2fr), アルバム(2fr) */
+    grid-template-columns: 6px 3.5rem 3fr 2fr 2fr;
+    width: 100%;
   }
 
   .col-indicator {
@@ -126,11 +147,10 @@
   }
 
   .track-row {
-    border-bottom: 1px solid var(--bg-header);
     cursor: default;
     position: relative;
     transition: background-color 0.15s ease;
-    scroll-margin-top: 2.5rem;
+    border-bottom: 1px solid var(--bg-header);
   }
 
   .track-row:hover {
@@ -174,6 +194,9 @@
   .track-row td {
     padding: 0.75rem 1rem;
     color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .track-row.modified td {

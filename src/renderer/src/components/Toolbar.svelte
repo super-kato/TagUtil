@@ -120,15 +120,13 @@
   }
 
   .btn {
+    width: 2.25rem;
     height: 2.25rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0 0.85rem;
+    justify-content: center;
     border-radius: var(--radius-md);
     border: 1px solid var(--border-primary);
-    font-size: 0.85rem;
-    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
     background-color: var(--bg-button);

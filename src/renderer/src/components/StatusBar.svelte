@@ -195,7 +195,7 @@
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
-    vertical-align: bottom;
+    vertical-align: middle;
   }
 
   .expand-icon {
@@ -235,12 +235,14 @@
   .log-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
   }
 
   .log-entry {
+    display: grid;
+    grid-template-columns: 6.5rem 1.2rem 9rem 1fr;
+    align-items: center;
     font-size: 0.7rem;
-    line-height: 1.5;
+    min-height: 1.5rem;
     transition: background-color 0.2s ease;
   }
 
@@ -257,36 +259,33 @@
   }
 
   .log-col-time {
-    width: 6.7rem;
-    padding: 0.15rem 0.8rem 0.15rem 0.4rem;
+    padding: 0 0.6rem 0 0.4rem;
     color: var(--text-dim);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
   }
 
   .log-col-icon {
-    width: 1.2rem;
-    padding: 0.15rem 0;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .log-col-context {
-    width: 9rem;
-    padding: 0.15rem 0.2rem;
+    padding: 0 0.1rem;
     white-space: nowrap;
   }
 
   .log-col-message {
-    padding: 0.15rem 0.2rem;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    padding-right: 0.5rem;
   }
 
   .log-level-icon {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+    vertical-align: middle;
   }
 
   .log-entry.debug {
@@ -296,17 +295,18 @@
 
   .log-entry.warn {
     background-color: var(--accent-warning-dim);
+  }
+
+  .log-entry.warn .log-level-icon {
     color: var(--accent-warning);
   }
 
   .log-entry.error {
     background-color: var(--accent-error-dim);
-    color: var(--accent-error);
   }
 
-  .log-entry.warn td,
-  .log-entry.error td {
-    color: inherit;
+  .log-entry.error .log-level-icon {
+    color: var(--accent-error);
   }
 
   .log-text {
