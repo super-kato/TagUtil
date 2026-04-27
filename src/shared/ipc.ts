@@ -1,6 +1,6 @@
 import type { LogHandler } from '@domain/common/log';
-import type { ScanResult, AppResult } from '@domain/flac/types';
 import type { FlacTrack, Picture } from '@domain/flac/models';
+import type { AppResult, ScanResult } from '@domain/flac/types';
 import type { Platform } from './platform';
 import type { AppSettings } from './settings';
 import type { Unsubscribe } from './types';
@@ -15,65 +15,58 @@ export const IMAGE_PROTOCOL_SCHEME = 'flac-image';
  */
 export const IPC_CHANNELS = {
   /** メタデータの読み取り */
-  READ_METADATA: 'tag:read-metadata',
+  READ_TAG: 'tag:read-tag',
   /** メタデータの書き込み */
-  WRITE_METADATA: 'tag:write-metadata',
+  WRITE_TAG: 'tag:write-tag',
   /** フォルダ選択ダイアログを表示 */
-  SELECT_DIRECTORY: 'app:select-directory',
+  SELECT_DIR: 'app:select-dir',
   /** ディレクトリ内のFLACファイルを探索 */
-  SCAN_DIRECTORY: 'tag:scan-directory',
+  SCAN_DIR: 'tag:scan-dir',
   /** 画像ファイルを選択して読み込み */
-  PICK_IMAGE: 'tag:pick-image',
+  PICK_IMG: 'tag:pick-img',
   /** 指定したパスの画像情報を取得 */
-  GET_IMAGE_INFO: 'tag:get-image-info',
+  IMG_INFO: 'tag:img-info',
   /** ファイルのリネーム */
-  RENAME_FILE: 'tag:rename-file',
+  RENAME: 'tag:rename',
   /** メタデータに基づいた新しいパスの生成 */
-  GENERATE_NEW_PATH: 'tag:generate-new-path',
+  GEN_PATH: 'tag:gen-path',
   /** ログメッセージの通知 */
-  ON_LOG_MESSAGE: 'app:on-log-message',
+  ON_LOG: 'app:on-log',
   /** 実行環境のプラットフォームを取得 */
-  GET_PLATFORM: 'app:get-platform',
+  PLATFORM: 'app:platform',
   /** アプリケーション設定の取得 */
-  GET_SETTINGS: 'app:get-settings',
+  GET_CONFIG: 'app:get-config',
   /** アプリケーション設定の更新 */
-  UPDATE_SETTINGS: 'app:update-settings',
+  UPDATE_CONFIG: 'app:update-config',
   /** メインウィンドウを表示 */
-  SHOW_MAIN_WINDOW: 'app:show-main-window'
+  SHOW_MAIN: 'app:show-main'
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
 
 /**
- * プロジェクト全体の IPC 通信の「契約」を定義するインターフェース。
+ * IpcApi インターフェースの定義。
+ * メインプロセスとレンダラープロセスの間での型安全な通信を保証します。
  */
 export interface IpcApi {
-  /** 指定されたパスの FLAC メタデータを読み取ります */
-  readMetadata: (filePath: string) => Promise<AppResult<FlacTrack>>;
-  /** 指定されたパスの FLAC メタデータを書き込みます */
-  writeMetadata: (track: FlacTrack) => Promise<AppResult<string>>;
-  /** フォルダ選択ダイアログを表示し、選択されたパスを返します */
-  selectDirectory: () => Promise<string | null>;
-  /** 指定されたパス（ファイルまたはディレクトリ）内のFLACファイルのパスリストを返します */
-  scanDirectory: (targetPaths: string[]) => Promise<AppResult<ScanResult>>;
-  /** 画像ファイルを選択し、メタデータ用の Picture オブジェクトを返します */
-  pickImage: () => Promise<AppResult<Picture | null>>;
-  /** 指定したパスの画像ファイルから Picture オブジェクトを生成して返します */
-  getImageInfo: (filePath: string) => Promise<AppResult<Picture>>;
-  /** ファイルをリネーム（移動）します */
-  renameFile: (oldPath: string, newPath: string) => Promise<AppResult<void>>;
-  /** メタデータに基づいて新しいファイルパスを生成します */
-  generateNewPath: (track: FlacTrack) => Promise<AppResult<string>>;
-  /** File オブジェクトから OS 上のファイルシステムパスを取得します */
-  getPathForFile: (file: File) => string;
-  /** 実行環境のプラットフォームを取得します */
-  getPlatform: () => Promise<Platform>;
-  /** アプリケーション設定を取得します */
-  getSettings: () => Promise<AppResult<AppSettings>>;
-  /** アプリケーション設定を更新します */
-  updateSettings: (settings: Partial<AppSettings>) => Promise<AppResult<void>>;
-  /** メインウィンドウを表示します */
-  showMainWindow: () => Promise<void>;
-  /** ログメッセージを受信した時のコールバックを登録します */
-  onLogMessage: (callback: LogHandler) => Unsubscribe;
+  readMetadata(path: string): Promise<AppResult<FlacTrack>>;
+  writeMetadata(track: FlacTrack): Promise<AppResult<void>>;
+  selectDirectory(): Promise<string | undefined>;
+  scanDirectory(targetPaths: string[]): Promise<ScanResult>;
+  pickImage(): Promise<Picture | undefined>;
+  getImageInfo(path: string): Promise<Picture | undefined>;
+  renameFile(oldPath: string, newPath: string): Promise<AppResult<void>>;
+  generateNewPath(track: FlacTrack): Promise<string>;
+  getPathForFile(file: File): string;
+  getPlatform(): Promise<Platform>;
+  getSettings(): Promise<AppResult<AppSettings>>;
+  updateSettings(settings: Partial<AppSettings>): Promise<AppResult<void>>;
+  showMainWindow(): Promise<void>;
+  onLogMessage(callback: LogHandler): Unsubscribe;
+}
+
+declare global {
+  interface Window {
+    api: IpcApi;
+  }
 }

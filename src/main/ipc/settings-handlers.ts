@@ -9,14 +9,14 @@ import { withResultLogging } from '@main/infrastructure/logging/result-logging';
  * 設定に関連する IPC ハンドラを登録します。
  */
 export const registerSettingsHandlers = (): void => {
-  ipcMain.handle(IPC_CHANNELS.GET_SETTINGS, async () => {
-    return withResultLogging(IPC_CHANNELS.GET_SETTINGS, async () =>
+  ipcMain.handle(IPC_CHANNELS.GET_CONFIG, async () => {
+    return withResultLogging(IPC_CHANNELS.GET_CONFIG, async () =>
       success(settingsRepository.settings)
     );
   });
 
-  ipcMain.handle(IPC_CHANNELS.UPDATE_SETTINGS, async (_, settings: Partial<AppSettings>) => {
-    return withResultLogging(IPC_CHANNELS.UPDATE_SETTINGS, async () => {
+  ipcMain.handle(IPC_CHANNELS.UPDATE_CONFIG, async (_, settings: Partial<AppSettings>) => {
+    return withResultLogging(IPC_CHANNELS.UPDATE_CONFIG, async () => {
       settingsRepository.updateSettings(settings);
       return success(undefined);
     });

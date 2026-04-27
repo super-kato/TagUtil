@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { LogLevel } from '@domain/common/log';
-  import { ChevronUp, X, Check, TriangleAlert, List, type LucideProps } from '@lucide/svelte';
+  import { Check, ChevronUp, List, TriangleAlert, X, type LucideProps } from '@lucide/svelte';
   import { tooltip } from '@renderer/actions/tooltip';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/infrastructure/adapters/platform-adapter';
@@ -81,19 +81,33 @@
   {#if isExpanded}
     <div class="log-panel" transition:slide={{ duration: 300 }}>
       <div class="log-list" bind:this={logListElement}>
-        {#each logStore.logs as log (log.id)}
-          {@const ICON = levelIcons.get(log.level)}
-          <div class="log-entry {log.level.toLowerCase()}">
-            <span class="timestamp">[{formatTimeWithMs(log.timestamp)}]</span>
-            <div class="log-level-icon">
-              <ICON size={UI_TOKENS.icons.sizeSmall} />
-            </div>
-            <span class="log-text" use:tooltip={log.message}>
-              <span class="log-context">[{log.context}]</span>
-              {log.message}
-            </span>
-          </div>
-        {/each}
+        <table class="log-table">
+          <tbody>
+            {#each logStore.logs as log (log.id)}
+              {@const ICON = levelIcons.get(log.level)}
+              <tr class="log-entry {log.level.toLowerCase()}">
+                <td class="log-col-time">
+                  <span class="timestamp">[{formatTimeWithMs(log.timestamp)}]</span>
+                </td>
+                <td class="log-col-icon">
+                  <div class="log-level-icon">
+                    {#if ICON}
+                      <ICON size={UI_TOKENS.icons.sizeSmall} />
+                    {/if}
+                  </div>
+                </td>
+                <td class="log-col-context">
+                  <span class="log-context">[{log.context}]</span>
+                </td>
+                <td class="log-col-message">
+                  <span class="log-text" use:tooltip={log.message}>
+                    {log.message}
+                  </span>
+                </td>
+              </tr>
+            {/each}
+          </tbody>
+        </table>
       </div>
     </div>
   {/if}
@@ -172,6 +186,11 @@
   .log-context {
     color: var(--text-muted);
     font-weight: 500;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: bottom;
   }
 
   .expand-icon {
@@ -203,24 +222,20 @@
   .log-list {
     flex: 1;
     overflow: auto;
-    padding: 0.5rem;
+    padding: 0.25rem 0.5rem;
     font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
     font-size: 0.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+  }
+
+  .log-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
   }
 
   .log-entry {
-    display: flex;
-    gap: 0.75rem;
-    align-items: center;
     font-size: 0.7rem;
     line-height: 1.5;
-    padding: 0.15rem 0.4rem;
-    border-radius: 2px;
-    width: fit-content;
-    min-width: 100%;
     transition: background-color 0.2s ease;
   }
 
@@ -236,17 +251,37 @@
     background-color: var(--accent-error-hover);
   }
 
-  .log-time {
+  .log-col-time {
+    width: 6.7rem;
+    padding: 0.15rem 0.8rem 0.15rem 0.4rem;
     color: var(--text-dim);
-    flex-shrink: 0;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .log-col-icon {
+    width: 1.2rem;
+    padding: 0.15rem 0;
+    text-align: center;
+  }
+
+  .log-col-context {
+    width: 9rem;
+    padding: 0.15rem 0.2rem;
+    white-space: nowrap;
+  }
+
+  .log-col-message {
+    padding: 0.15rem 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .log-level-icon {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
   }
 
   .log-entry.warn {
@@ -259,20 +294,12 @@
     color: var(--accent-error);
   }
 
-  .log-entry.warn .timestamp,
-  .log-entry.warn .log-context,
-  .log-entry.warn .log-level-icon,
-  .log-entry.warn .log-text,
-  .log-entry.error .timestamp,
-  .log-entry.error .log-context,
-  .log-entry.error .log-level-icon,
-  .log-entry.error .log-text {
+  .log-entry.warn td,
+  .log-entry.error td {
     color: inherit;
   }
 
   .log-text {
     color: var(--text-secondary);
-    white-space: nowrap;
-    flex: 1;
   }
 </style>
