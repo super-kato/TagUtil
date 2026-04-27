@@ -7,7 +7,7 @@ import { logger } from './services/platform/logger';
 import { initAutoUpdater } from './services/platform/update';
 import { createWindow } from './window';
 
-logger.info({ context: 'App', message: 'Application starting...' });
+logger.info({ context: 'application', message: 'Application starting...' });
 
 registerProtocolsPrivileged();
 
@@ -37,4 +37,8 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('will-quit', () => {
+  logger.info({ context: 'application', message: 'Application quitting...' });
 });
