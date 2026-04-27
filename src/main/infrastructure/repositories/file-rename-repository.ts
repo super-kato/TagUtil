@@ -80,13 +80,13 @@ const tryRenameWithStatCheck = async (oldPath: string, newPath: string): Promise
 /**
  * 指定されたエラーが「ファイルが既に存在する (EEXIST)」エラーであるか判定します。
  */
-const isAlreadyExistsError = (error: unknown): error is { code: string } => {
-  return (error as { code?: string }).code === 'EEXIST';
+const isAlreadyExistsError = (error: unknown): error is NodeJS.ErrnoException => {
+  return (error as NodeJS.ErrnoException).code === 'EEXIST';
 };
 
 /**
  * 指定されたエラーが「ファイルが見つからない (ENOENT)」エラーであるか判定します。
  */
-const isNotFoundError = (error: unknown): error is { code: string } => {
-  return (error as { code?: string }).code === 'ENOENT';
+const isNotFoundError = (error: unknown): error is NodeJS.ErrnoException => {
+  return (error as NodeJS.ErrnoException).code === 'ENOENT';
 };
