@@ -1,6 +1,6 @@
 /** @vitest-environment jsdom */
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { isInputFocused } from './dom-utils';
+import { isInputFocused, setAppTheme } from './dom-utils';
 
 describe('dom-utils', () => {
   describe('isInputFocused', () => {
@@ -40,6 +40,16 @@ describe('dom-utils', () => {
     it('フォーカスがない場合に false を返すこと', () => {
       vi.spyOn(document, 'activeElement', 'get').mockReturnValue(null);
       expect(isInputFocused()).toBe(false);
+    });
+  });
+
+  describe('setAppTheme', () => {
+    it('document.documentElement に data-theme 属性を設定すること', () => {
+      setAppTheme('dark');
+      expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+
+      setAppTheme('light');
+      expect(document.documentElement.getAttribute('data-theme')).toBe('light');
     });
   });
 });

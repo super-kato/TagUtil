@@ -8,6 +8,7 @@ describe('UiState', () => {
 
   it('初期状態が正しいこと', () => {
     expect(uiState.isLoading).toBe(false);
+    expect(uiState.isSettingsOpen).toBe(false);
   });
 
   it('startLoading で isLoading が true になること', () => {
@@ -21,11 +22,14 @@ describe('UiState', () => {
     expect(uiState.isLoading).toBe(false);
   });
 
-  it('状態をクリアできること', () => {
-    uiState.startLoading();
+  it('openSettings で isSettingsOpen が true になること', () => {
+    uiState.openSettings();
+    expect(uiState.isSettingsOpen).toBe(true);
+  });
 
-    uiState.stopLoading();
-
-    expect(uiState.isLoading).toBe(false);
+  it('closeSettings で isSettingsOpen が false になること', () => {
+    uiState.openSettings();
+    uiState.closeSettings();
+    expect(uiState.isSettingsOpen).toBe(false);
   });
 });

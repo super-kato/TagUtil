@@ -37,7 +37,9 @@ export const IPC_CHANNELS = {
   /** アプリケーション設定の取得 */
   GET_SETTINGS: 'app:get-settings',
   /** アプリケーション設定の更新 */
-  UPDATE_SETTINGS: 'app:update-settings'
+  UPDATE_SETTINGS: 'app:update-settings',
+  /** メインウィンドウを表示 */
+  SHOW_MAIN_WINDOW: 'app:show-main-window'
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -70,6 +72,8 @@ export interface IpcApi {
   getSettings: () => Promise<AppResult<AppSettings>>;
   /** アプリケーション設定を更新します */
   updateSettings: (settings: Partial<AppSettings>) => Promise<AppResult<void>>;
+  /** メインウィンドウを表示します */
+  showMainWindow: () => Promise<void>;
   /** ログメッセージを受信した時のコールバックを登録します */
   onLogMessage: (callback: LogHandler) => Unsubscribe;
 }
