@@ -1,11 +1,11 @@
-import { computeMd5 } from '@main/utils/crypto';
-import * as musicMetadata from 'music-metadata';
 import {
   IGNORE_TAG_KEYS,
   RawFlacData,
   RawPicture,
   VorbisTags
 } from '@main/infrastructure/repositories/repository-types';
+import { computeMd5 } from '@main/utils/crypto';
+import * as musicMetadata from 'music-metadata';
 
 /**
  * 指定されたパスのFLACファイルから生のメタデータを読み取ります。
@@ -17,7 +17,7 @@ export const readRawFlacData = async (filePath: string): Promise<RawFlacData> =>
     path: filePath,
     tags: mapLibTagsToRaw(mmData.native.vorbis || []),
     pictures: mapLibPicturesToRaw(mmData.common.picture || []),
-    streamInfo: {
+    audioFormat: {
       sampleRate: mmData.format.sampleRate,
       bitDepth: mmData.format.bitsPerSample,
       channels: mmData.format.numberOfChannels,

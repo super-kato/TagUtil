@@ -1,4 +1,6 @@
-import type { FlacMetadata, Picture, StreamInfo } from '@domain/flac/models';
+import type { AudioFormat } from '@domain/audio/models';
+import type { FlacMetadata, Picture } from '@domain/flac/models';
+
 import type { ElementType } from '@shared/types';
 import { isDeepEqual } from '@shared/utils/equality';
 
@@ -44,13 +46,15 @@ type EditableFieldSummary = SingleFieldSummary & MultiFieldSummary;
 /** アートワーク情報のバッチ状態サマリー */
 type PictureSummary = { picture: FieldState<Picture | null | undefined> };
 
-/** 技術情報（STREAMINFO）のバッチ状態サマリー */
-type StreamInfoSummary = { -readonly [K in keyof StreamInfo]: FieldState<StreamInfo[K]> };
+/** 技術情報（AudioFormatInfo）のバッチ状態サマリー */
+type AudioFormatSummary = {
+  -readonly [K in keyof AudioFormat]: FieldState<AudioFormat[K]>;
+};
 
 /**
  * 各メタデータ項目のバッチ状態をまとめたサマリー。
  */
-export type BatchMetadataSummary = EditableFieldSummary & PictureSummary & StreamInfoSummary;
+export type BatchMetadataSummary = EditableFieldSummary & PictureSummary & AudioFormatSummary;
 
 /**
  * 複数のメタデータから、各フィールドの共通性（Uniform/Divergent）を導出します。
@@ -66,7 +70,7 @@ export const deriveCommonMetadata = (
     ...deriveSingleValueTags(metadataList),
     ...deriveMultiValueTags(metadataList),
     ...deriveCommonPicture(metadataList),
-    ...deriveCommonStreamInfo(metadataList)
+    ...deriveCommonFormatInfo(metadataList)
   } as const;
 };
 
@@ -137,21 +141,21 @@ const deriveCommonPicture = (metadataList: FlacMetadata[]): PictureSummary => {
 };
 
 /**
- * 技術情報（STREAMINFO）の共通性を算出します。
+ * 技術情報（AudioFormatInfo）の共通性を算出します。
  */
-const deriveCommonStreamInfo = (metadataList: FlacMetadata[]): Partial<StreamInfoSummary> => {
+const deriveCommonFormatInfo = (metadataList: FlacMetadata[]): Partial<AudioFormatSummary> => {
   const first = metadataList[0];
-  if (!first.streamInfo) {
+  if (!first.format) {
     return {};
   }
 
-  const result = {} as StreamInfoSummary;
+  const result = {} as AudioFormatSummary;
 
-  for (const key in first.streamInfo) {
-    const k = key as keyof StreamInfo;
-    const allSame = metadataList.every((meta) => meta.streamInfo?.[k] === first.streamInfo?.[k]);
+  for (const key in first.format) {
+    const k = key as keyof AudioFormat;
+    const allSame = metadataList.every((meta) => meta.format?.[k] === first.format?.[k]);
 
-    result[k] = allSame ? { type: 'uniform', value: first.streamInfo[k] } : { type: 'divergent' };
+    result[k] = allSame ? { type: 'uniform', value: first.format[k] } : { type: 'divergent' };
   }
 
   return result;

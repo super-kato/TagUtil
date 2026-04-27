@@ -18,7 +18,7 @@ describe('flac-read-mapper', () => {
           CATALOGNUMBER: ['CAT-001']
         },
         pictures: [],
-        streamInfo: {}
+        audioFormat: {}
       };
 
       const result = mapToFlacMetadata(rawData, '/path/to/audio.flac');
@@ -43,7 +43,7 @@ describe('flac-read-mapper', () => {
           ALBUMARTIST: ['Album Artist 1']
         },
         pictures: [],
-        streamInfo: {}
+        audioFormat: {}
       };
 
       const result = mapToFlacMetadata(rawData, '/path/to/audio.flac');
@@ -62,7 +62,7 @@ describe('flac-read-mapper', () => {
           ENSEMBLE: ['Ensemble Artist'] // ALBUMARTIST の別名
         },
         pictures: [],
-        streamInfo: {}
+        audioFormat: {}
       };
 
       const result = mapToFlacMetadata(rawData, '/path/to/audio.flac');
@@ -79,7 +79,7 @@ describe('flac-read-mapper', () => {
           YEAR: ['2023']
         },
         pictures: [],
-        streamInfo: {}
+        audioFormat: {}
       };
 
       const result = mapToFlacMetadata(rawData, '/path/to/audio.flac');
@@ -92,7 +92,7 @@ describe('flac-read-mapper', () => {
         path: '/path/to/audio.flac',
         tags: {},
         pictures: [],
-        streamInfo: {}
+        audioFormat: {}
       };
 
       const result = mapToFlacMetadata(rawData, '/path/to/audio.flac');
@@ -112,7 +112,7 @@ describe('flac-read-mapper', () => {
             hash: 'dummy-hash'
           }
         ],
-        streamInfo: {
+        audioFormat: {
           sampleRate: 44100,
           bitDepth: 16,
           channels: 2,

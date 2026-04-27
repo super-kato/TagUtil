@@ -48,7 +48,7 @@
     {@const track = trackStore.selectedTracks[0]}
     <div class="info-group">
       <div class="info-label">Duration</div>
-      <div class="info-value">{Math.floor(track.metadata.streamInfo?.duration ?? 0)} s</div>
+      <div class="info-value">{Math.floor(track.metadata.format?.duration ?? 0)} s</div>
     </div>
 
     <div class="info-group">

@@ -1,4 +1,3 @@
-import { FlacMetadata, Picture } from '@domain/flac/models';
 import {
   CanonicalTagKey,
   MULTI_VALUE_PROPERTY_MAP,
@@ -7,7 +6,7 @@ import {
   SingleValueCanonicalTagKey,
   TAG_DEFINITIONS
 } from '@domain/audio/tag-definitions';
-
+import { FlacMetadata, Picture } from '@domain/flac/models';
 import { RawFlacData, VorbisTags } from '@main/infrastructure/repositories/repository-types';
 
 /** パース済みの生データをドメインモデルに変換 */
@@ -16,7 +15,7 @@ export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacM
 
   const acc: FlacMetadata = {
     picture: mapToDomainPicture(rawData, filePath),
-    streamInfo: rawData.streamInfo
+    format: rawData.audioFormat
   };
 
   // 複数値タグのマッピング

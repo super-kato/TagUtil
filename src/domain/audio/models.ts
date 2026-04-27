@@ -14,6 +14,21 @@ export interface Picture {
 }
 
 /**
+ * 音声ファイルの技術情報（形式、サンプリングレート等）。
+ * 全てのプロパティは読み取り専用であり、編集されることはありません。
+ */
+export interface AudioFormat {
+  /** サンプリングレート (Hz) */
+  readonly sampleRate?: number;
+  /** ビット深度 (bit) */
+  readonly bitDepth?: number;
+  /** チャンネル数 */
+  readonly channels?: number;
+  /** 再生時間 (秒) */
+  readonly duration?: number;
+}
+
+/**
  * 音声ファイルのメタデータを表す基本ドメインモデル。
  */
 export interface AudioMetadata {
@@ -43,6 +58,8 @@ export interface AudioMetadata {
   catalogNumber?: string;
   /** ジャケット画像データ */
   picture?: Picture | null;
+  /** 技術情報 (読み取り専用) */
+  readonly format?: AudioFormat;
 }
 
 /**

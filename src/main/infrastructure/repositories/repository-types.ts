@@ -1,4 +1,4 @@
-import { StreamInfo } from '@domain/flac/models';
+import { AudioFormat } from '@domain/audio/models';
 
 /**
  * テキストタグとして読み込み・書き込みをスキップするタグキーのリスト。
@@ -40,8 +40,8 @@ export interface RawPicture extends FileContent {
 export interface RawFlacData extends RawFlacTags {
   /** 対象ファイルの絶対パス */
   path: string;
-  /** 技術情報 (STREAMINFO) */
-  streamInfo: StreamInfo;
+  /** 技術情報 */
+  audioFormat: AudioFormat;
 }
 
 /**
