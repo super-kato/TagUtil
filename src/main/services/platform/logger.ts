@@ -22,7 +22,7 @@ class Logger extends EventEmitter {
     log.initialize();
     log.errorHandler.startCatching();
 
-    // 本番環境（パッケージ化後）は warning と error しかファイルに書き込まない
+    // 本番環境と開発環境のログレベル設定
     if (app.isPackaged) {
       log.transports.file.level = 'warn';
     } else {
