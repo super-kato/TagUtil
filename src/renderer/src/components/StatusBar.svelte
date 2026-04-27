@@ -266,13 +266,13 @@
   }
 
   .log-col-context {
-    width: 10rem;
-    padding: 0.15rem 0.4rem;
+    width: 9rem;
+    padding: 0.15rem 0.2rem;
     white-space: nowrap;
   }
 
   .log-col-message {
-    padding: 0.15rem 0.4rem;
+    padding: 0.15rem 0.2rem;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
