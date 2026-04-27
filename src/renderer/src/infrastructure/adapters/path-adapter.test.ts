@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { generateNewPath } from './path-adapter';
 import { success } from '@domain/common/result';
 import type { FlacTrack } from '@domain/flac/models';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { generateNewPath } from './path-adapter';
 
 describe('path-adapter', () => {
   beforeEach(() => {
@@ -14,7 +14,7 @@ describe('path-adapter', () => {
 
   describe('generateNewPath', () => {
     it('window.api.generateNewPath を呼び出すこと', async () => {
-      const track = {
+      const track: FlacTrack = {
         path: '/dir/old.flac',
         metadata: { title: 'T', trackNumber: '1' }
       };
@@ -25,7 +25,7 @@ describe('path-adapter', () => {
         }
       });
 
-      const result = await generateNewPath(track as FlacTrack);
+      const result = await generateNewPath(track);
 
       expect(result).toBe(expected);
       expect(window.api.generateNewPath).toHaveBeenCalledWith(track);

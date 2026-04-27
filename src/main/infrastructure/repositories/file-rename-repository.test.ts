@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renameFileExclusive } from './file-rename-repository';
-import * as fs from 'node:fs/promises';
 import { Stats } from 'node:fs';
+import * as fs from 'node:fs/promises';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { renameFileExclusive } from './file-rename-repository';
 
 vi.mock('node:fs/promises');
 
@@ -34,7 +34,7 @@ describe('file-rename-repository', () => {
     });
 
     it('リンク作成時に EEXIST が発生した場合はエラーを投げること', async () => {
-      const error = new Error('already exists') as Error & { code: string };
+      const error: NodeJS.ErrnoException = new Error('already exists');
       error.code = 'EEXIST';
       vi.mocked(fs.link).mockRejectedValue(error);
 
@@ -43,12 +43,12 @@ describe('file-rename-repository', () => {
 
     it('リンクがシステム制限等で失敗した場合、stat チェック後に rename すること', async () => {
       // リンク失敗 (EPERM など)
-      const linkError = new Error('not supported') as Error & { code: string };
+      const linkError: NodeJS.ErrnoException = new Error('not supported');
       linkError.code = 'EPERM';
       vi.mocked(fs.link).mockRejectedValue(linkError);
 
       // stat 失敗 (ENOENT: 移動先が存在しない)
-      const statError = new Error('not found') as Error & { code: string };
+      const statError: NodeJS.ErrnoException = new Error('not found');
       statError.code = 'ENOENT';
       vi.mocked(fs.stat).mockRejectedValue(statError);
 
