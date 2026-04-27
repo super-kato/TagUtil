@@ -9,6 +9,6 @@ import { IPC_CHANNELS } from '@shared/ipc';
 export const initializeEventForwarding = (): void => {
   // ログイベントの転送
   logger.onLog((logMessage) => {
-    windowAdapter.sendToAllWindows(IPC_CHANNELS.ON_LOG_MESSAGE, logMessage);
+    windowAdapter.sendToAllWindows(IPC_CHANNELS.ON_LOG, logMessage);
   });
 };

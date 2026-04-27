@@ -97,7 +97,7 @@
                   </div>
                 </td>
                 <td class="log-col-context">
-                  <span class="log-context" use:tooltip={log.context}>[{log.context}]</span>
+                  <span class="log-context">[{log.context}]</span>
                 </td>
                 <td class="log-col-message">
                   <span class="log-text" use:tooltip={log.message}>

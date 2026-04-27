@@ -7,10 +7,10 @@ describe('ipc shared constants', () => {
   });
 
   it('IPC_CHANNELS が正しく定義されていること', () => {
-    expect(IPC_CHANNELS.READ_METADATA).toBe('tag:read-metadata');
-    expect(IPC_CHANNELS.WRITE_METADATA).toBe('tag:write-metadata');
-    expect(IPC_CHANNELS.SELECT_DIRECTORY).toBe('app:select-directory');
-    expect(IPC_CHANNELS.SCAN_DIRECTORY).toBe('tag:scan-directory');
-    expect(IPC_CHANNELS.PICK_IMAGE).toBe('tag:pick-image');
+    expect(IPC_CHANNELS.READ_TAG).toBe('tag:read-tag');
+    expect(IPC_CHANNELS.WRITE_TAG).toBe('tag:write-tag');
+    expect(IPC_CHANNELS.SELECT_DIR).toBe('app:select-dir');
+    expect(IPC_CHANNELS.SCAN_DIR).toBe('tag:scan-dir');
+    expect(IPC_CHANNELS.PICK_IMG).toBe('tag:pick-img');
   });
 });
