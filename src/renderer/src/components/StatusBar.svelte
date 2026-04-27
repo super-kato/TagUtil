@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { LogLevel } from '@domain/common/log';
-  import { ChevronUp, X, Check, TriangleAlert, List, type LucideProps } from '@lucide/svelte';
+  import { Check, ChevronUp, List, TriangleAlert, X, type LucideProps } from '@lucide/svelte';
   import { tooltip } from '@renderer/actions/tooltip';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/infrastructure/adapters/platform-adapter';
@@ -252,7 +252,7 @@
   }
 
   .log-col-time {
-    width: 8.5rem;
+    width: 6.2rem;
     padding: 0.15rem 0.4rem;
     color: var(--text-dim);
     font-variant-numeric: tabular-nums;
@@ -260,13 +260,13 @@
   }
 
   .log-col-icon {
-    width: 1.5rem;
+    width: 1.2rem;
     padding: 0.15rem 0;
     text-align: center;
   }
 
   .log-col-context {
-    width: 10rem;
+    width: 8rem;
     padding: 0.15rem 0.4rem;
     white-space: nowrap;
   }
