@@ -1,3 +1,5 @@
+export type ColorTheme = 'light' | 'dark';
+
 /**
  * アプリケーションのユーザー設定の型定義。
  */
@@ -6,6 +8,10 @@ export interface AppSettings {
   renamePattern: string;
   /** トラック番号のパディング桁数 */
   trackNumberPadding: number;
-  /** カラーテーマ ('default' | 'light') */
-  theme: 'default' | 'light';
+  /** カラーテーマ */
+  theme: ColorTheme;
+  /** ジャンル一覧 */
+  genres: string[];
+  /** クイックジャンルボタンの設定（表示するジャンル名） */
+  quickGenres: string[];
 }

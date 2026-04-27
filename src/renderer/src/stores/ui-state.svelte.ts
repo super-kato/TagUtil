@@ -3,9 +3,14 @@
  */
 class UiState {
   #isLoading = $state(false);
+  #isSettingsOpen = $state(false);
 
   get isLoading(): boolean {
     return this.#isLoading;
+  }
+
+  get isSettingsOpen(): boolean {
+    return this.#isSettingsOpen;
   }
 
   startLoading(): void {
@@ -14,6 +19,14 @@ class UiState {
 
   stopLoading(): void {
     this.#isLoading = false;
+  }
+
+  openSettings(): void {
+    this.#isSettingsOpen = true;
+  }
+
+  closeSettings(): void {
+    this.#isSettingsOpen = false;
   }
 }
 

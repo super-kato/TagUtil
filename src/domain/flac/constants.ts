@@ -21,21 +21,3 @@ export const TAG_PLACEHOLDERS = {
   DATE: '{date}',
   GENRE: '{genre}'
 } as const;
-
-/**
- * UIで推奨されるデフォルトのジャンルリスト。
- */
-export const DEFAULT_GENRES = [
-  'Pop',
-  'Soundtrack',
-  'Jazz',
-  'Anime',
-  'Game',
-  'Classical',
-  'World',
-  'Electronic',
-  'Vocaloid',
-  'Instrumental',
-  'Metal',
-  'Ambient'
-] as const;

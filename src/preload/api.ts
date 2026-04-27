@@ -69,6 +69,10 @@ export const api: IpcApi = {
   updateSettings: (settings: Partial<AppSettings>) =>
     ipcRenderer.invoke(IPC_CHANNELS.UPDATE_SETTINGS, settings),
   /**
+   * メインウィンドウを表示します。
+   */
+  showMainWindow: () => ipcRenderer.invoke(IPC_CHANNELS.SHOW_MAIN_WINDOW),
+  /**
    * ログメッセージを受信した時のコールバックを登録します。
    * @param callback ログメッセージを受け取るコールバック
    * @returns 登録解除用の関数

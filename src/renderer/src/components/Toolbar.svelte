@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Disc3, FilePen, FolderOpen, RotateCcw, Save, Tag } from '@lucide/svelte';
+  import { Disc3, FilePen, FolderOpen, Save, Settings, Tag, Undo2 } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { fileActions } from '@renderer/services/file-actions';
   import { tagActions } from '@renderer/services/tag-actions';
@@ -63,7 +63,7 @@
       disabled={!canRevert}
       title="Revert Changes"
     >
-      <RotateCcw size={UI_TOKENS.icons.size} />
+      <Undo2 size={UI_TOKENS.icons.size} />
     </button>
     <button
       class="btn primary"
@@ -77,6 +77,10 @@
       {:else}
         <Save size={UI_TOKENS.icons.size} />
       {/if}
+    </button>
+    <div class="divider"></div>
+    <button class="btn" onclick={() => uiState.openSettings()} title="Settings">
+      <Settings size={UI_TOKENS.icons.size} />
     </button>
   </div>
 </header>

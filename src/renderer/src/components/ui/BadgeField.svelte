@@ -5,7 +5,7 @@
   import { KeyboardHandler } from '@renderer/utils/keyboard-handler';
 
   interface Props {
-    label: string;
+    label?: string;
     values: string[];
     isUniform: boolean;
     suggestions?: string[];
@@ -13,7 +13,7 @@
     onRemove: (value: string) => void;
   }
 
-  let { label, values, isUniform, suggestions = [], onAdd, onRemove }: Props = $props();
+  let { label = '', values, isUniform, suggestions = [], onAdd, onRemove }: Props = $props();
 
   let inputValue = $state('');
   let inputElement: HTMLInputElement | undefined = $state();
@@ -60,7 +60,9 @@
 </script>
 
 <div class="badge-field field">
-  <label for="badge-input-{label}">{label}</label>
+  {#if label}
+    <label for="badge-input-{label}">{label}</label>
+  {/if}
 
   <div
     class="badge-container"

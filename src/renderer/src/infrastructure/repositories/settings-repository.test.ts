@@ -17,7 +17,10 @@ describe('settings-repository', () => {
     it('window.api.getSettings を呼び出し、結果を返却すること', async () => {
       const mockSettings: AppSettings = {
         renamePattern: '{title}',
-        trackNumberPadding: 3
+        trackNumberPadding: 3,
+        theme: 'dark',
+        genres: [],
+        quickGenres: []
       };
       const mockResult = success(mockSettings);
       vi.mocked(window.api.getSettings).mockResolvedValue(mockResult);

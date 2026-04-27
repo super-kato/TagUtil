@@ -1,12 +1,16 @@
 <script lang="ts">
-  import { DEFAULT_GENRES } from '@domain/flac/constants';
-  import { trackStore } from '@renderer/stores/track-store.svelte';
-  import { tagActions } from '@renderer/services/tag-actions';
   import BadgeField from '@renderer/components/ui/BadgeField.svelte';
+  import { tagActions } from '@renderer/services/tag-actions';
+  import { settingsStore } from '@renderer/stores/settings-store.svelte';
+  import { trackStore } from '@renderer/stores/track-store.svelte';
   import { getMultiFieldValues } from './tag-field-handlers';
 
-  const MAX_QUICK_GENRES = 4;
-  const QUICK_GENRES = DEFAULT_GENRES.slice(0, MAX_QUICK_GENRES);
+  const quickGenres = $derived(settingsStore.current?.quickGenres ?? []);
+  const allGenreSuggestions = $derived.by(() => {
+    const settingsGenres = settingsStore.current?.genres ?? [];
+    const trackGenres = trackStore.allGenres;
+    return [...new Set([...settingsGenres, ...trackGenres])].sort();
+  });
 
   const applyGenre = (genre: string): void => {
     const trimmed = genre.trim();
@@ -24,13 +28,13 @@
       label="Genre"
       values={getMultiFieldValues(genreState)}
       isUniform={genreState.type === 'uniform'}
-      suggestions={trackStore.allGenres}
+      suggestions={allGenreSuggestions}
       onAdd={(v) => applyGenre(v)}
       onRemove={(v) => tagActions.removeSelectedMultiFieldValue('genre', v)}
     />
 
     <div class="quick-genres">
-      {#each QUICK_GENRES as g (g)}
+      {#each quickGenres as g (g)}
         <button class="genre-badge" onclick={() => applyGenre(g)}>
           {g}
         </button>

@@ -1,16 +1,37 @@
 <script lang="ts">
+  import { logRepository } from '@renderer/infrastructure/repositories/log-repository';
+  import { onMount } from 'svelte';
+  import { setAppTheme } from '@renderer/utils/dom-utils';
   import Inspector from './components/Inspector.svelte';
+  import KeyboardShortcuts from './components/KeyboardShortcuts.svelte';
+  import SettingsModal from './components/SettingsModal.svelte';
   import StatusBar from './components/StatusBar.svelte';
   import Toolbar from './components/Toolbar.svelte';
   import TrackGrid from './components/TrackGrid.svelte';
-  import KeyboardShortcuts from './components/KeyboardShortcuts.svelte';
   import ConfirmationDialog from './components/ui/ConfirmationDialog.svelte';
   import TooltipContainer from './components/ui/TooltipContainer.svelte';
-  import { logRepository } from '@renderer/infrastructure/repositories/log-repository';
-  import { onMount } from 'svelte';
   import { logStore } from './stores/log-store.svelte';
+  import { settingsStore } from './stores/settings-store.svelte';
 
-  onMount(() => logRepository.subscribe((log) => logStore.addLog(log)));
+  const initializeApp = async (): Promise<void> => {
+    await settingsStore.refresh();
+    await window.api.showMainWindow();
+  };
+
+  onMount(() => {
+    const unsubscribe = logRepository.subscribe((log) => logStore.addLog(log));
+    initializeApp();
+    return () => unsubscribe();
+  });
+
+  // テーマの変更を監視して適用
+  $effect(() => {
+    const theme = settingsStore.current?.theme;
+    if (!theme) {
+      return;
+    }
+    setAppTheme(theme);
+  });
 </script>
 
 <KeyboardShortcuts />
@@ -28,6 +49,7 @@
   </section>
 
   <Inspector />
+  <SettingsModal />
   <ConfirmationDialog />
   <TooltipContainer />
 </div>
