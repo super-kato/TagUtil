@@ -1,6 +1,6 @@
 import { Menu, MenuItemConstructorOptions, app, shell } from 'electron';
-import { showAboutWindow } from './services/platform/about';
-import { checkForUpdates } from './services/platform/update';
+import { showAboutWindow } from './infrastructure/platform/about';
+import { checkForUpdates } from './infrastructure/platform/update';
 
 const isMac = process.platform === 'darwin';
 
