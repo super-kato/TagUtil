@@ -7,29 +7,7 @@ import {
   SingleValueCanonicalTagKey,
   TAG_DEFINITIONS
 } from '@domain/flac/tag-definitions';
-import { computeMd5 } from '@main/utils/crypto';
-import { RawFlacData, RawPicture } from '@services/flac/types';
-import type * as readerImpl from 'music-metadata';
-
-/**
- * テキストタグとして読み込み・書き込みをスキップするタグキーのリスト。
- */
-const IGNORE_TAG_KEYS = ['METADATA_BLOCK_PICTURE'] as const;
-
-/** music-metadata のパース結果を RawFlacData に変換 */
-export const toRawFlacData = (mmData: readerImpl.IAudioMetadata, path: string): RawFlacData => {
-  return {
-    path,
-    tags: normalizeVorbisTags(mmData.native.vorbis || []),
-    pictures: mapPictures(mmData.common.picture || []),
-    streamInfo: {
-      sampleRate: mmData.format.sampleRate,
-      bitDepth: mmData.format.bitsPerSample,
-      channels: mmData.format.numberOfChannels,
-      duration: mmData.format.duration
-    }
-  };
-};
+import { RawFlacData, VorbisTags } from '@main/infrastructure/repositories/repository-types';
 
 /** パース済みの生データをドメインモデルに変換 */
 export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacMetadata => {
@@ -62,39 +40,8 @@ export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacM
   return acc;
 };
 
-/** ITag配列を Record<string, string[]> に変換 */
-const normalizeVorbisTags = (tags: readerImpl.ITag[]): Record<string, string[]> => {
-  const normalized: Record<string, string[]> = {};
-  for (const tag of tags) {
-    const key = tag.id.toUpperCase();
-
-    // 除外リストに含まれるタグはスキップ
-    if ((IGNORE_TAG_KEYS as readonly string[]).includes(key)) {
-      continue;
-    }
-
-    if (!normalized[key]) {
-      normalized[key] = [];
-    }
-    normalized[key].push(String(tag.value));
-  }
-  return normalized;
-};
-
-/** IPicture配列を RawPicture配列に変換 */
-const mapPictures = (pictures: readerImpl.IPicture[]): RawPicture[] => {
-  return pictures.map((p) => ({
-    mime: p.format,
-    buffer: p.data,
-    hash: computeMd5(p.data)
-  }));
-};
-
 /** タグマップから指定されたキー（およびその別名）の全値を配列で取得 */
-const getAllTags = (
-  tagMap: Record<string, string[]>,
-  canonicalKey: CanonicalTagKey
-): string[] | undefined => {
+const getAllTags = (tagMap: VorbisTags, canonicalKey: CanonicalTagKey): string[] | undefined => {
   const definition = TAG_DEFINITIONS[canonicalKey];
   const keysToTry = [canonicalKey, ...definition.synonyms];
 
@@ -110,10 +57,7 @@ const getAllTags = (
 };
 
 /** タグマップから最初に見つかった値を取得 */
-const getFirstTag = (
-  tagMap: Record<string, string[]>,
-  canonicalKey: CanonicalTagKey
-): string | undefined => {
+const getFirstTag = (tagMap: VorbisTags, canonicalKey: CanonicalTagKey): string | undefined => {
   const values = getAllTags(tagMap, canonicalKey);
   return values ? values[0] : undefined;
 };

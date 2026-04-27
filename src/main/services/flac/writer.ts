@@ -3,11 +3,10 @@ import { appErrors } from '@domain/flac/errors';
 import { FlacTrack } from '@domain/flac/models';
 import { AppResult } from '@domain/flac/types';
 import { toAppResultFailure } from '@main/utils/error-handler';
-import { withAtomicWrite } from '@main/utils/file-utils';
-import { writeFlacTags } from 'flac-tagger';
+import { readRawFlacData } from '@main/infrastructure/repositories/flac-read-repository';
+import { writeFlacTagsWithAtomic } from '@main/infrastructure/repositories/flac-write-repository';
 import { mergeMetadataWithTags } from './mappers/flac-write-mapper';
 import { resolvePictureForWrite } from './mappers/flac-write-picture-resolver';
-import { readRawData } from './reader';
 
 /**
  * 指定されたパスのFLACファイルへメタデータを書き込みます。
@@ -16,10 +15,10 @@ export const writeMetadata = async (track: FlacTrack): Promise<AppResult<string>
   const { path, metadata } = track;
 
   try {
-    const rawData = await readRawData(path);
+    const rawData = await readRawFlacData(path);
     const picture = await resolvePictureForWrite(metadata.picture, rawData);
     const mergedTags = mergeMetadataWithTags(rawData, metadata, picture);
-    await withAtomicWrite(path, async (tempPath) => await writeFlacTags(mergedTags, tempPath));
+    await writeFlacTagsWithAtomic(path, mergedTags);
   } catch (error: unknown) {
     return toAppResultFailure(error, appErrors.writeFailed, { path });
   }

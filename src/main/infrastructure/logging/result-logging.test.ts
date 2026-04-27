@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { failure, success } from '@domain/common/result';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('electron-log/main', () => ({
   default: {
@@ -25,8 +25,8 @@ vi.mock('electron', () => ({
   }
 }));
 
-import { logger } from '@services/platform/logger';
 import * as formatter from '@domain/flac/app-error-formatter';
+import { logger } from '@main/infrastructure/logging/logger';
 import { withResultLogging } from './result-logging';
 
 describe('result-logging', () => {

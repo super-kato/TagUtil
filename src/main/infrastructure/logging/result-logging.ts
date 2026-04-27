@@ -1,6 +1,6 @@
 import { formatAppError } from '@domain/flac/app-error-formatter';
 import { type AppResult } from '@domain/flac/types';
-import { logger } from '@services/platform/logger';
+import { logger } from '@main/infrastructure/logging/logger';
 
 /**
  * 処理の実行結果（成功/失敗/例外）に基づいたロギングを行うラッパー関数。

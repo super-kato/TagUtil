@@ -1,5 +1,5 @@
+import { getPlatform } from '@main/infrastructure/adapters/platform-adaptor';
 import { selectDirectory } from '@services/platform/dialog';
-import { getPlatform } from '@services/platform/platform';
 import { IPC_CHANNELS } from '@shared/ipc';
 import { ipcMain } from 'electron';
 

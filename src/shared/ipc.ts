@@ -1,6 +1,7 @@
 import type { LogHandler } from '@domain/common/log';
 import type { FlacTrack, Picture } from '@domain/flac/models';
-import type { AppResult, ScanResult } from '@domain/flac/types';
+import type { AppResult } from '@domain/flac/types';
+import type { ScanResult } from './flac';
 import type { Platform } from './platform';
 import type { AppSettings } from './settings';
 import type { Unsubscribe } from './types';
@@ -54,7 +55,7 @@ export interface IpcApi {
   readMetadata(path: string): Promise<AppResult<FlacTrack>>;
   writeMetadata(track: FlacTrack): Promise<AppResult<void>>;
   selectDirectory(): Promise<string | undefined>;
-  scanDirectory(targetPaths: string[]): Promise<ScanResult>;
+  scanDirectory(targetPaths: string[]): Promise<AppResult<ScanResult>>;
   pickImage(): Promise<Picture | undefined>;
   getImageInfo(path: string): Promise<Picture | undefined>;
   renameFile(oldPath: string, newPath: string): Promise<AppResult<void>>;

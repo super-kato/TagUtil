@@ -1,5 +1,5 @@
 import { windowAdapter } from '@main/infrastructure/adapters/window-adapter';
-import { logger } from '@services/platform/logger';
+import { logger } from '@main/infrastructure/logging/logger';
 import { IPC_CHANNELS } from '@shared/ipc';
 
 /**

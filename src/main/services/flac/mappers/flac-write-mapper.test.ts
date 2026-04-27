@@ -1,117 +1,94 @@
-import { describe, it, expect } from 'vitest';
-import { mergeMetadataWithTags } from './flac-write-mapper';
-import { RawFlacData } from '@services/flac/types';
 import { FlacMetadata } from '@domain/flac/models';
+import { RawFlacData, RawPicture } from '@main/infrastructure/repositories/repository-types';
+import { describe, expect, it } from 'vitest';
+import { mergeMetadataWithTags } from './flac-write-mapper';
 
 describe('flac-write-mapper', () => {
-  describe('mergeMetadataWithTags', () => {
-    it('メタデータが既存のタグに正しくマージされること', () => {
-      const rawData: RawFlacData = {
-        path: '/path/to/audio.flac',
-        tags: {
-          TITLE: ['Old Title'],
-          CUSTOM: ['Custom Value']
-        },
-        pictures: [],
-        streamInfo: {}
-      };
+  const dummyRawData: RawFlacData = {
+    path: '/path/to/audio.flac',
+    tags: {
+      TITLE: ['Old Title'],
+      ARTIST: ['Old Artist'],
+      GENRE: ['Rock']
+    },
+    pictures: [],
+    streamInfo: {
+      sampleRate: 44100,
+      bitDepth: 16,
+      channels: 2,
+      duration: 100
+    }
+  };
 
-      const metadata: FlacMetadata = {
-        title: 'New Title',
-        album: 'New Album'
-      };
+  it('メタデータが既存のタグに正しくマージされること', () => {
+    const metadata: FlacMetadata = {
+      title: 'New Title',
+      artist: ['New Artist'],
+      trackNumber: '1'
+    };
 
-      const result = mergeMetadataWithTags(rawData, metadata);
+    const result = mergeMetadataWithTags(dummyRawData, metadata);
 
-      expect(result.tagMap['TITLE']).toBe('New Title');
-      expect(result.tagMap['ALBUM']).toBe('New Album');
-      // マッピングに含まれないタグは維持される（1要素なので文字列に変換されている）
-      expect(result.tagMap['CUSTOM']).toBe('Custom Value');
-    });
+    expect(result.tags.TITLE).toEqual(['New Title']);
+    expect(result.tags.ARTIST).toEqual(['New Artist']);
+    expect(result.tags.TRACKNUMBER).toEqual(['1']);
+    expect(result.tags.GENRE).toEqual(['Rock']); // 既存のタグが維持されること
+  });
 
-    it('複数値のプロパティが正しく書き込まれること', () => {
-      const rawData: RawFlacData = {
-        path: '/path/to/audio.flac',
-        tags: {},
-        pictures: [],
-        streamInfo: {}
-      };
+  it('複数値を持つプロパティが正しくマージされること', () => {
+    const metadata: FlacMetadata = {
+      title: 'Title',
+      artist: ['Artist 1', 'Artist 2']
+    };
 
-      const metadata: FlacMetadata = {
-        artist: ['Artist A', 'Artist B'],
-        genre: ['Genre X']
-      };
+    const result = mergeMetadataWithTags(dummyRawData, metadata);
 
-      const result = mergeMetadataWithTags(rawData, metadata);
+    expect(result.tags.ARTIST).toEqual(['Artist 1', 'Artist 2']);
+  });
 
-      expect(result.tagMap['ARTIST']).toEqual(['Artist A', 'Artist B']);
-      expect(result.tagMap['GENRE']).toEqual(['Genre X']);
-    });
+  it('空文字のメタデータはタグから削除されること', () => {
+    const metadata: FlacMetadata = {
+      title: '',
+      artist: []
+    };
 
-    it('別名（Synonyms）が正しく削除（クリーンアップ）されること', () => {
-      const rawData: RawFlacData = {
-        path: '/path/to/audio.flac',
-        tags: {
-          YEAR: ['2023'], // DATE の別名
-          ENSEMBLE: ['Old Ensemble'] // ALBUMARTIST の別名
-        },
-        pictures: [],
-        streamInfo: {}
-      };
+    const result = mergeMetadataWithTags(dummyRawData, metadata);
 
-      const metadata: FlacMetadata = {
-        date: '2024',
-        albumArtist: ['New Artist']
-      };
+    expect(result.tags.TITLE).toBeUndefined();
+    expect(result.tags.ARTIST).toBeUndefined();
+  });
 
-      const result = mergeMetadataWithTags(rawData, metadata);
+  it('シノニム（小文字タグ等）が正規化されて削除されること', () => {
+    const rawDataWithSynonyms: RawFlacData = {
+      ...dummyRawData,
+      tags: {
+        title: ['lower title'],
+        ARTIST: ['Old Artist']
+      }
+    };
+    const metadata: FlacMetadata = {
+      title: 'New Title'
+    };
 
-      expect(result.tagMap['DATE']).toBe('2024');
-      expect(result.tagMap['YEAR']).toBeUndefined();
-      expect(result.tagMap['ALBUMARTIST']).toEqual(['New Artist']);
-      expect(result.tagMap['ENSEMBLE']).toBeUndefined();
-    });
+    const result = mergeMetadataWithTags(rawDataWithSynonyms, metadata);
 
-    it('空文字列を指定した場合、そのタグが削除されること', () => {
-      const rawData: RawFlacData = {
-        path: '/path/to/audio.flac',
-        tags: {
-          TITLE: ['Existing Title'],
-          ARTIST: ['Artist 1', 'Artist 2']
-        },
-        pictures: [],
-        streamInfo: {}
-      };
+    expect(result.tags.TITLE).toEqual(['New Title']);
+    expect(result.tags.title).toBeUndefined();
+  });
 
-      const metadata: FlacMetadata = {
-        title: '',
-        artist: ['', '']
-      };
+  it('画像データが正しくセットされること', () => {
+    const metadata: FlacMetadata = {
+      title: 'Title'
+    };
+    const picture: RawPicture = {
+      mime: 'image/png',
+      buffer: Buffer.from('dummy'),
+      hash: 'hash'
+    };
 
-      const result = mergeMetadataWithTags(rawData, metadata);
+    const result = mergeMetadataWithTags(dummyRawData, metadata, picture);
 
-      expect(result.tagMap['TITLE']).toBeUndefined();
-      expect(result.tagMap['ARTIST']).toBeUndefined();
-    });
-
-    it('画像データが正しくマージされること', () => {
-      const rawData: RawFlacData = {
-        path: '/path/to/audio.flac',
-        tags: {},
-        pictures: [],
-        streamInfo: {}
-      };
-
-      const metadata: FlacMetadata = {};
-      const picture = {
-        mime: 'image/png',
-        buffer: Buffer.from('dummy'),
-        pictureType: 3
-      };
-
-      const result = mergeMetadataWithTags(rawData, metadata, picture);
-
-      expect(result.picture).toEqual(picture);
-    });
+    expect(result.pictures).toHaveLength(1);
+    expect(result.pictures[0].mime).toBe('image/png');
   });
 });

@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { computeMd5 } from '@main/utils/crypto';
 import { getMimeTypeFromPath } from '@main/utils/mime';
 import { pickImageFile } from '@services/platform/dialog';
-import { readRawData } from './reader';
+import { readRawFlacData } from '@main/infrastructure/repositories/flac-read-repository';
 
 /**
  * FLAC ファイルから埋め込まれた画像を抽出します。
@@ -13,7 +13,7 @@ import { readRawData } from './reader';
 export const extractEmbeddedImage = async (
   filePath: string
 ): Promise<{ buffer: Uint8Array; mime: string } | null> => {
-  const { pictures } = await readRawData(filePath);
+  const { pictures } = await readRawFlacData(filePath);
   const picture = pictures[0];
 
   if (!picture) {

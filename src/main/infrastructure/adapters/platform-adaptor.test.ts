@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { getPlatform } from './platform';
+import { afterEach, describe, expect, it, vi } from 'vitest';
+import { getPlatform } from './platform-adaptor';
 
 describe('platform service (main)', () => {
   afterEach(() => {

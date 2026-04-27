@@ -1,9 +1,9 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { app, BrowserWindow } from 'electron';
+import { logger } from './infrastructure/logging/logger';
 import { initializeIpc } from './ipc';
 import { setAppMenu } from './menu';
 import { registerProtocols, registerProtocolsPrivileged } from './protocols';
-import { logger } from './services/platform/logger';
 import { initAutoUpdater } from './services/platform/update';
 import { createWindow } from './window';
 
