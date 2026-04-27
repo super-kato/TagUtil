@@ -1,4 +1,4 @@
-import { CanonicalTagKey, TAG_DEFINITIONS, TagDefinition, TAG_PROPERTY_MAP } from '@domain/flac/tag-definitions';
+import { CanonicalTagKey, TAG_DEFINITIONS, TAG_PROPERTY_MAP } from '@domain/flac/tag-definitions';
 import { FlacMetadata, Picture } from '@domain/flac/models';
 import type * as readerImpl from 'music-metadata';
 import { computeMd5 } from '@main/utils/crypto';
@@ -34,22 +34,18 @@ export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacM
   };
 
   // TAG_DEFINITIONS に基づいて動的にテキストタグをマッピング
-  return (Object.entries(TAG_DEFINITIONS) as [CanonicalTagKey, TagDefinition][]).reduce(
-    (acc, [canonicalKey, def]) => {
-      const value = def.multiValue
-        ? getAllTags(tags, canonicalKey)
-        : getFirstTag(tags, canonicalKey);
+  return (Object.keys(TAG_DEFINITIONS) as CanonicalTagKey[]).reduce((acc, canonicalKey) => {
+    const def = TAG_DEFINITIONS[canonicalKey];
+    const value = def.multiValue ? getAllTags(tags, canonicalKey) : getFirstTag(tags, canonicalKey);
 
-      if (value !== undefined) {
-        const propertyName = TAG_PROPERTY_MAP[canonicalKey];
-        // propertyName はテキスト属性であることが保証されているが、
-        // string と string[] のユニオン型への代入を TS に認めさせるため、最小限のキャストを使用
-        (acc as Record<string, unknown>)[propertyName] = value;
-      }
-      return acc;
-    },
-    baseMetadata
-  );
+    if (value !== undefined) {
+      const propertyName = TAG_PROPERTY_MAP[canonicalKey];
+      // propertyName はテキスト属性であることが保証されているが、
+      // string と string[] のユニオン型への代入を TS に認めさせるため、最小限のキャストを使用
+      (acc as Record<string, unknown>)[propertyName] = value;
+    }
+    return acc;
+  }, baseMetadata);
 };
 
 /** ITag配列を Record<string, string[]> に変換 */
