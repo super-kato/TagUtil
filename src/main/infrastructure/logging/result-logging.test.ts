@@ -25,7 +25,8 @@ vi.mock('electron', () => ({
   }
 }));
 
-import * as formatter from '@domain/flac/app-error-formatter';
+import * as formatter from '@domain/errors/formatter';
+
 import { logger } from '@main/infrastructure/logging/logger';
 import { withResultLogging } from './result-logging';
 

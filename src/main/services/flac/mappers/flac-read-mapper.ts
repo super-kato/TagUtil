@@ -6,7 +6,8 @@ import {
   SINGLE_VALUE_PROPERTY_MAP,
   SingleValueCanonicalTagKey,
   TAG_DEFINITIONS
-} from '@domain/flac/tag-definitions';
+} from '@domain/audio/tag-definitions';
+
 import { RawFlacData, VorbisTags } from '@main/infrastructure/repositories/repository-types';
 
 /** パース済みの生データをドメインモデルに変換 */

@@ -7,7 +7,8 @@ import { tagRepository } from '@renderer/infrastructure/repositories/tag-reposit
 import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
 import { success, failure } from '@domain/common/result';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';
-import { appErrors } from '@domain/flac/errors';
+import { appErrors } from '@domain/errors/definitions';
+
 import type { FlacMetadata, FlacTrack } from '@domain/flac/models';
 import * as pathAdapter from '@renderer/infrastructure/adapters/path-adapter';
 

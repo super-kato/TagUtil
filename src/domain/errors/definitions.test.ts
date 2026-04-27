@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { appErrors } from './errors';
+import { appErrors, isAppError } from './definitions';
 import { APP_ERROR_TYPES } from './constants';
 
-describe('flac types', () => {
+describe('AppErrorDefinitions', () => {
   const options = { path: '/test.flac', detail: 'error' };
 
   describe('appErrors', () => {
@@ -38,6 +38,19 @@ describe('flac types', () => {
 
         expect(appErrors).toHaveProperty(key);
       });
+    });
+  });
+
+  describe('isAppError', () => {
+    it('正しい AppError オブジェクトを true と判定すること', () => {
+      const error = appErrors.parseFailed(options);
+      expect(isAppError(error)).toBe(true);
+    });
+
+    it('一般のエラーオブジェクトを false と判定すること', () => {
+      expect(isAppError(new Error())).toBe(false);
+      expect(isAppError({})).toBe(false);
+      expect(isAppError(null)).toBe(false);
     });
   });
 });

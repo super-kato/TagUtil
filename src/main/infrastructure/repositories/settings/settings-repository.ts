@@ -1,4 +1,5 @@
-import { TAG_PLACEHOLDERS } from '@domain/flac/constants';
+import { TAG_PLACEHOLDERS } from '@domain/audio/constants';
+
 import type { AppSettings } from '@shared/settings';
 import Store from 'electron-store';
 

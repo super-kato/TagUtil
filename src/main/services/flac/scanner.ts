@@ -1,7 +1,8 @@
 import { success } from '@domain/common/result';
-import { AppResult } from '@domain/flac/types';
+import { AppResult } from '@domain/types';
 import { ScanResult } from '@shared/flac';
-import { appErrors } from '@domain/flac/errors';
+import { appErrors } from '@domain/errors/definitions';
+
 import { toAppResultFailure } from '@main/utils/error-handler';
 import { isSupportedAudioFile } from '@main/utils/file-utils';
 import { scanFiles } from '@main/infrastructure/repositories/file/file-scanner-repository';

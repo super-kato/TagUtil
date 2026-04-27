@@ -1,6 +1,7 @@
 import { success } from '@domain/common/result';
-import { AppResult } from '@domain/flac/types';
-import { Picture } from '@domain/flac/models';
+import { AppResult } from '@domain/types';
+import { Picture } from '@domain/audio/models';
+
 import { readFileWithHash } from '@main/infrastructure/repositories/file/file-read-repository';
 import { getMimeTypeFromPath } from '@main/utils/mime';
 import { pickImageFile } from '@main/infrastructure/platform/dialog';

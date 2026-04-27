@@ -1,7 +1,8 @@
 import { MESSAGES } from '@domain/common/messages';
 import type { EditableMultiKey, EditableSingleKey } from '@domain/editor/batch-metadata';
 import type { FlacTrack } from '@domain/flac/models';
-import type { AppResult } from '@domain/flac/types';
+import type { AppResult } from '@domain/types';
+
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';
 import { logStore } from '@renderer/stores/log-store.svelte';
 import { TrackRecord } from '@renderer/stores/track-record.svelte';

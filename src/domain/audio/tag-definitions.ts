@@ -1,4 +1,4 @@
-import { FlacMetadata } from './models';
+import { AudioMetadata } from './models';
 
 /**
  * タグの定義情報を表すインターフェース。
@@ -49,20 +49,20 @@ export type MultiValueCanonicalTagKey = {
 export type SingleValueCanonicalTagKey = Exclude<CanonicalTagKey, MultiValueCanonicalTagKey>;
 
 /**
- * FlacMetadata のプロパティのうち、複数値（string[]）を持つもののキーを抽出する型。
+ * AudioMetadata のプロパティのうち、複数値（string[]）を持つもののキーを抽出する型。
  */
 export type MultiValueMetadataKey = {
-  [K in keyof FlacMetadata]: FlacMetadata[K] extends string[] | undefined ? K : never;
-}[keyof FlacMetadata] &
-  keyof FlacMetadata;
+  [K in keyof AudioMetadata]: AudioMetadata[K] extends string[] | undefined ? K : never;
+}[keyof AudioMetadata] &
+  keyof AudioMetadata;
 
 /**
- * FlacMetadata のプロパティのうち、単一値（string）を持つもののキーを抽出する型。
+ * AudioMetadata のプロパティのうち、単一値（string）を持つもののキーを抽出する型。
  */
 export type SingleValueMetadataKey = {
-  [K in keyof FlacMetadata]: FlacMetadata[K] extends string | undefined ? K : never;
-}[keyof FlacMetadata] &
-  keyof FlacMetadata;
+  [K in keyof AudioMetadata]: AudioMetadata[K] extends string | undefined ? K : never;
+}[keyof AudioMetadata] &
+  keyof AudioMetadata;
 
 /**
  * 複数値タグのマッピング定義。

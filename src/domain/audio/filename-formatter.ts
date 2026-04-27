@@ -2,9 +2,9 @@ import { failure, success } from '@domain/common/result';
 import { ValuesOf } from '@shared/types';
 import { sanitize } from '@shared/utils/filename';
 import { TAG_PLACEHOLDERS } from './constants';
-import { appErrors } from './errors';
-import type { AppResult } from './types';
-import type { FlacMetadata, FlacTrack } from './models';
+import { appErrors } from '@domain/errors/definitions';
+import type { AppResult } from '@domain/types';
+import type { AudioMetadata, AudioTrack } from './models';
 
 type ResolverOptions = { trackNumberPadding: number };
 
@@ -23,7 +23,7 @@ export interface FormatOptions {
  */
 const PLACEHOLDER_RESOLVERS: Record<
   ValuesOf<typeof TAG_PLACEHOLDERS>,
-  (metadata: FlacMetadata, options: ResolverOptions) => string | undefined
+  (metadata: AudioMetadata, options: ResolverOptions) => string | undefined
 > = {
   [TAG_PLACEHOLDERS.TRACK_NUMBER]: (metadata, { trackNumberPadding }) =>
     metadata.trackNumber?.toString().padStart(trackNumberPadding, '0'),
@@ -35,11 +35,11 @@ const PLACEHOLDER_RESOLVERS: Record<
 } as const;
 
 /**
- * メタデータに基づいてFLACのファイル名を生成します。
+ * メタデータに基づいてファイル名を生成します。
  * @param track トラック情報
  * @param options 生成オプション
  */
-export const formatFlacFilename = (track: FlacTrack, options: FormatOptions): AppResult<string> => {
+export const formatFilename = (track: AudioTrack, options: FormatOptions): AppResult<string> => {
   const placeholders = Object.values(TAG_PLACEHOLDERS) as ValuesOf<typeof TAG_PLACEHOLDERS>[];
 
   // パターンに少なくとも1つのプレースホルダが含まれているかチェック

@@ -1,6 +1,8 @@
 import { success } from '@domain/common/result';
-import type { FlacTrack, Picture } from '@domain/flac/models';
-import type { AppResult } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/models';
+import type { Picture } from '@domain/audio/models';
+import type { AppResult } from '@domain/types';
+
 import { pooledAll } from '@renderer/utils/concurrency';
 
 /**
