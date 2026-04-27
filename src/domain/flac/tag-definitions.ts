@@ -37,27 +37,54 @@ export const TAG_DEFINITIONS = {
 export type CanonicalTagKey = keyof typeof TAG_DEFINITIONS;
 
 /**
- * FlacMetadata のプロパティのうち、テキストタグとして扱える（string | string[] | undefined）もののキーを抽出する型。
+ * 複数値（string[]）を持つタグの標準キーの型。
  */
-export type TextMetadataKey = {
-  [K in keyof FlacMetadata]: FlacMetadata[K] extends string | string[] | undefined ? K : never;
+export type MultiValueCanonicalTagKey = {
+  [K in CanonicalTagKey]: (typeof TAG_DEFINITIONS)[K]['multiValue'] extends true ? K : never;
+}[CanonicalTagKey];
+
+/**
+ * 単一値（string）を持つタグの標準キーの型。
+ */
+export type SingleValueCanonicalTagKey = Exclude<CanonicalTagKey, MultiValueCanonicalTagKey>;
+
+/**
+ * FlacMetadata のプロパティのうち、複数値（string[]）を持つもののキーを抽出する型。
+ */
+export type MultiValueMetadataKey = {
+  [K in keyof FlacMetadata]: FlacMetadata[K] extends string[] | undefined ? K : never;
 }[keyof FlacMetadata] &
   keyof FlacMetadata;
 
 /**
- * CanonicalTagKey と FlacMetadata のプロパティ名とのマッピング定義。
+ * FlacMetadata のプロパティのうち、単一値（string）を持つもののキーを抽出する型。
  */
-export const TAG_PROPERTY_MAP: Record<CanonicalTagKey, TextMetadataKey> = {
-  TITLE: 'title',
+export type SingleValueMetadataKey = {
+  [K in keyof FlacMetadata]: FlacMetadata[K] extends string | undefined ? K : never;
+}[keyof FlacMetadata] &
+  keyof FlacMetadata;
+
+/**
+ * 複数値タグのマッピング定義。
+ */
+export const MULTI_VALUE_PROPERTY_MAP: Record<MultiValueCanonicalTagKey, MultiValueMetadataKey> = {
   ARTIST: 'artist',
-  ALBUM: 'album',
   ALBUMARTIST: 'albumArtist',
-  DATE: 'date',
   GENRE: 'genre',
-  COMMENT: 'comment',
-  TRACKNUMBER: 'trackNumber',
-  TRACKTOTAL: 'trackTotal',
-  DISCNUMBER: 'discNumber',
-  DISCTOTAL: 'discTotal',
-  CATALOGNUMBER: 'catalogNumber'
+  COMMENT: 'comment'
 } as const;
+
+/**
+ * 単一値タグのマッピング定義。
+ */
+export const SINGLE_VALUE_PROPERTY_MAP: Record<SingleValueCanonicalTagKey, SingleValueMetadataKey> =
+  {
+    TITLE: 'title',
+    ALBUM: 'album',
+    DATE: 'date',
+    TRACKNUMBER: 'trackNumber',
+    TRACKTOTAL: 'trackTotal',
+    DISCNUMBER: 'discNumber',
+    DISCTOTAL: 'discTotal',
+    CATALOGNUMBER: 'catalogNumber'
+  } as const;

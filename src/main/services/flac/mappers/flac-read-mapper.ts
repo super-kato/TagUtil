@@ -1,8 +1,15 @@
-import { CanonicalTagKey, TAG_DEFINITIONS, TAG_PROPERTY_MAP } from '@domain/flac/tag-definitions';
 import { FlacMetadata, Picture } from '@domain/flac/models';
-import type * as readerImpl from 'music-metadata';
+import {
+  CanonicalTagKey,
+  MULTI_VALUE_PROPERTY_MAP,
+  MultiValueCanonicalTagKey,
+  SINGLE_VALUE_PROPERTY_MAP,
+  SingleValueCanonicalTagKey,
+  TAG_DEFINITIONS
+} from '@domain/flac/tag-definitions';
 import { computeMd5 } from '@main/utils/crypto';
 import { RawFlacData, RawPicture } from '@services/flac/types';
+import type * as readerImpl from 'music-metadata';
 
 /**
  * テキストタグとして読み込み・書き込みをスキップするタグキーのリスト。
@@ -28,24 +35,31 @@ export const toRawFlacData = (mmData: readerImpl.IAudioMetadata, path: string): 
 export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacMetadata => {
   const { tags } = rawData;
 
-  const baseMetadata: FlacMetadata = {
+  const acc: FlacMetadata = {
     picture: mapToDomainPicture(rawData, filePath),
     streamInfo: rawData.streamInfo
   };
 
-  // TAG_DEFINITIONS に基づいて動的にテキストタグをマッピング
-  return (Object.keys(TAG_DEFINITIONS) as CanonicalTagKey[]).reduce((acc, canonicalKey) => {
-    const def = TAG_DEFINITIONS[canonicalKey];
-    const value = def.multiValue ? getAllTags(tags, canonicalKey) : getFirstTag(tags, canonicalKey);
-
-    if (value !== undefined) {
-      const propertyName = TAG_PROPERTY_MAP[canonicalKey];
-      // propertyName はテキスト属性であることが保証されているが、
-      // string と string[] のユニオン型への代入を TS に認めさせるため、最小限のキャストを使用
-      (acc as Record<string, unknown>)[propertyName] = value;
+  // 複数値タグのマッピング
+  for (const key of Object.keys(MULTI_VALUE_PROPERTY_MAP) as MultiValueCanonicalTagKey[]) {
+    const values = getAllTags(tags, key);
+    if (values === undefined) {
+      continue;
     }
-    return acc;
-  }, baseMetadata);
+    const propertyName = MULTI_VALUE_PROPERTY_MAP[key];
+    acc[propertyName] = values;
+  }
+  // 単一値タグのマッピング
+  for (const key of Object.keys(SINGLE_VALUE_PROPERTY_MAP) as SingleValueCanonicalTagKey[]) {
+    const value = getFirstTag(tags, key);
+    if (value === undefined) {
+      continue;
+    }
+    const propertyName = SINGLE_VALUE_PROPERTY_MAP[key];
+    acc[propertyName] = value;
+  }
+
+  return acc;
 };
 
 /** ITag配列を Record<string, string[]> に変換 */

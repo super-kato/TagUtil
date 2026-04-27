@@ -1,5 +1,12 @@
 import { FlacMetadata } from '@domain/flac/models';
-import { CanonicalTagKey, TAG_DEFINITIONS, TAG_PROPERTY_MAP } from '@domain/flac/tag-definitions';
+import {
+  CanonicalTagKey,
+  MULTI_VALUE_PROPERTY_MAP,
+  MultiValueCanonicalTagKey,
+  SINGLE_VALUE_PROPERTY_MAP,
+  SingleValueCanonicalTagKey,
+  TAG_DEFINITIONS
+} from '@domain/flac/tag-definitions';
 import { RawFlacData } from '@services/flac/types';
 import { FlacTagMap, FlacTags } from 'flac-tagger';
 
@@ -37,10 +44,18 @@ const convertRawTagsToFlacTagMap = (tags: Record<string, string[]>): FlacTagMap 
  * 送信されたメタデータ（テキスト）をタグマップに適用します。
  */
 const applyTextMetadata = (tagMap: FlacTagMap, metadata: FlacMetadata): FlacTagMap => {
-  return (Object.keys(TAG_DEFINITIONS) as CanonicalTagKey[]).reduce((acc, canonicalKey) => {
-    const propertyName = TAG_PROPERTY_MAP[canonicalKey];
-    return mergeField(acc, canonicalKey, metadata[propertyName]);
+  const multiValueApplied = (
+    Object.keys(MULTI_VALUE_PROPERTY_MAP) as MultiValueCanonicalTagKey[]
+  ).reduce((acc, key) => {
+    return mergeField(acc, key, metadata[MULTI_VALUE_PROPERTY_MAP[key]]);
   }, tagMap);
+
+  return (Object.keys(SINGLE_VALUE_PROPERTY_MAP) as SingleValueCanonicalTagKey[]).reduce(
+    (acc, key) => {
+      return mergeField(acc, key, metadata[SINGLE_VALUE_PROPERTY_MAP[key]]);
+    },
+    multiValueApplied
+  );
 };
 
 /**
