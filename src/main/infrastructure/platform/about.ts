@@ -1,16 +1,16 @@
-import { app, BrowserWindow, dialog, nativeImage } from 'electron';
-import { readFileSync } from 'fs';
-import { join } from 'path';
-import pkg from '@root/package.json';
+import { getAppResourcePath } from '@main/infrastructure/repositories/file/file-path-repository';
+import { readJsonFile } from '@main/infrastructure/repositories/file/file-read-repository';
 import iconPath from '@resources/icon.png?asset';
+import pkg from '@root/package.json';
+import { BrowserWindow, dialog, nativeImage } from 'electron';
 
 /**
  * 「このアプリについて」ダイアログを表示します。
  */
-export const showAboutWindow = (): void => {
+export const showAboutWindow = async (): Promise<void> => {
   const icon = nativeImage.createFromPath(iconPath);
 
-  const result = dialog.showMessageBoxSync({
+  const { response } = await dialog.showMessageBox({
     type: 'info',
     title: 'About TagUtil',
     message: 'TagUtil',
@@ -27,30 +27,27 @@ export const showAboutWindow = (): void => {
     icon
   });
 
+  if (response !== 1) {
+    return;
+  }
+
   // Acknowledgements ボタンが押された場合
-  if (result === 1) {
-    const licensesPath = join(app.getAppPath(), 'resources/licenses.json');
-    let creditsText = '';
-    try {
-      const credits = JSON.parse(readFileSync(licensesPath, 'utf8')) as string[];
-      creditsText = credits.join('\n');
-    } catch {
-      creditsText = 'Failed to load';
+  const licensesPath = getAppResourcePath('resources/licenses.json');
+  const credits = await readJsonFile<string[]>(licensesPath);
+  const creditsText = credits.join('\n');
+
+  const licenseWindow = new BrowserWindow({
+    width: 600,
+    height: 480,
+    title: 'Acknowledgements',
+    autoHideMenuBar: true,
+    webPreferences: {
+      nodeIntegration: false,
+      contextIsolation: true
     }
+  });
 
-    const licenseWindow = new BrowserWindow({
-      width: 600,
-      height: 480,
-      title: 'Acknowledgements',
-      autoHideMenuBar: true,
-      webPreferences: {
-        nodeIntegration: false,
-        contextIsolation: true
-      }
-    });
-
-    // プレーンテキストとして流し込む（スクロール可能）
-    const html = `
+  const html = `
       <html>
         <head>
           <style>
@@ -76,6 +73,5 @@ export const showAboutWindow = (): void => {
         </body>
       </html>
     `;
-    licenseWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
-  }
+  licenseWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(html)}`);
 };

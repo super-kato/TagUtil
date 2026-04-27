@@ -1,15 +1,18 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { writeMetadata } from './writer';
-import { readRawData } from './reader';
-import { resolvePictureForWrite } from './mappers/flac-write-picture-resolver';
-import { mergeMetadataWithTags } from './mappers/flac-write-mapper';
-import { withAtomicWrite } from '@main/utils/file-utils';
 import type { FlacTrack } from '@domain/flac/models';
-import type { RawFlacData } from './types';
-import type { FlacTags } from 'flac-tagger';
+import { readRawFlacData } from '@main/infrastructure/repositories/flac/flac-read-repository';
+import { writeFlacTagsWithAtomic } from '@main/infrastructure/repositories/flac/flac-write-repository';
+import { RawFlacData, RawFlacTags } from '@main/infrastructure/repositories/repository-types';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { mergeMetadataWithTags } from './mappers/flac-write-mapper';
+import { resolvePictureForWrite } from './mappers/flac-write-picture-resolver';
+import { writeMetadata } from './writer';
 
-vi.mock('./reader', () => ({
-  readRawData: vi.fn()
+vi.mock('@main/infrastructure/repositories/flac/flac-read-repository', () => ({
+  readRawFlacData: vi.fn()
+}));
+
+vi.mock('@main/infrastructure/repositories/flac/flac-write-repository', () => ({
+  writeFlacTagsWithAtomic: vi.fn()
 }));
 
 vi.mock('./mappers/flac-write-picture-resolver', () => ({
@@ -18,14 +21,6 @@ vi.mock('./mappers/flac-write-picture-resolver', () => ({
 
 vi.mock('./mappers/flac-write-mapper', () => ({
   mergeMetadataWithTags: vi.fn()
-}));
-
-vi.mock('@main/utils/file-utils', () => ({
-  withAtomicWrite: vi.fn()
-}));
-
-vi.mock('flac-tagger', () => ({
-  writeFlacTags: vi.fn()
 }));
 
 describe('writer', () => {
@@ -47,18 +42,21 @@ describe('writer', () => {
         path: mockTrack.path,
         tags: {},
         pictures: [],
-        streamInfo: {}
+        streamInfo: {
+          sampleRate: 44100,
+          bitDepth: 16,
+          channels: 2,
+          duration: 100
+        }
       };
-      const mockTags: FlacTags = {
-        tagMap: { TITLE: 'Test Title' }
+      const mockTags: RawFlacTags = {
+        tags: { TITLE: ['Test Title'] },
+        pictures: []
       };
 
-      vi.mocked(readRawData).mockResolvedValue(mockRawData);
+      vi.mocked(readRawFlacData).mockResolvedValue(mockRawData);
       vi.mocked(resolvePictureForWrite).mockResolvedValue(undefined);
       vi.mocked(mergeMetadataWithTags).mockReturnValue(mockTags);
-      vi.mocked(withAtomicWrite).mockImplementation(async (_, task) => {
-        await task('/path/to/temp.flac');
-      });
 
       const result = await writeMetadata(mockTrack);
 
@@ -66,13 +64,13 @@ describe('writer', () => {
       if (result.type === 'success') {
         expect(result.value).toBe(mockTrack.path);
       }
-      expect(withAtomicWrite).toHaveBeenCalled();
+      expect(writeFlacTagsWithAtomic).toHaveBeenCalled();
     });
 
     it('異常系: ファイルが存在しない場合に writeFailed エラーを返すこと', async () => {
       const error = new Error('File not found');
       Object.defineProperty(error, 'code', { value: 'ENOENT' });
-      vi.mocked(readRawData).mockRejectedValue(error);
+      vi.mocked(readRawFlacData).mockRejectedValue(error);
 
       const result = await writeMetadata(mockTrack);
 
@@ -86,7 +84,7 @@ describe('writer', () => {
     it('異常系: 権限不足の場合に writeFailed エラーを返すこと', async () => {
       const error = new Error('Permission denied');
       Object.defineProperty(error, 'code', { value: 'EACCES' });
-      vi.mocked(readRawData).mockRejectedValue(error);
+      vi.mocked(readRawFlacData).mockRejectedValue(error);
 
       const result = await writeMetadata(mockTrack);
 
@@ -99,7 +97,7 @@ describe('writer', () => {
 
     it('異常系: その他のエラーの場合に writeFailed エラーを返すこと', async () => {
       const error = new Error('Unknown error');
-      vi.mocked(readRawData).mockRejectedValue(error);
+      vi.mocked(readRawFlacData).mockRejectedValue(error);
 
       const result = await writeMetadata(mockTrack);
 

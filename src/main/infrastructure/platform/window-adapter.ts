@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron';
+import { BrowserWindow, WebContents } from 'electron';
 
 /**
  * 現在アクティブなすべてのウィンドウ（破棄されていないもの）に対して、
@@ -15,8 +15,21 @@ const sendToAllWindows = (channel: string, data: unknown): void => {
 };
 
 /**
+ * 送信元の WebContents に紐づくウィンドウ（メインウィンドウ）を表示します。
+ * @param webContents 表示対象の WebContents
+ */
+const showMainWindow = (webContents: WebContents): void => {
+  const window = BrowserWindow.fromWebContents(webContents);
+  if (!window) {
+    return;
+  }
+  window.show();
+};
+
+/**
  * Electron のウィンドウ操作に関する物理的な実装を担当するアダプター。
  */
 export const windowAdapter = {
-  sendToAllWindows
+  sendToAllWindows,
+  showMainWindow
 } as const;

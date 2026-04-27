@@ -38,28 +38,25 @@ describe('SettingsStore', () => {
     vi.spyOn(settingsRepository, 'updateSettings').mockResolvedValue(success(undefined));
   });
 
-  it('初期状態は undefined であり、コンストラクタで refresh が呼ばれること', async () => {
+  it('初期状態は undefined であり、refresh() を呼ぶことで設定が読み込まれること', async () => {
     const store = new SettingsStore();
 
     expect(store.current).toBeUndefined();
+    await store.refresh();
     expect(settingsRepository.getSettings).toHaveBeenCalled();
-
-    // Side effect の完了を待ってリークを防ぐ
-    await vi.waitUntil(() => store.current !== undefined);
+    expect(store.current).toEqual(mockDefaultSettings);
   });
 
   it('refresh 成功時に設定が更新されること', async () => {
     const store = new SettingsStore();
-
-    // 状態が更新されるまで待機
-    await vi.waitUntil(() => store.current !== undefined);
+    await store.refresh();
 
     expect(store.current).toEqual(mockDefaultSettings);
   });
 
   it('save で現在の設定が永続化され、refresh が呼ばれること', async () => {
     const store = new SettingsStore();
-    await vi.waitUntil(() => store.current !== undefined);
+    await store.refresh();
 
     store.update('theme', 'light');
 
@@ -81,7 +78,7 @@ describe('SettingsStore', () => {
   describe('データ操作メソッド', () => {
     it('update で単純なプロパティを更新できること', async () => {
       const store = new SettingsStore();
-      await vi.waitUntil(() => store.current !== undefined);
+      await store.refresh();
 
       store.update('renamePattern', '{artist} - {title}');
       store.update('trackNumberPadding', 3);
@@ -92,7 +89,7 @@ describe('SettingsStore', () => {
 
     it('addGenre でジャンルを追加できること', async () => {
       const store = new SettingsStore();
-      await vi.waitUntil(() => store.current !== undefined);
+      await store.refresh();
 
       store.addGenre('Jazz');
       expect(store.current?.genres).toContain('Jazz');
@@ -100,7 +97,7 @@ describe('SettingsStore', () => {
 
     it('removeGenre でジャンルを削除し、クイックジャンルからも同期削除されること', async () => {
       const store = new SettingsStore();
-      await vi.waitUntil(() => store.current !== undefined);
+      await store.refresh();
 
       // 初期状態で Rock が両方にある
       store.removeGenre('Rock');
@@ -110,7 +107,7 @@ describe('SettingsStore', () => {
 
     it('toggleQuickGenre で選択状態を切り替え、最大数制限が守られること', async () => {
       const store = new SettingsStore();
-      await vi.waitUntil(() => store.current !== undefined);
+      await store.refresh();
 
       // 初期値 Rock (1つ)
       store.addGenre('G1');
@@ -153,7 +150,7 @@ describe('SettingsStore', () => {
 
     it('save 失敗時に refresh が呼ばれないこと', async () => {
       const store = new SettingsStore();
-      await vi.waitUntil(() => store.current !== undefined);
+      await store.refresh();
 
       vi.spyOn(settingsRepository, 'updateSettings').mockResolvedValue({
         type: 'error',

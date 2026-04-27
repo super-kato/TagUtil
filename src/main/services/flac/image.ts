@@ -1,11 +1,10 @@
 import { success } from '@domain/common/result';
 import { AppResult } from '@domain/flac/types';
 import { Picture } from '@domain/flac/models';
-import { readFile } from 'node:fs/promises';
-import { computeMd5 } from '@main/utils/crypto';
+import { readFileWithHash } from '@main/infrastructure/repositories/file/file-read-repository';
 import { getMimeTypeFromPath } from '@main/utils/mime';
-import { pickImageFile } from '@services/platform/dialog';
-import { readRawData } from './reader';
+import { pickImageFile } from '@main/infrastructure/platform/dialog';
+import { readRawFlacData } from '@main/infrastructure/repositories/flac/flac-read-repository';
 
 /**
  * FLAC ファイルから埋め込まれた画像を抽出します。
@@ -13,7 +12,7 @@ import { readRawData } from './reader';
 export const extractEmbeddedImage = async (
   filePath: string
 ): Promise<{ buffer: Uint8Array; mime: string } | null> => {
-  const { pictures } = await readRawData(filePath);
+  const { pictures } = await readRawFlacData(filePath);
   const picture = pictures[0];
 
   if (!picture) {
@@ -31,10 +30,11 @@ export const extractEmbeddedImage = async (
  * @param filePath 画像ファイルの絶対パス
  */
 export const getImageInfo = async (filePath: string): Promise<AppResult<Picture>> => {
+  const { hash } = await readFileWithHash(filePath);
   return success({
     format: getMimeTypeFromPath(filePath),
     sourcePath: filePath,
-    hash: computeMd5(await readFile(filePath))
+    hash: hash
   });
 };
 
