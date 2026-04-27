@@ -1,5 +1,5 @@
 import { Picture } from '@domain/flac/models';
-import { readFileWithHash } from '@main/infrastructure/repositories/file-repository';
+import { readFileWithHash } from '@main/infrastructure/repositories/file-read-repository';
 import { RawFlacData, RawPicture } from '@main/infrastructure/repositories/repository-types';
 
 /** 書き込みに使用する最終的な画像データを解決（読み込み含む） */

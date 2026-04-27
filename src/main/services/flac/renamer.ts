@@ -3,10 +3,8 @@ import { appErrors } from '@domain/flac/errors';
 import { formatFlacFilename } from '@domain/flac/filename-formatter';
 import type { FlacTrack } from '@domain/flac/models';
 import { AppResult } from '@domain/flac/types';
-import {
-  renameFileExclusive,
-  resolveNewPath
-} from '@main/infrastructure/repositories/file-repository';
+import { renameFileExclusive } from '@main/infrastructure/repositories/file-rename-repository';
+import { resolveNewPath } from '@main/infrastructure/repositories/file-path-repository';
 import { settingsRepository } from '@main/infrastructure/repositories/settings-repository';
 import { toAppResultFailure } from '@main/utils/error-handler';
 

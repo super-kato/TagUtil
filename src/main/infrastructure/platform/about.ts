@@ -1,7 +1,5 @@
-import {
-  getAppResourcePath,
-  readJsonFile
-} from '@main/infrastructure/repositories/file-repository';
+import { getAppResourcePath } from '@main/infrastructure/repositories/file-path-repository';
+import { readJsonFile } from '@main/infrastructure/repositories/file-read-repository';
 import iconPath from '@resources/icon.png?asset';
 import pkg from '@root/package.json';
 import { BrowserWindow, dialog, nativeImage } from 'electron';

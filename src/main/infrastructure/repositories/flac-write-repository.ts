@@ -1,4 +1,4 @@
-import { withAtomicWrite } from './file-repository';
+import { withAtomicWrite } from './file-write-repository';
 import { FlacTagMap, FlacTags, writeFlacTags } from 'flac-tagger';
 import { PICTURE_TYPE_FRONT_COVER, RawFlacTags, RawPicture, VorbisTags } from './repository-types';
 
