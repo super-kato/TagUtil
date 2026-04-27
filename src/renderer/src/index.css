@@ -5,6 +5,7 @@
   --bg-secondary: #252525;
   --bg-button: #3d3d3d;
   --bg-button-hover: #4d4d4d;
+  --bg-header: #181818;
 
   /* 境界線と装飾 */
   --border-primary: #444;
@@ -46,6 +47,10 @@
   /* フォーカスエフェクト */
   --focus-ring: 0 0 0 2px var(--accent-primary-dim);
   --focus-glow: 0 0 6px var(--selection-glow);
+
+  /* ポップオーバー / ツールチップ */
+  --bg-popover: rgba(30, 30, 30, 0.95);
+  --shadow-popover: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 :root[data-theme='light'] {
@@ -54,6 +59,7 @@
   --bg-secondary: #f0f2f5;
   --bg-button: #f0f2f5;
   --bg-button-hover: #e4e6e9;
+  --bg-header: #f8f9fa;
 
   --border-primary: #e8e8e8;
   --border-secondary: #dcdcdc;
@@ -74,6 +80,9 @@
   --accent-primary-dim: rgba(155, 89, 182, 0.05);
   --selection-bg: rgba(155, 89, 182, 0.08);
   --bg-hover: rgba(0, 0, 0, 0.03);
+
+  --bg-popover: rgba(255, 255, 255, 0.98);
+  --shadow-popover: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 *,
@@ -225,12 +234,12 @@ body {
   position-try-fallbacks: flip-block;
   margin: 0.5rem;
   padding: 0.4rem 0.8rem;
-  background-color: rgba(30, 30, 30, 0.95);
+  background-color: var(--bg-popover);
   color: var(--text-primary);
   border: 1px solid var(--border-secondary);
   border-radius: var(--radius-md);
   font-size: 0.75rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-popover);
   pointer-events: none;
   z-index: 1000;
   backdrop-filter: blur(4px);
