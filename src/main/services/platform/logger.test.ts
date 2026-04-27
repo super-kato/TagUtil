@@ -7,7 +7,10 @@ vi.mock('electron-log/main', () => ({
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
-    initialize: vi.fn()
+    initialize: vi.fn(),
+    errorHandler: {
+      startCatching: vi.fn()
+    }
   }
 }));
 

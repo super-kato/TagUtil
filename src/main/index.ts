@@ -1,15 +1,13 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { app, BrowserWindow } from 'electron';
-import log from 'electron-log/main';
 import { initializeIpc } from './ipc';
-import { registerProtocolsPrivileged, registerProtocols } from './protocols';
-import { createWindow } from './window';
-import { initAutoUpdater } from './services/platform/update';
 import { setAppMenu } from './menu';
+import { registerProtocols, registerProtocolsPrivileged } from './protocols';
+import { logger } from './services/platform/logger';
+import { initAutoUpdater } from './services/platform/update';
+import { createWindow } from './window';
 
-// Initialize electron-log
-log.initialize();
-log.errorHandler.startCatching();
+logger.info({ context: 'App', message: 'Application starting...' });
 
 registerProtocolsPrivileged();
 

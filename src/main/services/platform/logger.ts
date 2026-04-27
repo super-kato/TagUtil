@@ -16,6 +16,12 @@ type LoggerOptions = Omit<LogParams, 'level'>;
 class Logger extends EventEmitter {
   static readonly #LOG_EVENT = 'log';
 
+  constructor() {
+    super();
+    log.initialize();
+    log.errorHandler.startCatching();
+  }
+
   public info(options: LoggerOptions, ...args: unknown[]): void {
     this.#log({ ...options, level: 'INFO' }, ...args);
   }
