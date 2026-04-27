@@ -31,6 +31,17 @@
       return;
     }
     setAppTheme(theme);
+
+    // OSのテーマ設定変更を監視
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+    const updateIsLight = (): void => {
+      const isLight = theme === 'light' || (theme === 'system' && mediaQuery.matches);
+      document.documentElement.setAttribute('data-is-light', isLight.toString());
+    };
+
+    updateIsLight();
+    mediaQuery.addEventListener('change', updateIsLight);
+    return () => mediaQuery.removeEventListener('change', updateIsLight);
   });
 </script>
 
