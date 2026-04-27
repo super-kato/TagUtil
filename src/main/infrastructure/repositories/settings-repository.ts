@@ -11,7 +11,7 @@ const SETTINGS_FILE_NAME = 'tagutil-settings';
 export const DEFAULT_SETTINGS: AppSettings = {
   renamePattern: `${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`,
   trackNumberPadding: 2,
-  theme: 'dark',
+  theme: 'system',
   genres: [
     'Pop',
     'Soundtrack',

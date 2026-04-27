@@ -50,6 +50,9 @@ describe('dom-utils', () => {
 
       setAppTheme('light');
       expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+
+      setAppTheme('system');
+      expect(document.documentElement.getAttribute('data-theme')).toBe('system');
     });
   });
 });

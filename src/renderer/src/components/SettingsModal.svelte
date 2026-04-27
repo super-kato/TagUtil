@@ -19,7 +19,7 @@
     uiState.closeSettings();
   };
 
-  const themes: ColorTheme[] = ['light', 'dark'];
+  const themes: ColorTheme[] = ['light', 'dark', 'system'];
 </script>
 
 <Modal isOpen={uiState.isSettingsOpen} onClose={handleCancel} title="Settings">
