@@ -1,5 +1,4 @@
 import type { AppResult } from '@domain/types';
-
 import type { AppSettings } from '@shared/settings';
 
 /**
