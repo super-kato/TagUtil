@@ -1,4 +1,4 @@
-export type ColorTheme = 'light' | 'dark';
+export type ColorTheme = 'light' | 'dark' | 'system';
 
 /**
  * アプリケーションのユーザー設定の型定義。

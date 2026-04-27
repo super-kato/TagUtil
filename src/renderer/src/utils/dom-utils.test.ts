@@ -1,5 +1,5 @@
 /** @vitest-environment jsdom */
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { describe, it, expect, afterEach, beforeEach, vi } from 'vitest';
 import { isInputFocused, setAppTheme } from './dom-utils';
 
 describe('dom-utils', () => {
@@ -44,12 +44,41 @@ describe('dom-utils', () => {
   });
 
   describe('setAppTheme', () => {
-    it('document.documentElement に data-theme 属性を設定すること', () => {
+    beforeEach(() => {
+      // matchMedia のモック
+      Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: vi.fn().mockImplementation((query) => ({
+          matches: false,
+          media: query,
+          onchange: null,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+          dispatchEvent: vi.fn()
+        }))
+      });
+    });
+
+    it('document.documentElement に data-is-light 属性を設定すること', () => {
       setAppTheme('dark');
-      expect(document.documentElement.getAttribute('data-theme')).toBe('dark');
+      expect(document.documentElement.getAttribute('data-is-light')).toBe('false');
 
       setAppTheme('light');
-      expect(document.documentElement.getAttribute('data-theme')).toBe('light');
+      expect(document.documentElement.getAttribute('data-is-light')).toBe('true');
+
+      // system テーマで OS が light の場合
+      vi.mocked(window.matchMedia).mockReturnValue({
+        matches: true
+      } as unknown as MediaQueryList);
+      setAppTheme('system');
+      expect(document.documentElement.getAttribute('data-is-light')).toBe('true');
+
+      // system テーマで OS が dark の場合
+      vi.mocked(window.matchMedia).mockReturnValue({
+        matches: false
+      } as unknown as MediaQueryList);
+      setAppTheme('system');
+      expect(document.documentElement.getAttribute('data-is-light')).toBe('false');
     });
   });
 });

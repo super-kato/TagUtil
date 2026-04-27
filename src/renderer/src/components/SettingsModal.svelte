@@ -19,7 +19,7 @@
     uiState.closeSettings();
   };
 
-  const themes: ColorTheme[] = ['light', 'dark'];
+  const themes: ColorTheme[] = ['light', 'dark', 'system'];
 </script>
 
 <Modal isOpen={uiState.isSettingsOpen} onClose={handleCancel} title="Settings">
@@ -219,10 +219,6 @@
 
   .genre-item:hover:not(.disabled) {
     background-color: var(--bg-hover);
-  }
-
-  .genre-item.selected {
-    color: var(--accent-primary);
   }
 
   .genre-item.disabled {

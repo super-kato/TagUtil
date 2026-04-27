@@ -12,11 +12,10 @@ describe('SettingsRepository', () => {
     // プロトタイプメソッドをスパイ
     vi.spyOn(Store.prototype, 'get').mockReturnValue(undefined);
     vi.spyOn(Store.prototype, 'set').mockImplementation(() => ({}));
-    // store プロパティ（ゲッター）をスパイ
     vi.spyOn(Store.prototype, 'store', 'get').mockReturnValue({
       renamePattern: '{track} - {title}',
       trackNumberPadding: 2,
-      theme: 'dark',
+      theme: 'system',
       genres: [],
       quickGenres: []
     });
@@ -27,7 +26,7 @@ describe('SettingsRepository', () => {
   it('初期値が設定されること', () => {
     vi.spyOn(Store.prototype, 'get').mockReturnValue(undefined);
     const settings = repository.settings;
-    expect(settings.theme).toBe('dark');
+    expect(settings.theme).toBe('system');
     expect(settings.genres).toEqual([]);
   });
 

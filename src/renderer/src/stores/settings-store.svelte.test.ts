@@ -10,7 +10,7 @@ import { MAX_QUICK_GENRES, SettingsStore } from './settings-store.svelte';
 const mockDefaultSettings: AppSettings = {
   renamePattern: '{trackNumber} - {title}',
   trackNumberPadding: 2,
-  theme: 'dark',
+  theme: 'system',
   genres: ['Rock'],
   quickGenres: ['Rock']
 };
@@ -22,7 +22,7 @@ vi.mock('@renderer/infrastructure/repositories/settings-repository', () => ({
       value: {
         renamePattern: '{trackNumber} - {title}',
         trackNumberPadding: 2,
-        theme: 'dark',
+        theme: 'system',
         genres: ['Rock'],
         quickGenres: ['Rock']
       }

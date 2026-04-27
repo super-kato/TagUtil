@@ -53,7 +53,7 @@
   --shadow-popover: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-:root[data-theme='light'] {
+:root[data-is-light='true'] {
   --bg-body: #fdfdfd;
   --bg-main: #ffffff;
   --bg-secondary: #f0f2f5;
