@@ -1,7 +1,23 @@
 import { computeMd5 } from '@main/utils/crypto';
+import { app } from 'electron';
 import { link, readFile, rename, stat, unlink } from 'node:fs/promises';
 import { dirname, extname, join } from 'node:path';
 import { FileContent } from './repository-types';
+
+/**
+ * アプリケーションリソースのパスを取得します。
+ */
+export const getAppResourcePath = (...parts: string[]): string => {
+  return join(app.getAppPath(), ...parts);
+};
+
+/**
+ * 指定されたパスの JSON ファイルを読み込みます。
+ */
+export const readJsonFile = async <T>(filePath: string): Promise<T> => {
+  const content = await readFile(filePath, 'utf8');
+  return JSON.parse(content) as T;
+};
 
 /**
  * ファイルをバイナリとして読み込み、データとハッシュ値を返します。
