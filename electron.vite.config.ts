@@ -10,6 +10,7 @@ export default defineConfig({
           'flac-tagger',
           'music-metadata',
           'fast-equals',
+          'electron-log',
           'electron-updater',
           '@electron-toolkit/utils'
         ]

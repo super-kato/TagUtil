@@ -1,10 +1,13 @@
 import { electronApp, optimizer } from '@electron-toolkit/utils';
 import { app, BrowserWindow } from 'electron';
 import { initializeIpc } from './ipc';
-import { registerProtocolsPrivileged, registerProtocols } from './protocols';
-import { createWindow } from './window';
-import { initAutoUpdater } from './services/platform/update';
 import { setAppMenu } from './menu';
+import { registerProtocols, registerProtocolsPrivileged } from './protocols';
+import { logger } from './services/platform/logger';
+import { initAutoUpdater } from './services/platform/update';
+import { createWindow } from './window';
+
+logger.info({ context: 'application', message: 'Application launching...' });
 
 registerProtocolsPrivileged();
 
@@ -34,4 +37,8 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
+});
+
+app.on('will-quit', () => {
+  logger.info({ context: 'application', message: 'Application quitting...' });
 });

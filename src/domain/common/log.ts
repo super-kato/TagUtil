@@ -4,7 +4,7 @@ import { getCurrentTimestamp } from '@shared/utils/date';
 /**
  * ログレベルの定義。
  */
-export type LogLevel = 'INFO' | 'WARN' | 'ERROR';
+export type LogLevel = 'DEBUG' | 'INFO' | 'WARN' | 'ERROR';
 
 /**
  * ログメッセージの構造。

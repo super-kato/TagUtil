@@ -1,7 +1,8 @@
+import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
+import { app } from 'electron';
+import log from 'electron-log/main';
 import { EventEmitter } from 'node:events';
 import { format } from 'node:util';
-import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
-import { formatTimeWithMs } from '@shared/utils/date';
 
 /**
  * ロガーに渡されるオプション引数。
@@ -15,6 +16,23 @@ type LoggerOptions = Omit<LogParams, 'level'>;
  */
 class Logger extends EventEmitter {
   static readonly #LOG_EVENT = 'log';
+
+  constructor() {
+    super();
+    log.initialize();
+    log.errorHandler.startCatching();
+
+    // 本番環境と開発環境のログレベル設定
+    if (app.isPackaged) {
+      log.transports.file.level = 'warn';
+    } else {
+      log.transports.file.level = 'debug';
+    }
+  }
+
+  public debug(options: LoggerOptions, ...args: unknown[]): void {
+    this.#log({ ...options, level: 'DEBUG' }, ...args);
+  }
 
   public info(options: LoggerOptions, ...args: unknown[]): void {
     this.#log({ ...options, level: 'INFO' }, ...args);
@@ -48,11 +66,28 @@ class Logger extends EventEmitter {
       context: params.context,
       message: formattedMessage
     });
-    this.emit(Logger.#LOG_EVENT, logMessage);
 
-    // 標準出力にも出す
-    const timePrefix = `[${formatTimeWithMs(logMessage.timestamp)}]`;
-    console.log(`${timePrefix} [${params.level}] [${params.context}] ${formattedMessage}`);
+    // UI（Renderer）への転送
+    // 本番環境では DEBUG ログは転送しない
+    if (!(app.isPackaged && params.level === 'DEBUG')) {
+      this.emit(Logger.#LOG_EVENT, logMessage);
+    }
+
+    const logText = `[${params.context}] ${formattedMessage}`;
+    switch (params.level) {
+      case 'DEBUG':
+        log.debug(logText);
+        break;
+      case 'INFO':
+        log.info(logText);
+        break;
+      case 'WARN':
+        log.warn(logText);
+        break;
+      case 'ERROR':
+        log.error(logText);
+        break;
+    }
   }
 }
 

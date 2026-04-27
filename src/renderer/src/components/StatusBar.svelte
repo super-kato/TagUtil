@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { LogLevel } from '@domain/common/log';
-  import { Check, ChevronUp, List, TriangleAlert, X, type LucideProps } from '@lucide/svelte';
+  import { Bug, Check, ChevronUp, List, TriangleAlert, X, type LucideProps } from '@lucide/svelte';
   import { tooltip } from '@renderer/actions/tooltip';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { IS_MAC } from '@renderer/infrastructure/adapters/platform-adapter';
@@ -11,6 +11,7 @@
   import { slide } from 'svelte/transition';
 
   const levelIcons: ReadonlyMap<LogLevel, Component<LucideProps>> = new Map([
+    ['DEBUG', Bug],
     ['INFO', Check],
     ['WARN', TriangleAlert],
     ['ERROR', X]
@@ -85,7 +86,7 @@
           <tbody>
             {#each logStore.logs as log (log.id)}
               {@const ICON = levelIcons.get(log.level)}
-              <tr class="log-entry {log.level.toLowerCase()}">
+              <tr class="log-entry {log.level.toLowerCase()}" use:tooltip={log.message}>
                 <td class="log-col-time">
                   <span class="timestamp">[{formatTimeWithMs(log.timestamp)}]</span>
                 </td>
@@ -100,7 +101,7 @@
                   <span class="log-context">[{log.context}]</span>
                 </td>
                 <td class="log-col-message">
-                  <span class="log-text" use:tooltip={log.message}>
+                  <span class="log-text">
                     {log.message}
                   </span>
                 </td>
@@ -158,6 +159,10 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .status-item.debug {
+    color: var(--text-muted);
   }
 
   .status-item.error {
@@ -282,6 +287,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .log-entry.debug {
+    color: var(--text-muted);
+    opacity: 0.8;
   }
 
   .log-entry.warn {
