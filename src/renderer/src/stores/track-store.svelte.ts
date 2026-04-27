@@ -1,5 +1,4 @@
 import { deriveCommonMetadata } from '@domain/editor/batch-metadata';
-import { DEFAULT_GENRES } from '@domain/flac/constants';
 import { createImageUrl } from '@renderer/utils/image';
 import { selectionState } from './selection-state.svelte';
 import { TrackRecord } from './track-record.svelte';
@@ -24,7 +23,7 @@ class TrackStore {
     const currentGenres = this.tracks
       .flatMap((t) => t.metadata.genre || [])
       .filter((g): g is string => !!g);
-    return [...new Set([...DEFAULT_GENRES, ...currentGenres])].sort();
+    return [...new Set(currentGenres)].sort();
   });
 }
 

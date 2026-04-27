@@ -7,18 +7,10 @@ import type { AppSettings } from '@shared/settings';
  */
 export class SettingsStore {
   /** 現在の設定値（リアクティブ）。読み込み完了までは undefined。 */
-  #current = $state<AppSettings | undefined>(undefined);
+  current = $state<AppSettings | undefined>(undefined);
 
   constructor() {
     this.refresh();
-  }
-
-  /**
-   * 現在の設定を取得します。
-   * 読み込みが完了していない場合は undefined を返します。
-   */
-  get current(): AppSettings | undefined {
-    return this.#current;
   }
 
   /**
@@ -30,19 +22,21 @@ export class SettingsStore {
       return;
     }
 
-    this.#current = result.value;
+    this.current = result.value;
   }
 
   /**
-   * 設定を更新し、永続化します。
-   * @param settings 更新する設定値（部分更新）
+   * 現在のメモリ上の設定をディスクに保存します。
    */
-  async update(settings: Partial<AppSettings>): Promise<void> {
-    const result = await settingsRepository.updateSettings(settings);
+  async save(): Promise<void> {
+    if (!this.current) {
+      return;
+    }
+    const snapshot = $state.snapshot(this.current);
+    const result = await settingsRepository.updateSettings(snapshot);
     if (result.type !== 'success') {
       return;
     }
-
     await this.refresh();
   }
 }

@@ -1,6 +1,8 @@
-import Store from 'electron-store';
-import type { AppSettings } from '@shared/settings';
 import { TAG_PLACEHOLDERS } from '@domain/flac/constants';
+import type { AppSettings } from '@shared/settings';
+import Store from 'electron-store';
+
+const SETTINGS_FILE_NAME = 'tagutil-settings';
 
 /**
  * アプリケーションのデフォルト設定値。
@@ -9,7 +11,19 @@ import { TAG_PLACEHOLDERS } from '@domain/flac/constants';
 export const DEFAULT_SETTINGS: AppSettings = {
   renamePattern: `${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`,
   trackNumberPadding: 2,
-  theme: 'default'
+  theme: 'dark',
+  genres: [
+    'Pop',
+    'Soundtrack',
+    'Jazz',
+    'Anime',
+    'Game',
+    'Classical',
+    'Rock',
+    'Instrumental',
+    'Electronic'
+  ],
+  quickGenres: ['Pop', 'Soundtrack', 'Jazz', 'Anime']
 };
 
 /**
@@ -20,7 +34,9 @@ export class SettingsRepository {
 
   constructor() {
     this.#store = new Store<AppSettings>({
-      defaults: DEFAULT_SETTINGS
+      name: SETTINGS_FILE_NAME,
+      defaults: DEFAULT_SETTINGS,
+      clearInvalidConfig: true
     });
   }
 

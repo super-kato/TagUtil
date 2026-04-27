@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { trackStore } from './track-store.svelte';
 import { selectionState } from './selection-state.svelte';
 import { TrackRecord } from './track-record.svelte';
-import { DEFAULT_GENRES } from '@domain/flac/constants';
 import type { FlacMetadata, Picture } from '@domain/flac/models';
 
 import * as imageUtils from '@renderer/utils/image';
@@ -33,21 +32,21 @@ describe('TrackStore', () => {
     expect(trackStore.selectedTracks).toStrictEqual([t1, t2]);
   });
 
-  it('allGenres がデフォルトジャンルとトラック内のジャンルをマージしてソートすること', () => {
+  it('allGenres がトラック内のジャンルを抽出し、ユニークでソートされたリストを返すこと', () => {
     const m1: FlacMetadata = { genre: ['Rock', 'Jazz'] };
-    const m2: FlacMetadata = { genre: ['Pop'] };
+    const m2: FlacMetadata = { genre: ['Pop', 'Rock'] };
     const t1 = new TrackRecord('p1', m1);
     const t2 = new TrackRecord('p2', m2);
     trackStore.tracks = [t1, t2];
 
     const genres = trackStore.allGenres;
+    expect(genres).toHaveLength(3);
     expect(genres).toContain('Rock');
     expect(genres).toContain('Jazz');
     expect(genres).toContain('Pop');
-    expect(genres).toContain(DEFAULT_GENRES[0]);
+
     // 重複がないこと
-    const uniqueGenres = [...new Set(genres)];
-    expect(genres.length).toBe(uniqueGenres.length);
+    expect([...new Set(genres)]).toHaveLength(genres.length);
     // ソートされていること
     const sorted = [...genres].sort();
     expect(genres).toStrictEqual(sorted);
