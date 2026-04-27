@@ -1,7 +1,32 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { failure, success } from '@domain/common/result';
+
+vi.mock('electron-log/main', () => ({
+  default: {
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    initialize: vi.fn(),
+    errorHandler: {
+      startCatching: vi.fn()
+    },
+    transports: {
+      file: {
+        level: 'debug'
+      }
+    }
+  }
+}));
+
+vi.mock('electron', () => ({
+  app: {
+    isPackaged: false
+  }
+}));
+
 import { logger } from '@services/platform/logger';
 import * as formatter from '@domain/flac/app-error-formatter';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { withResultLogging } from './result-logging';
 
 describe('result-logging', () => {
