@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { IPC_CHANNELS } from '@shared/ipc';
-import { settingsRepository } from '@main/infrastructure/repositories/settings-repository';
+import { settingsRepository } from '@main/infrastructure/repositories/settings/settings-repository';
 import type { AppSettings } from '@shared/settings';
 import { success } from '@domain/common/result';
 import { withResultLogging } from '@main/infrastructure/logging/result-logging';

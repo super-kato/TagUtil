@@ -1,10 +1,10 @@
+import { logger } from '@main/infrastructure/logging/logger';
+import { isSupportedAudioFile } from '@main/utils/file-utils';
+import { extractEmbeddedImage } from '@services/flac/image';
 import { HTTP_STATUS } from '@shared/http-status';
 import { net } from 'electron';
 import path from 'node:path';
 import { pathToFileURL } from 'url';
-import { extractEmbeddedImage } from '@services/flac/image';
-import { isSupportedAudioFile } from '@main/utils/file-utils';
-import { logger } from '@main/services/platform/logger';
 import { ProtocolError, isProtocolError } from './error';
 
 /**

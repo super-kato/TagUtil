@@ -21,10 +21,6 @@ export class SettingsStore {
     return this.#current;
   }
 
-  constructor() {
-    this.refresh();
-  }
-
   /**
    * メインプロセスから最新の設定を読み込みます。
    */
