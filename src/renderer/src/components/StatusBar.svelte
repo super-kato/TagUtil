@@ -81,7 +81,7 @@
 
   {#if isExpanded}
     <div class="log-panel" transition:slide={{ duration: 300 }}>
-      <div class="log-list" bind:this={logListElement}>
+      <div class="log-list" bind:this={logListElement} tabindex="-1">
         <table class="log-table">
           <tbody>
             {#each logStore.logs as log (log.id)}
@@ -259,7 +259,7 @@
   }
 
   .log-col-time {
-    padding: 0 0.6rem 0 0.4rem;
+    padding-left: 0.4rem;
     color: var(--text-dim);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
