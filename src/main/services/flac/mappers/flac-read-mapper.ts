@@ -1,8 +1,9 @@
-import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
+import { CanonicalTagKey, TAG_DEFINITIONS, TagDefinition } from '@domain/flac/tag-definitions';
 import { FlacMetadata, Picture } from '@domain/flac/models';
 import type * as readerImpl from 'music-metadata';
 import { computeMd5 } from '@main/utils/crypto';
 import { RawFlacData, RawPicture } from '@services/flac/types';
+import { TAG_PROPERTY_MAP } from './tag-mapping';
 
 /**
  * テキストタグとして読み込み・書き込みをスキップするタグキーのリスト。
@@ -28,22 +29,26 @@ export const toRawFlacData = (mmData: readerImpl.IAudioMetadata, path: string): 
 export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacMetadata => {
   const { tags } = rawData;
 
-  return {
-    title: getFirstTag(tags, 'TITLE'),
-    artist: getAllTags(tags, 'ARTIST'),
-    album: getFirstTag(tags, 'ALBUM'),
-    albumArtist: getAllTags(tags, 'ALBUMARTIST'),
-    trackNumber: getFirstTag(tags, 'TRACKNUMBER'),
-    trackTotal: getFirstTag(tags, 'TRACKTOTAL'),
-    discNumber: getFirstTag(tags, 'DISCNUMBER'),
-    discTotal: getFirstTag(tags, 'DISCTOTAL'),
-    genre: getAllTags(tags, 'GENRE'),
-    date: getFirstTag(tags, 'DATE'),
-    comment: getAllTags(tags, 'COMMENT'),
-    catalogNumber: getFirstTag(tags, 'CATALOGNUMBER'),
+  const baseMetadata: FlacMetadata = {
     picture: mapToDomainPicture(rawData, filePath),
     streamInfo: rawData.streamInfo
   };
+
+  // TAG_DEFINITIONS に基づいて動的にテキストタグをマッピング
+  return (Object.entries(TAG_DEFINITIONS) as [CanonicalTagKey, TagDefinition][]).reduce(
+    (acc, [canonicalKey, def]) => {
+      const value = def.multiValue
+        ? getAllTags(tags, canonicalKey)
+        : getFirstTag(tags, canonicalKey);
+
+      if (value !== undefined) {
+        const propertyName = TAG_PROPERTY_MAP[canonicalKey];
+        Object.assign(acc, { [propertyName]: value });
+      }
+      return acc;
+    },
+    baseMetadata
+  );
 };
 
 /** ITag配列を Record<string, string[]> に変換 */
@@ -79,10 +84,10 @@ const getAllTags = (
   tagMap: Record<string, string[]>,
   canonicalKey: CanonicalTagKey
 ): string[] | undefined => {
-  const synonyms = TAG_DEFINITIONS[canonicalKey] as ReadonlyArray<string>;
-  const keysToTry = [canonicalKey, ...synonyms];
+  const definition = TAG_DEFINITIONS[canonicalKey];
+  const keysToTry = [canonicalKey, ...definition.synonyms];
 
-  const results: string[] = [];
+  const results: string[] | undefined = [];
   for (const key of keysToTry) {
     const values = tagMap[key.toUpperCase()];
     if (values) {

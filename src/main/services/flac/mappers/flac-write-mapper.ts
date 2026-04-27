@@ -1,7 +1,8 @@
 import { FlacMetadata } from '@domain/flac/models';
 import { FlacTagMap, FlacTags } from 'flac-tagger';
-import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
+import { CanonicalTagKey, TAG_DEFINITIONS, TagDefinition } from '@domain/flac/tag-definitions';
 import { RawFlacData } from '@services/flac/types';
+import { TAG_PROPERTY_MAP } from './tag-mapping';
 
 /**
  * 既存の生のメタデータとドメインモデルの情報をマージし、書き込み用の FlacTags オブジェクトを返します。
@@ -37,24 +38,14 @@ const convertRawTagsToFlacTagMap = (tags: Record<string, string[]>): FlacTagMap 
  * 送信されたメタデータ（テキスト）をタグマップに適用します。
  */
 const applyTextMetadata = (tagMap: FlacTagMap, metadata: FlacMetadata): FlacTagMap => {
-  const fields: Record<CanonicalTagKey, string | string[] | undefined> = {
-    TITLE: metadata.title,
-    ARTIST: metadata.artist,
-    ALBUM: metadata.album,
-    ALBUMARTIST: metadata.albumArtist,
-    DATE: metadata.date,
-    COMMENT: metadata.comment,
-    GENRE: metadata.genre,
-    TRACKNUMBER: metadata.trackNumber,
-    TRACKTOTAL: metadata.trackTotal,
-    DISCNUMBER: metadata.discNumber,
-    DISCTOTAL: metadata.discTotal,
-    CATALOGNUMBER: metadata.catalogNumber
-  };
-
-  return Object.entries(fields).reduce((acc, [key, value]) => {
-    return mergeField(acc, key as CanonicalTagKey, value);
-  }, tagMap);
+  return (Object.entries(TAG_DEFINITIONS) as [CanonicalTagKey, TagDefinition][]).reduce(
+    (acc, [canonicalKey, _def]) => {
+      const propertyName = TAG_PROPERTY_MAP[canonicalKey];
+      const value = metadata[propertyName] as string | string[] | undefined;
+      return mergeField(acc, canonicalKey, value);
+    },
+    tagMap
+  );
 };
 
 /**
@@ -72,8 +63,8 @@ const mergeField = (
   const newMap = { ...tagMap };
 
   // 1. クリーンアップ
-  const synonyms = TAG_DEFINITIONS[canonicalKey] as ReadonlyArray<string>;
-  const keysToDelete = [canonicalKey, ...synonyms];
+  const definition = TAG_DEFINITIONS[canonicalKey];
+  const keysToDelete = [canonicalKey, ...definition.synonyms];
 
   for (const key of keysToDelete) {
     delete newMap[key.toUpperCase()];
