@@ -221,10 +221,6 @@
     background-color: var(--bg-hover);
   }
 
-  .genre-item.selected {
-    color: var(--accent-primary);
-  }
-
   .genre-item.disabled {
     opacity: 0.4;
     cursor: not-allowed;
