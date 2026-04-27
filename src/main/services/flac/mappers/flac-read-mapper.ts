@@ -1,9 +1,8 @@
-import { CanonicalTagKey, TAG_DEFINITIONS, TagDefinition } from '@domain/flac/tag-definitions';
+import { CanonicalTagKey, TAG_DEFINITIONS, TagDefinition, TAG_PROPERTY_MAP } from '@domain/flac/tag-definitions';
 import { FlacMetadata, Picture } from '@domain/flac/models';
 import type * as readerImpl from 'music-metadata';
 import { computeMd5 } from '@main/utils/crypto';
 import { RawFlacData, RawPicture } from '@services/flac/types';
-import { TAG_PROPERTY_MAP } from './tag-mapping';
 
 /**
  * テキストタグとして読み込み・書き込みをスキップするタグキーのリスト。
@@ -43,7 +42,9 @@ export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacM
 
       if (value !== undefined) {
         const propertyName = TAG_PROPERTY_MAP[canonicalKey];
-        Object.assign(acc, { [propertyName]: value });
+        // propertyName はテキスト属性であることが保証されているが、
+        // string と string[] のユニオン型への代入を TS に認めさせるため、最小限のキャストを使用
+        (acc as Record<string, unknown>)[propertyName] = value;
       }
       return acc;
     },

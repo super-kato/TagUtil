@@ -1,3 +1,5 @@
+import { FlacMetadata } from './models';
+
 /**
  * タグの定義情報を表すインターフェース。
  */
@@ -33,3 +35,29 @@ export const TAG_DEFINITIONS = {
  * 標準タグキーの型定義です。
  */
 export type CanonicalTagKey = keyof typeof TAG_DEFINITIONS;
+
+/**
+ * FlacMetadata のプロパティのうち、テキストタグとして扱える（string | string[] | undefined）もののキーを抽出する型。
+ */
+export type TextMetadataKey = {
+  [K in keyof FlacMetadata]: FlacMetadata[K] extends string | string[] | undefined ? K : never;
+}[keyof FlacMetadata] &
+  keyof FlacMetadata;
+
+/**
+ * CanonicalTagKey と FlacMetadata のプロパティ名とのマッピング定義。
+ */
+export const TAG_PROPERTY_MAP: Record<CanonicalTagKey, TextMetadataKey> = {
+  TITLE: 'title',
+  ARTIST: 'artist',
+  ALBUM: 'album',
+  ALBUMARTIST: 'albumArtist',
+  DATE: 'date',
+  GENRE: 'genre',
+  COMMENT: 'comment',
+  TRACKNUMBER: 'trackNumber',
+  TRACKTOTAL: 'trackTotal',
+  DISCNUMBER: 'discNumber',
+  DISCTOTAL: 'discTotal',
+  CATALOGNUMBER: 'catalogNumber'
+} as const;

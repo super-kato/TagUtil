@@ -1,8 +1,7 @@
 import { FlacMetadata } from '@domain/flac/models';
 import { FlacTagMap, FlacTags } from 'flac-tagger';
-import { CanonicalTagKey, TAG_DEFINITIONS, TagDefinition } from '@domain/flac/tag-definitions';
+import { CanonicalTagKey, TAG_DEFINITIONS, TagDefinition, TAG_PROPERTY_MAP } from '@domain/flac/tag-definitions';
 import { RawFlacData } from '@services/flac/types';
-import { TAG_PROPERTY_MAP } from './tag-mapping';
 
 /**
  * 既存の生のメタデータとドメインモデルの情報をマージし、書き込み用の FlacTags オブジェクトを返します。
@@ -41,7 +40,7 @@ const applyTextMetadata = (tagMap: FlacTagMap, metadata: FlacMetadata): FlacTagM
   return (Object.entries(TAG_DEFINITIONS) as [CanonicalTagKey, TagDefinition][]).reduce(
     (acc, [canonicalKey, _def]) => {
       const propertyName = TAG_PROPERTY_MAP[canonicalKey];
-      const value = metadata[propertyName] as string | string[] | undefined;
+      const value = metadata[propertyName];
       return mergeField(acc, canonicalKey, value);
     },
     tagMap
