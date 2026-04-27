@@ -2,13 +2,11 @@
   import { TAG_PLACEHOLDERS } from '@domain/flac/constants';
   import { FilePen, List, Save, Star, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { settingsStore } from '@renderer/stores/settings-store.svelte';
+  import { MAX_QUICK_GENRES, settingsStore } from '@renderer/stores/settings-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
   import { type ColorTheme } from '@shared/settings';
   import BadgeField from './ui/BadgeField.svelte';
   import Modal from './ui/Modal.svelte';
-
-  const MAX_QUICK_GENRES = 4;
 
   const handleSave = async (): Promise<void> => {
     await settingsStore.save();
@@ -19,42 +17,6 @@
     // 変更を破棄してディスクの状態に戻す
     await settingsStore.refresh();
     uiState.closeSettings();
-  };
-
-  const setTheme = (theme: ColorTheme): void => {
-    if (settingsStore.current) {
-      settingsStore.current.theme = theme;
-    }
-  };
-
-  const toggleQuickGenre = (genre: string): void => {
-    if (!settingsStore.current) {
-      return;
-    }
-    const current = settingsStore.current.quickGenres;
-    const isSelected = current.includes(genre);
-
-    if (isSelected) {
-      settingsStore.current.quickGenres = current.filter((g) => g !== genre);
-    } else if (current.length < MAX_QUICK_GENRES) {
-      settingsStore.current.quickGenres.push(genre);
-    }
-  };
-
-  const addGenre = (genre: string): void => {
-    settingsStore.current?.genres.push(genre);
-  };
-
-  const removeGenre = (genre: string): void => {
-    if (!settingsStore.current) {
-      return;
-    }
-    // ジャンルリストから削除
-    settingsStore.current.genres = settingsStore.current.genres.filter((g) => g !== genre);
-    // クイックジャンルからも同期して削除
-    settingsStore.current.quickGenres = settingsStore.current.quickGenres.filter(
-      (g) => g !== genre
-    );
   };
 
   const themes: ColorTheme[] = ['light', 'dark'];
@@ -72,7 +34,7 @@
                 type="button"
                 class="toggle-btn"
                 class:active={settingsStore.current.theme === theme}
-                onclick={() => setTheme(theme)}
+                onclick={() => settingsStore.update('theme', theme)}
               >
                 {theme}
               </button>
@@ -92,7 +54,8 @@
           <input
             id="setting-rename-pattern"
             type="text"
-            bind:value={settingsStore.current.renamePattern}
+            value={settingsStore.current.renamePattern}
+            oninput={(e) => settingsStore.update('renamePattern', e.currentTarget.value)}
             placeholder={`${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`}
           />
           <div class="placeholder-list">
@@ -109,7 +72,9 @@
             type="number"
             min="1"
             max="4"
-            bind:value={settingsStore.current.trackNumberPadding}
+            value={settingsStore.current.trackNumberPadding}
+            oninput={(e) =>
+              settingsStore.update('trackNumberPadding', Number(e.currentTarget.value))}
           />
         </div>
       </section>
@@ -123,8 +88,8 @@
         <BadgeField
           values={settingsStore.current.genres}
           isUniform={true}
-          onAdd={addGenre}
-          onRemove={removeGenre}
+          onAdd={(val) => settingsStore.addGenre(val)}
+          onRemove={(val) => settingsStore.removeGenre(val)}
         />
       </section>
 
@@ -148,7 +113,7 @@
                 checked={isSelected}
                 disabled={!isSelected &&
                   settingsStore.current.quickGenres.length >= MAX_QUICK_GENRES}
-                onchange={() => toggleQuickGenre(genre)}
+                onchange={() => settingsStore.toggleQuickGenre(genre)}
               />
               <span class="genre-label">{genre}</span>
             </label>
