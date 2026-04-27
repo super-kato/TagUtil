@@ -1,8 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { Menu, shell } from 'electron';
+import { Menu, shell, type MenuItem, type BrowserWindow, type KeyboardEvent } from 'electron';
 import { showTrackContextMenu } from './context-menu';
 
 vi.mock('electron', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   Menu: {
     buildFromTemplate: vi.fn().mockReturnValue({
       popup: vi.fn()
@@ -41,8 +42,8 @@ describe('context-menu service', () => {
 
     expect(item).toBeDefined();
     if (item && item.click) {
-      // モックの引数を適当に渡してクリックをシミュレート
-      item.click({} as any, {} as any, {} as any);
+      // 必要な引数をモックして渡す
+      item.click({} as MenuItem, {} as BrowserWindow, {} as KeyboardEvent);
       expect(shell.showItemInFolder).toHaveBeenCalledWith(testPath);
     }
   });
