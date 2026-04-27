@@ -266,7 +266,7 @@
   }
 
   .log-col-context {
-    width: 12rem;
+    width: 10rem;
     padding: 0.15rem 0.4rem;
     white-space: nowrap;
   }
