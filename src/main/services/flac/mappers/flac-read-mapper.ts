@@ -1,8 +1,15 @@
-import { CanonicalTagKey, TAG_DEFINITIONS } from '@domain/flac/tag-definitions';
 import { FlacMetadata, Picture } from '@domain/flac/models';
-import type * as readerImpl from 'music-metadata';
+import {
+  CanonicalTagKey,
+  MULTI_VALUE_PROPERTY_MAP,
+  MultiValueCanonicalTagKey,
+  SINGLE_VALUE_PROPERTY_MAP,
+  SingleValueCanonicalTagKey,
+  TAG_DEFINITIONS
+} from '@domain/flac/tag-definitions';
 import { computeMd5 } from '@main/utils/crypto';
 import { RawFlacData, RawPicture } from '@services/flac/types';
+import type * as readerImpl from 'music-metadata';
 
 /**
  * テキストタグとして読み込み・書き込みをスキップするタグキーのリスト。
@@ -28,22 +35,31 @@ export const toRawFlacData = (mmData: readerImpl.IAudioMetadata, path: string): 
 export const mapToFlacMetadata = (rawData: RawFlacData, filePath: string): FlacMetadata => {
   const { tags } = rawData;
 
-  return {
-    title: getFirstTag(tags, 'TITLE'),
-    artist: getAllTags(tags, 'ARTIST'),
-    album: getFirstTag(tags, 'ALBUM'),
-    albumArtist: getAllTags(tags, 'ALBUMARTIST'),
-    trackNumber: getFirstTag(tags, 'TRACKNUMBER'),
-    trackTotal: getFirstTag(tags, 'TRACKTOTAL'),
-    discNumber: getFirstTag(tags, 'DISCNUMBER'),
-    discTotal: getFirstTag(tags, 'DISCTOTAL'),
-    genre: getAllTags(tags, 'GENRE'),
-    date: getFirstTag(tags, 'DATE'),
-    comment: getAllTags(tags, 'COMMENT'),
-    catalogNumber: getFirstTag(tags, 'CATALOGNUMBER'),
+  const acc: FlacMetadata = {
     picture: mapToDomainPicture(rawData, filePath),
     streamInfo: rawData.streamInfo
   };
+
+  // 複数値タグのマッピング
+  for (const key of Object.keys(MULTI_VALUE_PROPERTY_MAP) as MultiValueCanonicalTagKey[]) {
+    const values = getAllTags(tags, key);
+    if (values === undefined) {
+      continue;
+    }
+    const propertyName = MULTI_VALUE_PROPERTY_MAP[key];
+    acc[propertyName] = values;
+  }
+  // 単一値タグのマッピング
+  for (const key of Object.keys(SINGLE_VALUE_PROPERTY_MAP) as SingleValueCanonicalTagKey[]) {
+    const value = getFirstTag(tags, key);
+    if (value === undefined) {
+      continue;
+    }
+    const propertyName = SINGLE_VALUE_PROPERTY_MAP[key];
+    acc[propertyName] = value;
+  }
+
+  return acc;
 };
 
 /** ITag配列を Record<string, string[]> に変換 */
@@ -79,10 +95,10 @@ const getAllTags = (
   tagMap: Record<string, string[]>,
   canonicalKey: CanonicalTagKey
 ): string[] | undefined => {
-  const synonyms = TAG_DEFINITIONS[canonicalKey] as ReadonlyArray<string>;
-  const keysToTry = [canonicalKey, ...synonyms];
+  const definition = TAG_DEFINITIONS[canonicalKey];
+  const keysToTry = [canonicalKey, ...definition.synonyms];
 
-  const results: string[] = [];
+  const results: string[] | undefined = [];
   for (const key of keysToTry) {
     const values = tagMap[key.toUpperCase()];
     if (values) {
