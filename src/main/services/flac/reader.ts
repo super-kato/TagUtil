@@ -1,6 +1,7 @@
 import { success } from '@domain/common/result';
-import { AppResult } from '@domain/flac/types';
-import { appErrors } from '@domain/flac/errors';
+import { AppResult } from '@domain/types';
+import { appErrors } from '@domain/errors/definitions';
+
 import { FlacTrack } from '@domain/flac/models';
 import { toAppResultFailure } from '@main/utils/error-handler';
 import { readRawFlacData } from '@main/infrastructure/repositories/flac/flac-read-repository';

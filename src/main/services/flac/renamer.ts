@@ -1,8 +1,9 @@
 import { success } from '@domain/common/result';
-import { appErrors } from '@domain/flac/errors';
-import { formatFlacFilename } from '@domain/flac/filename-formatter';
+import { appErrors } from '@domain/errors/definitions';
+import { formatFilename } from '@domain/audio/filename-formatter';
 import type { FlacTrack } from '@domain/flac/models';
-import { AppResult } from '@domain/flac/types';
+import { AppResult } from '@domain/types';
+
 import { renameFileExclusive } from '@main/infrastructure/repositories/file/file-rename-repository';
 import { resolveNewPath } from '@main/infrastructure/repositories/file/file-path-repository';
 import { settingsRepository } from '@main/infrastructure/repositories/settings/settings-repository';
@@ -29,10 +30,11 @@ export const renameFile = async (oldPath: string, newPath: string): Promise<AppR
  */
 export const resolveRenamedPath = (track: FlacTrack): AppResult<string> => {
   const { renamePattern, trackNumberPadding } = settingsRepository.settings;
-  const filenameResult = formatFlacFilename(track, {
+  const filenameResult = formatFilename(track, {
     pattern: renamePattern,
     trackNumberPadding
   });
+
   if (filenameResult.type === 'error') {
     return filenameResult;
   }

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { hasErrorCode, toAppResultFailure } from './error-handler';
-import { appErrors } from '@domain/flac/errors';
+import { appErrors } from '@domain/errors/definitions';
 
 describe('error-handler', () => {
   afterEach(() => {

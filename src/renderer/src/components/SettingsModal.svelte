@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TAG_PLACEHOLDERS } from '@domain/flac/constants';
+  import { TAG_PLACEHOLDERS } from '@domain/audio/constants';
   import { FilePen, List, Save, Star, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { MAX_QUICK_GENRES, settingsStore } from '@renderer/stores/settings-store.svelte';

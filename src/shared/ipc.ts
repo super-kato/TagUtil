@@ -1,6 +1,8 @@
 import type { LogHandler } from '@domain/common/log';
-import type { FlacTrack, Picture } from '@domain/flac/models';
-import type { AppResult } from '@domain/flac/types';
+import type { FlacTrack } from '@domain/flac/models';
+import type { Picture } from '@domain/audio/models';
+import type { AppResult } from '@domain/types';
+
 import type { ScanResult } from './flac';
 import type { Platform } from './platform';
 import type { AppSettings } from './settings';
@@ -53,11 +55,13 @@ export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
  */
 export interface IpcApi {
   readMetadata(path: string): Promise<AppResult<FlacTrack>>;
-  writeMetadata(track: FlacTrack): Promise<AppResult<void>>;
+  writeMetadata(track: FlacTrack): Promise<AppResult<string>>;
+
   selectDirectory(): Promise<string | undefined>;
   scanDirectory(targetPaths: string[]): Promise<AppResult<ScanResult>>;
-  pickImage(): Promise<Picture | undefined>;
-  getImageInfo(path: string): Promise<Picture | undefined>;
+  pickImage(): Promise<AppResult<Picture | null>>;
+  getImageInfo(path: string): Promise<AppResult<Picture>>;
+
   renameFile(oldPath: string, newPath: string): Promise<AppResult<void>>;
   generateNewPath(track: FlacTrack): Promise<string>;
   getPathForFile(file: File): string;

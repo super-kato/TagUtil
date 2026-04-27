@@ -1,4 +1,4 @@
-import { isAppError, type AppError } from './errors';
+import { isAppError, type AppError } from './definitions';
 import { MESSAGES } from '@domain/common/messages';
 
 /**

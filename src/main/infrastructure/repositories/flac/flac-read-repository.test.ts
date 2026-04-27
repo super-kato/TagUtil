@@ -50,7 +50,7 @@ describe('flac-read-repository', () => {
       buffer: mockMetadata.common.picture[0].data,
       hash: 'mock-hash'
     });
-    expect(result.streamInfo).toEqual({
+    expect(result.audioFormat).toEqual({
       sampleRate: 44100,
       bitDepth: 16,
       channels: 2,

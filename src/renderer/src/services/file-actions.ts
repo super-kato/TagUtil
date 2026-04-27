@@ -1,5 +1,6 @@
 import { success, type Result } from '@domain/common/result';
-import type { AppError } from '@domain/flac/errors';
+import type { AppError } from '@domain/errors/definitions';
+
 import { generateNewPath } from '@renderer/infrastructure/adapters/path-adapter';
 import { fileRepository } from '@renderer/infrastructure/repositories/file-repository';
 import { tagRepository } from '@renderer/infrastructure/repositories/tag-repository';

@@ -12,7 +12,7 @@ describe('flac-write-mapper', () => {
       GENRE: ['Rock']
     },
     pictures: [],
-    streamInfo: {
+    audioFormat: {
       sampleRate: 44100,
       bitDepth: 16,
       channels: 2,

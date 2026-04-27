@@ -1,5 +1,5 @@
 import type { Result } from '@domain/common/result';
-import type { AppError } from './errors';
+import type { AppError } from '@domain/errors/definitions';
 
 /**
  * アプリケーションの各操作の戻り値型。

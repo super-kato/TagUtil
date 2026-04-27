@@ -1,6 +1,6 @@
 import { failure } from '@domain/common/result';
-import { AppResult } from '@domain/flac/types';
-import { AppError, AppErrorOptions } from '@domain/flac/errors';
+import { AppResult } from '@domain/types';
+import { AppError, AppErrorOptions } from '@domain/errors/definitions';
 
 /**
  * 指定されたエラーコードを持つエラーオブジェクトかどうかを判定します（Type Guard）。

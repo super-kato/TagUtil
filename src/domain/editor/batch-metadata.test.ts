@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { deriveCommonMetadata } from './batch-metadata';
 import type { FlacMetadata } from '@domain/flac/models';
+import { describe, expect, it } from 'vitest';
+import { deriveCommonMetadata } from './batch-metadata';
 
 describe('deriveCommonMetadata', () => {
   const mockMetadata1: FlacMetadata = {
@@ -20,7 +20,7 @@ describe('deriveCommonMetadata', () => {
       sourcePath: 'path1.flac',
       hash: 'hash1'
     },
-    streamInfo: {
+    format: {
       sampleRate: 44100,
       channels: 2,
       bitDepth: 16,

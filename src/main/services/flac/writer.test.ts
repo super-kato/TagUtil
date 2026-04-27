@@ -42,7 +42,7 @@ describe('writer', () => {
         path: mockTrack.path,
         tags: {},
         pictures: [],
-        streamInfo: {
+        audioFormat: {
           sampleRate: 44100,
           bitDepth: 16,
           channels: 2,

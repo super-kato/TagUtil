@@ -1,5 +1,6 @@
-import { formatAppError } from '@domain/flac/app-error-formatter';
-import { type AppResult } from '@domain/flac/types';
+import { formatAppError } from '@domain/errors/formatter';
+import { type AppResult } from '@domain/types';
+
 import { logger } from '@main/infrastructure/logging/logger';
 
 /**

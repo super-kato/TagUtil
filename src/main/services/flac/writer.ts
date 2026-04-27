@@ -1,7 +1,8 @@
 import { success } from '@domain/common/result';
-import { appErrors } from '@domain/flac/errors';
+import { appErrors } from '@domain/errors/definitions';
 import { FlacTrack } from '@domain/flac/models';
-import { AppResult } from '@domain/flac/types';
+import { AppResult } from '@domain/types';
+
 import { toAppResultFailure } from '@main/utils/error-handler';
 import { readRawFlacData } from '@main/infrastructure/repositories/flac/flac-read-repository';
 import { writeFlacTagsWithAtomic } from '@main/infrastructure/repositories/flac/flac-write-repository';
