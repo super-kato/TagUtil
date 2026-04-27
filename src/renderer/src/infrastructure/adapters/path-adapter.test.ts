@@ -14,7 +14,10 @@ describe('path-adapter', () => {
 
   describe('generateNewPath', () => {
     it('window.api.generateNewPath を呼び出すこと', async () => {
-      const track = { path: '/dir/old.flac', metadata: { title: 'T', trackNumber: 1 } };
+      const track = {
+        path: '/dir/old.flac',
+        metadata: { title: 'T', trackNumber: '1' }
+      };
       const expected = success('/dir/01 - T.flac');
       vi.stubGlobal('window', {
         api: {
@@ -22,7 +25,7 @@ describe('path-adapter', () => {
         }
       });
 
-      const result = await generateNewPath(track as unknown as FlacTrack);
+      const result = await generateNewPath(track as FlacTrack);
 
       expect(result).toBe(expected);
       expect(window.api.generateNewPath).toHaveBeenCalledWith(track);

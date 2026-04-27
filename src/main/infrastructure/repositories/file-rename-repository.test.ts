@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renameFileExclusive } from './file-rename-repository';
 import * as fs from 'node:fs/promises';
+import { Stats } from 'node:fs';
 
 vi.mock('node:fs/promises');
 
@@ -33,8 +34,8 @@ describe('file-rename-repository', () => {
     });
 
     it('リンク作成時に EEXIST が発生した場合はエラーを投げること', async () => {
-      const error = new Error('already exists');
-      (error as any).code = 'EEXIST';
+      const error = new Error('already exists') as Error & { code: string };
+      error.code = 'EEXIST';
       vi.mocked(fs.link).mockRejectedValue(error);
 
       await expect(renameFileExclusive('old.flac', 'new.flac')).rejects.toThrow(error);
@@ -42,13 +43,13 @@ describe('file-rename-repository', () => {
 
     it('リンクがシステム制限等で失敗した場合、stat チェック後に rename すること', async () => {
       // リンク失敗 (EPERM など)
-      const linkError = new Error('not supported');
-      (linkError as any).code = 'EPERM';
+      const linkError = new Error('not supported') as Error & { code: string };
+      linkError.code = 'EPERM';
       vi.mocked(fs.link).mockRejectedValue(linkError);
-      
+
       // stat 失敗 (ENOENT: 移動先が存在しない)
-      const statError = new Error('not found');
-      (statError as any).code = 'ENOENT';
+      const statError = new Error('not found') as Error & { code: string };
+      statError.code = 'ENOENT';
       vi.mocked(fs.stat).mockRejectedValue(statError);
 
       await renameFileExclusive('old.flac', 'new.flac');
@@ -59,9 +60,11 @@ describe('file-rename-repository', () => {
 
     it('フォールバック時に移動先が既に存在していればエラーを投げること', async () => {
       vi.mocked(fs.link).mockRejectedValue(new Error('link failed'));
-      vi.mocked(fs.stat).mockResolvedValue({} as any); // 存在している
+      vi.mocked(fs.stat).mockResolvedValue({} as Stats); // 存在している
 
-      await expect(renameFileExclusive('old.flac', 'new.flac')).rejects.toThrow('File already exists');
+      await expect(renameFileExclusive('old.flac', 'new.flac')).rejects.toThrow(
+        'File already exists'
+      );
       expect(fs.rename).not.toHaveBeenCalled();
     });
   });

@@ -1,13 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { initAutoUpdater, checkForUpdates } from './update';
-import { autoUpdater } from 'electron-updater';
+import { autoUpdater, type UpdateCheckResult } from 'electron-updater';
 import { dialog } from 'electron';
 
 vi.mock('electron-updater', () => ({
   autoUpdater: {
     checkForUpdatesAndNotify: vi.fn(),
     checkForUpdates: vi.fn(),
-    currentVersion: { version: '1.4.2' }
+    currentVersion: { version: '1.4.2' },
+    allowPrerelease: false
   }
 }));
 
@@ -35,19 +36,21 @@ describe('platform/update', () => {
     it('アップデートがない場合に通知ダイアログを表示すること', async () => {
       vi.mocked(autoUpdater.checkForUpdates).mockResolvedValue({
         updateInfo: { version: '1.4.2' }
-      } as any);
+      } as UpdateCheckResult);
 
       await checkForUpdates();
 
-      expect(dialog.showMessageBox).toHaveBeenCalledWith(expect.objectContaining({
-        message: expect.stringContaining('latest version')
-      }));
+      expect(dialog.showMessageBox).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expect.stringContaining('latest version')
+        })
+      );
     });
 
     it('アップデートがある場合に通知とダウンロードを開始すること', async () => {
       vi.mocked(autoUpdater.checkForUpdates).mockResolvedValue({
         updateInfo: { version: '1.5.0' }
-      } as any);
+      } as UpdateCheckResult);
 
       await checkForUpdates();
 
