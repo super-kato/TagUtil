@@ -46,14 +46,9 @@ const convertRawTagsToFlacTagMap = (tags: Record<string, string[]>): FlacTagMap 
 const applyTextMetadata = (tagMap: FlacTagMap, metadata: FlacMetadata): FlacTagMap => {
   const multiValueApplied = (
     Object.keys(MULTI_VALUE_PROPERTY_MAP) as MultiValueCanonicalTagKey[]
-  ).reduce((acc, key) => {
-    return mergeField(acc, key, metadata[MULTI_VALUE_PROPERTY_MAP[key]]);
-  }, tagMap);
-
+  ).reduce((acc, key) => mergeField(acc, key, metadata[MULTI_VALUE_PROPERTY_MAP[key]]), tagMap);
   return (Object.keys(SINGLE_VALUE_PROPERTY_MAP) as SingleValueCanonicalTagKey[]).reduce(
-    (acc, key) => {
-      return mergeField(acc, key, metadata[SINGLE_VALUE_PROPERTY_MAP[key]]);
-    },
+    (acc, key) => mergeField(acc, key, metadata[SINGLE_VALUE_PROPERTY_MAP[key]]),
     multiValueApplied
   );
 };
