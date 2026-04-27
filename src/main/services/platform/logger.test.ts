@@ -10,7 +10,18 @@ vi.mock('electron-log/main', () => ({
     initialize: vi.fn(),
     errorHandler: {
       startCatching: vi.fn()
+    },
+    transports: {
+      file: {
+        level: 'debug'
+      }
     }
+  }
+}));
+
+vi.mock('electron', () => ({
+  app: {
+    isPackaged: false
   }
 }));
 

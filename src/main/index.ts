@@ -7,7 +7,7 @@ import { logger } from './services/platform/logger';
 import { initAutoUpdater } from './services/platform/update';
 import { createWindow } from './window';
 
-logger.info({ context: 'application', message: 'Application starting...' });
+logger.info({ context: 'application', message: 'Application launching...' });
 
 registerProtocolsPrivileged();
 

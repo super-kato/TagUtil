@@ -1,7 +1,8 @@
-import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
-import log from 'electron-log/main';
+import { app } from 'electron';
 import { EventEmitter } from 'node:events';
 import { format } from 'node:util';
+import log from 'electron-log/main';
+import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
 
 /**
  * ロガーに渡されるオプション引数。
@@ -20,6 +21,13 @@ class Logger extends EventEmitter {
     super();
     log.initialize();
     log.errorHandler.startCatching();
+
+    // 本番環境（パッケージ化後）は warning と error しかファイルに書き込まない
+    if (app.isPackaged) {
+      log.transports.file.level = 'warn';
+    } else {
+      log.transports.file.level = 'debug';
+    }
   }
 
   public info(options: LoggerOptions, ...args: unknown[]): void {
