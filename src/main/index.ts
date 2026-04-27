@@ -4,7 +4,7 @@ import { logger } from './infrastructure/logging/logger';
 import { initializeIpc } from './ipc';
 import { setAppMenu } from './menu';
 import { registerProtocols, registerProtocolsPrivileged } from './protocols';
-import { initAutoUpdater } from './services/platform/update';
+import { initAutoUpdater } from './infrastructure/platform/update';
 import { createWindow } from './window';
 
 logger.info({ context: 'application', message: 'Application launching...' });

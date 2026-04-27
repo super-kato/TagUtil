@@ -1,9 +1,9 @@
 import { success } from '@domain/common/result';
 import { AppResult } from '@domain/flac/types';
 import { Picture } from '@domain/flac/models';
-import { readFileWithHash } from '@main/infrastructure/repositories/file-repository';
+import { readFileWithHash } from '@main/infrastructure/repositories/file-read-repository';
 import { getMimeTypeFromPath } from '@main/utils/mime';
-import { pickImageFile } from '@services/platform/dialog';
+import { pickImageFile } from '@main/infrastructure/platform/dialog';
 import { readRawFlacData } from '@main/infrastructure/repositories/flac-read-repository';
 
 /**
