@@ -69,14 +69,14 @@ describe('dom-utils', () => {
       // system テーマで OS が light の場合
       vi.mocked(window.matchMedia).mockReturnValue({
         matches: true
-      } as unknown as MediaQueryList);
+      } as MediaQueryList);
       setAppTheme('system');
       expect(document.documentElement.getAttribute('data-is-light')).toBe('true');
 
       // system テーマで OS が dark の場合
       vi.mocked(window.matchMedia).mockReturnValue({
         matches: false
-      } as unknown as MediaQueryList);
+      } as MediaQueryList);
       setAppTheme('system');
       expect(document.documentElement.getAttribute('data-is-light')).toBe('false');
     });

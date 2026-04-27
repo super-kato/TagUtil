@@ -3,7 +3,10 @@ import { computeSha256 } from './crypto';
 
 // Web Crypto API のグローバルモック
 if (!globalThis.crypto) {
-  (globalThis as unknown as Record<string, unknown>).crypto = {};
+  Object.defineProperty(globalThis, 'crypto', {
+    value: {},
+    writable: true
+  });
 }
 
 describe('crypto', () => {
@@ -18,11 +21,14 @@ describe('crypto', () => {
       // Vitest の node 環境では globalThis.crypto.subtle が存在する場合がある
       if (!globalThis.crypto.subtle) {
         const nodeCrypto = await import('node:crypto');
-        (globalThis.crypto as unknown as Record<string, unknown>).subtle = {
-          digest: async (_algorithm: string, data: ArrayBuffer) => {
-            return nodeCrypto.createHash('sha256').update(new Uint8Array(data)).digest().buffer;
-          }
-        };
+        Object.defineProperty(globalThis.crypto, 'subtle', {
+          value: {
+            digest: async (_algorithm: string, data: ArrayBuffer) => {
+              return nodeCrypto.createHash('sha256').update(new Uint8Array(data)).digest().buffer;
+            }
+          },
+          writable: true
+        });
       }
 
       const hash = await computeSha256(data);

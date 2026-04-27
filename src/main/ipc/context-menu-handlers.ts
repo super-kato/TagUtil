@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import { IPC_CHANNELS } from '@shared/ipc';
-import { showTrackContextMenu } from '@main/services/platform/context-menu';
+import { showTrackContextMenu } from '@main/infrastructure/platform/context-menu';
 
 /**
  * コンテキストメニューに関連するIPCハンドラーを登録します。

@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { RawFlacData } from '@main/infrastructure/repositories/repository-types';
+import { describe, expect, it } from 'vitest';
 import { mapToFlacMetadata } from './flac-read-mapper';
-import { RawFlacData } from '@services/flac/types';
 
 describe('flac-read-mapper', () => {
   describe('mapToFlacMetadata', () => {
@@ -112,7 +112,12 @@ describe('flac-read-mapper', () => {
             hash: 'dummy-hash'
           }
         ],
-        streamInfo: {}
+        streamInfo: {
+          sampleRate: 44100,
+          bitDepth: 16,
+          channels: 2,
+          duration: 100
+        }
       };
 
       const result = mapToFlacMetadata(rawData, '/path/to/audio.flac');

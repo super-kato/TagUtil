@@ -2,13 +2,13 @@
   import { UI_TOKENS } from '@renderer/constants/design-system';
 
   import { FolderOpen, Music } from '@lucide/svelte';
-  import { tagActions } from '@renderer/services/tag-actions';
+  import DropZone from '@renderer/components/ui/DropZone.svelte';
+  import DropZoneOverlay from '@renderer/components/ui/DropZoneOverlay.svelte';
   import { contextMenuAdapter } from '@renderer/infrastructure/adapters/context-menu-adapter';
+  import { tagActions } from '@renderer/services/tag-actions';
   import { selectionState } from '@renderer/stores/selection-state.svelte';
   import { TrackRecord } from '@renderer/stores/track-record.svelte';
   import { trackStore } from '@renderer/stores/track-store.svelte';
-  import DropZone from '@renderer/components/ui/DropZone.svelte';
-  import DropZoneOverlay from '@renderer/components/ui/DropZoneOverlay.svelte';
 
   const rowElements: HTMLElement[] = [];
 
@@ -45,7 +45,7 @@
   {#snippet overlay()}
     <DropZoneOverlay icon={FolderOpen} title="Drop to scan FLAC files" sub="Release to open" />
   {/snippet}
-  <div class="grid-wrapper no-focus-glow" tabindex="-1">
+  <div class="grid-wrapper no-focus-glow">
     {#if trackStore.tracks.length > 0}
       <div class="grid-header">
         <table class="data-grid">
@@ -60,7 +60,7 @@
           </thead>
         </table>
       </div>
-      <div class="grid-body">
+      <div class="grid-body" tabindex="-1">
         <table class="data-grid">
           <tbody>
             {#each trackStore.tracks as track, i (track)}
