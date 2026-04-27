@@ -33,6 +33,11 @@
       selectionState.selectSingle(track, index);
     }
   };
+
+  const handleRowContextMenu = (e: MouseEvent, track: TrackRecord): void => {
+    e.preventDefault();
+    tagActions.showTrackContextMenu(track);
+  };
 </script>
 
 <DropZone onDrop={(paths) => tagActions.loadFromPaths(paths)}>
@@ -64,6 +69,7 @@
                 class:selected={selectionState.has(track)}
                 class:modified={track.isModified}
                 onclick={(e) => handleRowClick(e, i, track)}
+                oncontextmenu={(e) => handleRowContextMenu(e, track)}
                 aria-selected={selectionState.has(track)}
               >
                 <td class="indicator-cell"></td>

@@ -181,6 +181,13 @@ const saveAllModified = async (): Promise<void> => {
 };
 
 /**
+ * トラックのコンテキストメニューを表示します。
+ */
+const showTrackContextMenu = async (track: TrackRecord): Promise<void> => {
+  await tagRepository.showTrackContextMenu(track.path);
+};
+
+/**
  * ユーザーの操作（ユースケース）に応じた一連のフローを制御するオブジェクト。
  * Storeの状態変更、Editorによるデータ加工、I/Oサービスとの通信をオーケストレーターとしてまとめます。
  */
@@ -197,5 +204,6 @@ export const tagActions = {
   removeArtwork,
   applyAutoNumbering,
   revertSelected,
-  saveAllModified
+  saveAllModified,
+  showTrackContextMenu
 } as const;

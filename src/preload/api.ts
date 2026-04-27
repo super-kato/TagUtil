@@ -72,6 +72,12 @@ export const api: IpcApi = {
    */
   showMainWindow: () => ipcRenderer.invoke(IPC_CHANNELS.SHOW_MAIN),
   /**
+   * 指定したトラックのコンテキストメニューを表示します。
+   * @param path トラックの絶対パス
+   */
+  showTrackContextMenu: (path: string) =>
+    ipcRenderer.invoke(IPC_CHANNELS.SHOW_TRACK_CONTEXT_MENU, path),
+  /**
    * ログメッセージを受信した時のコールバックを登録します。
    * @param callback ログメッセージを受け取るコールバック
    * @returns 登録解除用の関数
