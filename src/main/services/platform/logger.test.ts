@@ -1,12 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import log from 'electron-log/main';
 import { logger } from './logger';
+
+vi.mock('electron-log/main', () => ({
+  default: {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    initialize: vi.fn()
+  }
+}));
 
 describe('Logger', () => {
   beforeEach(() => {
     // EventEmitter のリスナーをクリア
     logger.removeAllListeners();
-    // console.log をモック化
-    vi.spyOn(console, 'log').mockImplementation(() => {});
+    // モックをリセット
+    vi.clearAllMocks();
   });
 
   describe('ログ出力メソッド', () => {
@@ -59,13 +69,9 @@ describe('Logger', () => {
       );
     });
 
-    it('console.log にも出力されること', () => {
-      logger.info({ context: 'console', message: 'console test' });
-      expect(console.log).toHaveBeenCalled();
-      // 出力フォーマットの断片を確認
-      expect(console.log).toHaveBeenCalledWith(
-        expect.stringContaining('[INFO] [console] console test')
-      );
+    it('electron-log にも出力されること', () => {
+      logger.info({ context: 'electron', message: 'electron test' });
+      expect(log.info).toHaveBeenCalledWith('[electron] electron test');
     });
   });
 

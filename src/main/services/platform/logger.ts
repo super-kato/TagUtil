@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { format } from 'node:util';
+import log from 'electron-log/main';
 import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
-import { formatTimeWithMs } from '@shared/utils/date';
 
 /**
  * ロガーに渡されるオプション引数。
@@ -50,9 +50,22 @@ class Logger extends EventEmitter {
     });
     this.emit(Logger.#LOG_EVENT, logMessage);
 
-    // 標準出力にも出す
-    const timePrefix = `[${formatTimeWithMs(logMessage.timestamp)}]`;
-    console.log(`${timePrefix} [${params.level}] [${params.context}] ${formattedMessage}`);
+    // electron-log に出力（ファイル保存と標準出力を兼ねる）
+    const logText = `[${params.context}] ${formattedMessage}`;
+    switch (params.level) {
+      case 'INFO':
+        log.info(logText);
+        break;
+      case 'WARN':
+        log.warn(logText);
+        break;
+      case 'ERROR':
+        log.error(logText);
+        break;
+      default:
+        log.info(logText);
+        break;
+    }
   }
 }
 
