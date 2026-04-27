@@ -252,8 +252,8 @@
   }
 
   .log-col-time {
-    width: 6.2rem;
-    padding: 0.15rem 0.4rem;
+    width: 7.2rem;
+    padding: 0.15rem 0.8rem 0.15rem 0.4rem;
     color: var(--text-dim);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
