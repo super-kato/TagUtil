@@ -31,11 +31,6 @@
       return;
     }
     setAppTheme(theme);
-
-    const isLight =
-      theme === 'light' ||
-      (theme === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches);
-    document.documentElement.setAttribute('data-is-light', isLight.toString());
   });
 </script>
 

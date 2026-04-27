@@ -21,5 +21,8 @@ export const isInputFocused = (): boolean => {
  * @param theme 適用するテーマ
  */
 export const setAppTheme = (theme: ColorTheme): void => {
-  document.documentElement.setAttribute('data-theme', theme);
+  const isLight =
+    theme === 'light' ||
+    (theme === 'system' && window.matchMedia('(prefers-color-scheme: light)').matches);
+  document.documentElement.setAttribute('data-is-light', isLight.toString());
 };
