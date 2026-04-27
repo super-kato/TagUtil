@@ -53,7 +53,7 @@
     "flac-tagger": "^2.0.0",
     "music-metadata": "^11.12.3",
     "p-limit": "^7.3.0",
-    "svelte": "^5.55.5"
+    "svelte": "^5.5.5"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
