@@ -3,6 +3,7 @@
 
   import { FolderOpen, Music } from '@lucide/svelte';
   import { tagActions } from '@renderer/services/tag-actions';
+  import { contextMenuAdapter } from '@renderer/infrastructure/adapters/context-menu-adapter';
   import { selectionState } from '@renderer/stores/selection-state.svelte';
   import { TrackRecord } from '@renderer/stores/track-record.svelte';
   import { trackStore } from '@renderer/stores/track-store.svelte';
@@ -32,6 +33,11 @@
     } else {
       selectionState.selectSingle(track, index);
     }
+  };
+
+  const handleRowContextMenu = (e: MouseEvent, track: TrackRecord): void => {
+    e.preventDefault();
+    contextMenuAdapter.showTrackContextMenu(track.path);
   };
 </script>
 
@@ -64,6 +70,7 @@
                 class:selected={selectionState.has(track)}
                 class:modified={track.isModified}
                 onclick={(e) => handleRowClick(e, i, track)}
+                oncontextmenu={(e) => handleRowContextMenu(e, track)}
                 aria-selected={selectionState.has(track)}
               >
                 <td class="indicator-cell"></td>

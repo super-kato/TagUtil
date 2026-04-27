@@ -39,7 +39,9 @@ export const IPC_CHANNELS = {
   /** アプリケーション設定の更新 */
   UPDATE_CONFIG: 'app:update-config',
   /** メインウィンドウを表示 */
-  SHOW_MAIN: 'app:show-main'
+  SHOW_MAIN: 'app:show-main',
+  /** トラックのコンテキストメニューを表示 */
+  SHOW_TRACK_CONTEXT_MENU: 'app:show-track-context-menu'
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -62,6 +64,7 @@ export interface IpcApi {
   getSettings(): Promise<AppResult<AppSettings>>;
   updateSettings(settings: Partial<AppSettings>): Promise<AppResult<void>>;
   showMainWindow(): Promise<void>;
+  showTrackContextMenu(path: string): Promise<void>;
   onLogMessage(callback: LogHandler): Unsubscribe;
 }
 
