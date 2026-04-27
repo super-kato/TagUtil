@@ -3,6 +3,7 @@
 
   import { FolderOpen, Music } from '@lucide/svelte';
   import { tagActions } from '@renderer/services/tag-actions';
+  import { contextMenuAdapter } from '@renderer/infrastructure/adapters/context-menu-adapter';
   import { selectionState } from '@renderer/stores/selection-state.svelte';
   import { TrackRecord } from '@renderer/stores/track-record.svelte';
   import { trackStore } from '@renderer/stores/track-store.svelte';
@@ -36,7 +37,7 @@
 
   const handleRowContextMenu = (e: MouseEvent, track: TrackRecord): void => {
     e.preventDefault();
-    tagActions.showTrackContextMenu(track);
+    contextMenuAdapter.showTrackContextMenu(track.path);
   };
 </script>
 

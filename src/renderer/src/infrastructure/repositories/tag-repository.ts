@@ -58,16 +58,11 @@ const getImageInfo = async (path: string): Promise<AppResult<Picture>> => {
   return await window.api.getImageInfo(path);
 };
 
-const showTrackContextMenu = async (path: string): Promise<void> => {
-  await window.api.showTrackContextMenu(path);
-};
-
 export const tagRepository = {
   scanAndLoadTracks,
   loadTracksFromPaths,
   readMetadata,
   saveTracks,
   pickImage,
-  getImageInfo,
-  showTrackContextMenu
+  getImageInfo
 } as const;
