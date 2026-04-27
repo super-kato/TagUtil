@@ -1,8 +1,8 @@
+import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
 import { app } from 'electron';
+import log from 'electron-log/main';
 import { EventEmitter } from 'node:events';
 import { format } from 'node:util';
-import log from 'electron-log/main';
-import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
 
 /**
  * ロガーに渡されるオプション引数。
@@ -28,6 +28,10 @@ class Logger extends EventEmitter {
     } else {
       log.transports.file.level = 'debug';
     }
+  }
+
+  public debug(options: LoggerOptions, ...args: unknown[]): void {
+    this.#log({ ...options, level: 'DEBUG' }, ...args);
   }
 
   public info(options: LoggerOptions, ...args: unknown[]): void {
@@ -62,10 +66,18 @@ class Logger extends EventEmitter {
       context: params.context,
       message: formattedMessage
     });
-    this.emit(Logger.#LOG_EVENT, logMessage);
+
+    // UI（Renderer）への転送
+    // 本番環境では DEBUG ログは転送しない
+    if (!(app.isPackaged && params.level === 'DEBUG')) {
+      this.emit(Logger.#LOG_EVENT, logMessage);
+    }
 
     const logText = `[${params.context}] ${formattedMessage}`;
     switch (params.level) {
+      case 'DEBUG':
+        log.debug(logText);
+        break;
       case 'INFO':
         log.info(logText);
         break;

@@ -4,6 +4,7 @@ import { logger } from './logger';
 
 vi.mock('electron-log/main', () => ({
   default: {
+    debug: vi.fn(),
     info: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
@@ -19,10 +20,12 @@ vi.mock('electron-log/main', () => ({
   }
 }));
 
+const mockApp = vi.hoisted(() => ({
+  isPackaged: false
+}));
+
 vi.mock('electron', () => ({
-  app: {
-    isPackaged: false
-  }
+  app: mockApp
 }));
 
 describe('Logger', () => {
@@ -34,6 +37,21 @@ describe('Logger', () => {
   });
 
   describe('ログ出力メソッド', () => {
+    it('debug() が正しくログイベントを発火させること', () => {
+      const handler = vi.fn();
+      logger.onLog(handler);
+
+      logger.debug({ context: 'test', message: 'test debug message' });
+
+      expect(handler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          level: 'DEBUG',
+          context: 'test',
+          message: 'test debug message'
+        })
+      );
+    });
+
     it('info() が正しくログイベントを発火させること', () => {
       const handler = vi.fn();
       logger.onLog(handler);
@@ -101,6 +119,21 @@ describe('Logger', () => {
 
       expect(handler1).toHaveBeenCalled();
       expect(handler2).toHaveBeenCalled();
+    });
+
+    it('本番環境では DEBUG ログが転送されないこと', () => {
+      mockApp.isPackaged = true;
+
+      const handler = vi.fn();
+      logger.onLog(handler);
+
+      logger.debug({ context: 'test', message: 'hidden debug' });
+      expect(handler).not.toHaveBeenCalled();
+
+      logger.info({ context: 'test', message: 'visible info' });
+      expect(handler).toHaveBeenCalled();
+
+      mockApp.isPackaged = false; // 元に戻す
     });
   });
 });
