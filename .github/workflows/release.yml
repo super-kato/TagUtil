@@ -40,17 +40,15 @@ jobs:
             echo "Release $TAG does not exist. Proceeding with build."
           fi
 
-  build-and-release:
+  build-mac:
     needs: check-release
     if: needs.check-release.outputs.should_release == 'true'
     runs-on: macos-latest
     permissions:
-      contents: write
+      contents: read
     steps:
       - name: リポジトリのチェックアウト
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
 
       - name: Node.js のセットアップ
         uses: actions/setup-node@v6
@@ -65,17 +63,109 @@ jobs:
       - name: 依存関係のインストール
         run: pnpm install
 
-      - name: ビルドおよび公証
+      - name: ビルドおよび公証 (Mac)
         run: pnpm build:mac
         env:
-          # コード署名
           CSC_LINK: ${{ secrets.MACOS_CERTIFICATE }}
           CSC_KEY_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PWD }}
-          # 公証
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_ID_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_ID_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+
+      - name: アーティファクトのアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts-mac
+          path: |
+            dist/*.dmg
+            dist/*.zip
+            dist/latest-mac.yml
+
+  build-win:
+    needs: check-release
+    if: needs.check-release.outputs.should_release == 'true'
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
+
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: pnpm のセットアップ
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+
+      - name: 依存関係のインストール
+        run: pnpm install
+
+      - name: ビルド (Windows)
+        run: pnpm build:win
+
+      - name: アーティファクトのアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts-win
+          path: |
+            dist/*.exe
+            dist/latest.yml
+
+  build-linux:
+    needs: check-release
+    if: needs.check-release.outputs.should_release == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
+
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: pnpm のセットアップ
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+
+      - name: 依存関係のインストール
+        run: pnpm install
+
+      - name: ビルド (Linux)
+        run: pnpm build:linux
+
+      - name: アーティファクトのアップロード
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts-linux
+          path: |
+            dist/*.AppImage
+            dist/*.deb
+            dist/latest-linux.yml
+
+  release:
+    needs: [check-release, build-mac, build-win, build-linux]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
+
+      - name: アーティファクトのダウンロード
+        uses: actions/download-artifact@v4
+        with:
+          pattern: release-artifacts-*
+          path: dist
+          merge-multiple: true
 
       - name: GitHub リリースの作成
         env:
@@ -89,9 +179,7 @@ jobs:
             --title "$TAG" \
             --notes "$PR_DATA" \
             --target main \
-            dist/*.dmg \
-            dist/*.zip \
-            dist/latest-mac.yml
+            dist/*
 
       - name: 旧バージョンの判定
         id: check_old_release
