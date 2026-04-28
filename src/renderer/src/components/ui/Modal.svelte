@@ -14,9 +14,11 @@
     children: Snippet;
     /** フッター部分のスニペット */
     footer?: Snippet;
+    /** 最大横幅（デフォルト: 480px） */
+    maxWidth?: string;
   }
 
-  let { isOpen, onClose, title, header, children, footer }: Props = $props();
+  let { isOpen, onClose, title, header, children, footer, maxWidth = '480px' }: Props = $props();
 
   let dialog: HTMLDialogElement;
 
@@ -57,6 +59,7 @@
   oncancel={handleCancel}
   onclick={handleBackdropClick}
   class="custom-modal"
+  style="max-width: {maxWidth}"
 >
   <div class="modal-container" role="document">
     <header class="modal-header">
@@ -89,7 +92,6 @@
       0 20px 25px -5px rgba(0, 0, 0, 0.4),
       0 10px 10px -5px rgba(0, 0, 0, 0.2);
     color: var(--text-primary);
-    max-width: 480px;
     width: 90%;
     border: 1px solid var(--border-primary);
     overflow: hidden;

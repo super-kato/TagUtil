@@ -1,3 +1,4 @@
+import { logger } from '@main/infrastructure/logging/logger';
 import {
   IGNORE_TAG_KEYS,
   RawFlacData,
@@ -7,12 +8,15 @@ import {
 import { computeMd5 } from '@main/utils/crypto';
 import * as musicMetadata from 'music-metadata';
 
+const LOG_CONTEXT = 'FlacReadRepo';
+
 /**
  * 指定されたパスのFLACファイルから生のメタデータを読み取ります。
  */
 export const readRawFlacData = async (filePath: string): Promise<RawFlacData> => {
   const mmData = await musicMetadata.parseFile(filePath);
 
+  logger.debug({ context: LOG_CONTEXT, message: `Parsing completed: ${filePath}` });
   return {
     path: filePath,
     tags: mapLibTagsToRaw(mmData.native.vorbis || []),

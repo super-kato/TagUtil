@@ -1,4 +1,3 @@
-import { FlacMetadata } from '@domain/flac/models';
 import {
   CanonicalTagKey,
   MULTI_VALUE_PROPERTY_MAP,
@@ -7,7 +6,7 @@ import {
   SingleValueCanonicalTagKey,
   TAG_DEFINITIONS
 } from '@domain/audio/tag-definitions';
-
+import { FlacMetadata } from '@domain/flac/models';
 import {
   RawFlacData,
   RawFlacTags,

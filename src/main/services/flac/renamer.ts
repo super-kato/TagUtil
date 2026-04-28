@@ -1,13 +1,15 @@
+import { formatFilename } from '@domain/audio/filename-formatter';
 import { success } from '@domain/common/result';
 import { appErrors } from '@domain/errors/definitions';
-import { formatFilename } from '@domain/audio/filename-formatter';
 import type { FlacTrack } from '@domain/flac/models';
 import { AppResult } from '@domain/types';
-
-import { renameFileExclusive } from '@main/infrastructure/repositories/file/file-rename-repository';
+import { logger } from '@main/infrastructure/logging/logger';
 import { resolveNewPath } from '@main/infrastructure/repositories/file/file-path-repository';
+import { renameFileExclusive } from '@main/infrastructure/repositories/file/file-rename-repository';
 import { settingsRepository } from '@main/infrastructure/repositories/settings/settings-repository';
 import { toAppResultFailure } from '@main/utils/error-handler';
+
+const LOG_CONTEXT = 'Renamer';
 
 /**
  * ファイルを新しいパスにリネーム（移動）します。
@@ -15,6 +17,7 @@ import { toAppResultFailure } from '@main/utils/error-handler';
  * @param newPath 新しい絶対パス
  */
 export const renameFile = async (oldPath: string, newPath: string): Promise<AppResult<void>> => {
+  logger.debug({ context: LOG_CONTEXT, message: `Renaming: ${oldPath} -> ${newPath}` });
   try {
     await renameFileExclusive(oldPath, newPath);
   } catch (error: unknown) {
