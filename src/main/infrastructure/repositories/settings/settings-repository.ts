@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS: AppSettings = {
   renamePattern: `${TAG_PLACEHOLDERS.TRACK_NUMBER} - ${TAG_PLACEHOLDERS.TITLE}`,
   trackNumberPadding: 2,
   theme: 'system',
+  logLevel: 'INFO',
   genres: [
     'Pop',
     'Soundtrack',

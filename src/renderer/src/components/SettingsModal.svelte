@@ -1,10 +1,10 @@
 <script lang="ts">
   import { TAG_PLACEHOLDERS } from '@domain/audio/constants';
-  import { FilePen, List, Save, Star, X } from '@lucide/svelte';
+  import { Bug, FilePen, List, Save, Star, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { MAX_QUICK_GENRES, settingsStore } from '@renderer/stores/settings-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
-  import { type ColorTheme } from '@shared/settings';
+  import { type ColorTheme, type LogLevel } from '@shared/settings';
   import BadgeField from './ui/BadgeField.svelte';
   import Modal from './ui/Modal.svelte';
 
@@ -20,6 +20,7 @@
   };
 
   const themes: ColorTheme[] = ['light', 'dark', 'system'];
+  const logLevels: LogLevel[] = ['INFO', 'DEBUG'];
 </script>
 
 <Modal isOpen={uiState.isSettingsOpen} onClose={handleCancel} title="Settings">
@@ -28,7 +29,7 @@
       <!-- Section: Appearance -->
       <section class="settings-section">
         <div class="field">
-          <div class="theme-toggle" id="setting-theme">
+          <div class="toggle-group" id="setting-theme">
             {#each themes as theme (theme)}
               <button
                 type="button"
@@ -37,6 +38,28 @@
                 onclick={() => settingsStore.update('theme', theme)}
               >
                 {theme}
+              </button>
+            {/each}
+          </div>
+        </div>
+      </section>
+
+      <!-- Section: Logging (Debug) -->
+      <section class="settings-section">
+        <div class="section-header">
+          <Bug size={UI_TOKENS.icons.size} />
+          <h3>Logging</h3>
+        </div>
+        <div class="field">
+          <div class="toggle-group" id="setting-log-level">
+            {#each logLevels as level (level)}
+              <button
+                type="button"
+                class="toggle-btn"
+                class:active={settingsStore.current.logLevel === level}
+                onclick={() => settingsStore.update('logLevel', level)}
+              >
+                {level}
               </button>
             {/each}
           </div>
@@ -246,7 +269,7 @@
     appearance: textfield;
   }
 
-  .theme-toggle {
+  .toggle-group {
     display: flex;
     background-color: var(--bg-secondary);
     padding: 0.25rem;

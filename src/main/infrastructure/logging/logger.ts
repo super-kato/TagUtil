@@ -1,8 +1,8 @@
 import { LogHandler, LogParams, createLogMessage } from '@domain/common/log';
-import { app } from 'electron';
 import log from 'electron-log/main';
 import { EventEmitter } from 'node:events';
 import { format } from 'node:util';
+import { settingsRepository } from '@main/infrastructure/repositories/settings/settings-repository';
 
 /**
  * ロガーに渡されるオプション引数。
@@ -22,12 +22,21 @@ class Logger extends EventEmitter {
     log.initialize();
     log.errorHandler.startCatching();
 
-    // 本番環境と開発環境のログレベル設定
-    if (app.isPackaged) {
-      log.transports.file.level = 'warn';
-    } else {
-      log.transports.file.level = 'debug';
-    }
+    // 保存されている設定、または環境（開発/本番）に基づいてログレベルを初期化
+    this.updateLogLevel();
+  }
+
+  /**
+   * 現在の設定に基づいてログレベル（ファイル出力および UI 転送）を更新します。
+   */
+  public updateLogLevel(): void {
+    const level = settingsRepository.settings.logLevel;
+
+    // ファイル出力およびコンソール出力レベルの設定
+    // 開発・本番に関わらず、ユーザー設定に従う
+    const logTaggerLevel = level === 'DEBUG' ? 'debug' : 'info';
+    log.transports.file.level = logTaggerLevel;
+    log.transports.console.level = logTaggerLevel;
   }
 
   public debug(options: LoggerOptions, ...args: unknown[]): void {
@@ -68,8 +77,9 @@ class Logger extends EventEmitter {
     });
 
     // UI（Renderer）への転送
-    // 本番環境では DEBUG ログは転送しない
-    if (!(app.isPackaged && params.level === 'DEBUG')) {
+    // 設定が INFO の場合は DEBUG ログを抑制する
+    const currentLevel = settingsRepository.settings.logLevel;
+    if (!(currentLevel === 'INFO' && params.level === 'DEBUG')) {
       this.emit(Logger.#LOG_EVENT, logMessage);
     }
 
