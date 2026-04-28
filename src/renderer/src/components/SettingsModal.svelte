@@ -1,6 +1,6 @@
 <script lang="ts">
   import { TAG_PLACEHOLDERS } from '@domain/audio/constants';
-  import { Bug, FilePen, List, Save, Star, X } from '@lucide/svelte';
+  import { FilePen, List, Logs, Palette, Save, Star, X } from '@lucide/svelte';
   import { UI_TOKENS } from '@renderer/constants/design-system';
   import { MAX_QUICK_GENRES, settingsStore } from '@renderer/stores/settings-store.svelte';
   import { uiState } from '@renderer/stores/ui-state.svelte';
@@ -23,11 +23,15 @@
   const logLevels: LogLevel[] = ['INFO', 'DEBUG'];
 </script>
 
-<Modal isOpen={uiState.isSettingsOpen} onClose={handleCancel} title="Settings">
+<Modal isOpen={uiState.isSettingsOpen} onClose={handleCancel} title="Settings" maxWidth="640px">
   {#if settingsStore.current}
     <div class="settings-content">
       <!-- Section: Appearance -->
       <section class="settings-section">
+        <div class="section-header">
+          <Palette size={UI_TOKENS.icons.size} />
+          <h3>Appearance</h3>
+        </div>
         <div class="field">
           <div class="toggle-group" id="setting-theme">
             {#each themes as theme (theme)}
@@ -47,7 +51,7 @@
       <!-- Section: Logging (Debug) -->
       <section class="settings-section">
         <div class="section-header">
-          <Bug size={UI_TOKENS.icons.size} />
+          <Logs size={UI_TOKENS.icons.size} />
           <h3>Logging</h3>
         </div>
         <div class="field">
@@ -192,6 +196,7 @@
     font-size: 0.95rem;
     font-weight: 600;
     letter-spacing: 0.02em;
+    color: var(--text-primary);
   }
 
   .placeholder-list {
