@@ -1,12 +1,10 @@
-import { _electron as electron } from '@playwright/test';
-import { test, expect } from '@playwright/test';
-import electronPath from 'electron';
+import { _electron as electron, expect, test } from '@playwright/test';
 import { resolve } from 'path';
 
 test('アプリケーションが起動し、タイトルが正しいこと', async () => {
   const electronApp = await electron.launch({
     args: [resolve('out/main/index.js')],
-    executablePath: electronPath as unknown as string
+    executablePath: resolve('node_modules/.bin/electron')
   });
 
   const window = await electronApp.firstWindow();
