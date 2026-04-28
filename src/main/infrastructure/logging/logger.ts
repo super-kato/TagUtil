@@ -24,6 +24,11 @@ class Logger extends EventEmitter {
 
     // 保存されている設定、または環境（開発/本番）に基づいてログレベルを初期化
     this.updateLogLevel();
+
+    // 設定変更を購読し、動的に反映する
+    settingsRepository.onChange(() => {
+      this.updateLogLevel();
+    });
   }
 
   /**
