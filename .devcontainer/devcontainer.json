@@ -11,6 +11,6 @@
       "screenResolution": "1600x1000"
     }
   },
-  "forwardPorts": [5901, 6080],
+  "forwardPorts": [5901, 6080, 9222],
   "postCreateCommand": "pnpm install"
 }
