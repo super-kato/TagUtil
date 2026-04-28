@@ -2,23 +2,37 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "デバッグ",
+      // アプリ本体（Node.js側）を起動してデバッグ
+      "name": "メイン",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}",
       "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/electron",
-      "runtimeArgs": ["--no-sandbox", "--disable-gpu"],
+      "runtimeArgs": ["--remote-debugging-port=9222", "--no-sandbox", "--disable-gpu"],
       "args": ["${workspaceFolder}/out/main/index.js"],
       "outputCapture": "std",
       "console": "integratedTerminal",
       "preLaunchTask": "pnpm: build",
       "sourceMaps": true,
       "smartStep": true,
-      "outFiles": ["${workspaceFolder}/out/**/*.js"],
+      "outFiles": ["${workspaceFolder}/out/**/*.js", "${workspaceFolder}/out/**/*.mjs"],
       "env": {
         "DISPLAY": ":1",
         "ELECTRON_DISABLE_SANDBOX": "1"
       }
+    },
+    {
+      // 起動したアプリの画面側にアタッチしてデバッグ。
+      // 必ず先にメインプロセスを起動し、ウィンドウが表示された後に開始すること。
+      "name": "レンダラー",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222,
+      "address": "127.0.0.1",
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      "timeout": 60000,
+      "urlFilter": "file:///**/index.html*"
     }
   ]
 }

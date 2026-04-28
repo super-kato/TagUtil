@@ -4,7 +4,7 @@
     {
       "label": "pnpm: build",
       "type": "shell",
-      "command": "pnpm build",
+      "command": "DEBUG=true pnpm build",
       "group": "build",
       "problemMatcher": "$tsc"
     }
