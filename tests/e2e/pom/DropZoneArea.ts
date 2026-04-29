@@ -24,45 +24,7 @@ export class DropZoneArea {
    */
   async dropFiles(filePaths: string | string[]): Promise<void> {
     const paths = Array.isArray(filePaths) ? filePaths : [filePaths];
-
-    await this.page.evaluate(() => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.id = 'e2e-hidden-file-input';
-      input.multiple = true;
-      input.style.display = 'none';
-      document.body.appendChild(input);
-    });
-
-    await this.page.locator('#e2e-hidden-file-input').setInputFiles(paths);
-
-    // root (対象の DropZone) に対して evaluate を実行し、正確な要素に Dispatch する
-    await this.root.evaluate((target) => {
-      const input = document.getElementById('e2e-hidden-file-input') as HTMLInputElement;
-
-      if (input && input.files && target) {
-        const dataTransfer = new DataTransfer();
-        for (let i = 0; i < input.files.length; i++) {
-          dataTransfer.items.add(input.files[i]);
-        }
-
-        const dragOverEvent = new DragEvent('dragover', {
-          dataTransfer,
-          bubbles: true,
-          cancelable: true
-        });
-        target.dispatchEvent(dragOverEvent);
-
-        const dropEvent = new DragEvent('drop', {
-          dataTransfer,
-          bubbles: true,
-          cancelable: true
-        });
-        target.dispatchEvent(dropEvent);
-      }
-
-      input?.remove();
-    });
+    await this.simulateDrop(paths, { isFolder: false });
   }
 
   /**
@@ -73,51 +35,73 @@ export class DropZoneArea {
    * @param folderPath ドロップするフォルダの絶対パス
    */
   async dropFolder(folderPath: string): Promise<void> {
-    await this.page.evaluate(() => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.id = 'e2e-hidden-folder-input';
-      input.webkitdirectory = true;
-      input.style.display = 'none';
-      document.body.appendChild(input);
-    });
+    await this.simulateDrop(folderPath, { isFolder: true });
+  }
+
+  /**
+   * 内部で共通利用するドロップシミュレーションロジック
+   */
+  private async simulateDrop(
+    paths: string | string[],
+    options: { isFolder: boolean }
+  ): Promise<void> {
+    const inputId = `e2e-hidden-${options.isFolder ? 'folder' : 'file'}-input`;
+
+    // 1. 非表示の input を DOM に生成
+    await this.page.evaluate(
+      ({ id, isFolder }) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.id = id;
+        input.style.display = 'none';
+        if (isFolder) {
+          input.webkitdirectory = true;
+        } else {
+          input.multiple = true;
+        }
+        document.body.appendChild(input);
+      },
+      { id: inputId, isFolder: options.isFolder }
+    );
 
     try {
-      await this.page.locator('#e2e-hidden-folder-input').setInputFiles(folderPath);
+      // 2. Playwright の機能でネイティブパスを含む File をセット
+      await this.page.locator(`#${inputId}`).setInputFiles(paths);
 
-      // root に対して evaluate を実行
-      await this.root.evaluate((target) => {
-        const input = document.getElementById('e2e-hidden-folder-input') as HTMLInputElement;
+      // 3. DropZone 要素に対して dispatchEvent を実行
+      await this.root.evaluate((target, id) => {
+        const input = document.getElementById(id) as HTMLInputElement;
 
-        if (input && input.files && input.files.length > 0 && target) {
-          const dataTransfer = new DataTransfer();
-          for (let i = 0; i < input.files.length; i++) {
-            dataTransfer.items.add(input.files[i]);
-          }
-
-          const dragOverEvent = new DragEvent('dragover', {
-            dataTransfer,
-            bubbles: true,
-            cancelable: true
-          });
-          target.dispatchEvent(dragOverEvent);
-
-          const dropEvent = new DragEvent('drop', {
-            dataTransfer,
-            bubbles: true,
-            cancelable: true
-          });
-          target.dispatchEvent(dropEvent);
+        // ガード節
+        if (!input || !input.files || input.files.length === 0 || !target) {
+          input?.remove();
+          return;
         }
 
-        input?.remove();
-      });
+        const dataTransfer = new DataTransfer();
+        for (let i = 0; i < input.files.length; i++) {
+          dataTransfer.items.add(input.files[i]);
+        }
+
+        target.dispatchEvent(
+          new DragEvent('dragover', { dataTransfer, bubbles: true, cancelable: true })
+        );
+        target.dispatchEvent(
+          new DragEvent('drop', { dataTransfer, bubbles: true, cancelable: true })
+        );
+
+        input.remove();
+      }, inputId);
     } catch (e) {
-      console.warn('Directory drop simulation skipped or failed:', e);
-      // クリーンアップ
-      await this.page.evaluate(() => {
-        document.getElementById('e2e-hidden-folder-input')?.remove();
-      });
+      if (options.isFolder) {
+        // webkitdirectory が未対応の環境等への安全策
+        console.warn('Directory drop simulation skipped or failed:', e);
+      } else {
+        throw e;
+      }
+    } finally {
+      // 例外時も含め確実にお掃除する
+      await this.page.evaluate((id) => document.getElementById(id)?.remove(), inputId);
     }
   }
 }
