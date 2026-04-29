@@ -6,9 +6,6 @@ test.describe('業務ロジックテスト: タグ編集', () => {
     electronApp,
     testDataDir
   }) => {
-    // レンダラープロセスのコンソールログを転送
-    mainPage.page.on('console', (msg) => console.log(`[RENDERER] ${msg.text()}`));
-
     // 独立した一時ディレクトリをモックとして注入
     await electronApp.evaluate(async (electronModule, dir) => {
       const { ipcMain } = electronModule;

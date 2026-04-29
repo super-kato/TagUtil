@@ -25,7 +25,7 @@ export class MainPage {
     // スペックファイル名（拡張子なし）をフォルダ名にする
     const specName = basename(testFilePath, extname(testFilePath));
     this.screenshotDir = join(process.cwd(), 'tests/e2e/screenshots', specName);
-    
+
     // フォルダの作成を保証
     mkdirSync(this.screenshotDir, { recursive: true });
   }
@@ -38,7 +38,7 @@ export class MainPage {
   async screenshot(name: string): Promise<void> {
     const filename = name.endsWith('.png') ? name : `${name}.png`;
     const fullPath = join(this.screenshotDir, filename);
-    
+
     await this.page.screenshot({
       path: fullPath,
       fullPage: true
