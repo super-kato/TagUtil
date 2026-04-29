@@ -17,13 +17,13 @@ export default defineConfig(
     }
   },
   {
-    files: ['src/**/*.{ts,tsx,svelte.ts}'],
+    files: ['src/**/*.{ts,tsx,svelte.ts}', '*.{ts,mjs}'],
     languageOptions: {
       parser: tseslint.parser
     }
   },
   {
-    files: ['src/**/*.{ts,tsx,svelte,svelte.ts}'],
+    files: ['src/**/*.{ts,tsx,svelte,svelte.ts}', 'vitest.setup.ts'],
     rules: {
       'svelte/no-unused-svelte-ignore': 'off',
       '@typescript-eslint/no-explicit-any': 'error',
@@ -94,9 +94,10 @@ export default defineConfig(
     }
   },
   {
-    files: ['**/*.test.ts', '**/*.spec.ts'],
+    files: ['**/*.test.ts', '**/*.spec.ts', 'vitest.setup.ts'],
     rules: {
-      '@typescript-eslint/no-magic-numbers': 'off'
+      '@typescript-eslint/no-magic-numbers': 'off',
+      '@typescript-eslint/naming-convention': 'off'
     }
   }
 );

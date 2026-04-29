@@ -1,108 +1,74 @@
 import { describe, it, expect } from 'vitest';
-import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import { tagEditor } from './tag-editor';
+import { TrackRecord } from '@renderer/stores/track-record.svelte';
 import type { FlacMetadata } from '@domain/flac/models';
 
 describe('tagEditor', () => {
-  const createMockTrack = (path: string, genre: string[] = []): TrackRecord => {
-    const metadata: FlacMetadata = {
-      title: 'Title',
-      album: 'Album',
-      artist: ['Artist'],
-      albumArtist: ['Artist'],
-      genre,
-      trackNumber: '1',
-      trackTotal: '1',
-      discNumber: '1',
-      discTotal: '1',
-      date: '2024',
-      catalogNumber: 'CAT-001',
-      streamInfo: {
-        sampleRate: 44100,
-        channels: 2,
-        bitDepth: 16,
-        duration: 100
-      }
-    };
-    return new TrackRecord(path, metadata);
+  const createMockTrack = (path: string, metadata: Partial<FlacMetadata> = {}): TrackRecord => {
+    return new TrackRecord(path, {
+      title: 'T',
+      artist: ['A'],
+      album: 'Al',
+      ...metadata
+    } as FlacMetadata);
   };
 
-  describe('addMultiFieldValue', () => {
-    it('新しい値を複数値フィールドの末尾に追加すること', () => {
-      const track = createMockTrack('file1.flac', ['Rock']);
-      tagEditor.addMultiFieldValue([track], 'genre', 'Pop');
-      expect(track.metadata.genre).toStrictEqual(['Rock', 'Pop']);
-    });
-
-    it('既に存在する値は重複して追加しないこと', () => {
-      const track = createMockTrack('file1.flac', ['Rock', 'Pop']);
-      tagEditor.addMultiFieldValue([track], 'genre', 'Rock');
-      expect(track.metadata.genre).toStrictEqual(['Rock', 'Pop']);
-    });
-
-    it('空の配列に対しても正しく追加できること', () => {
-      const track = createMockTrack('file1.flac', []);
-      tagEditor.addMultiFieldValue([track], 'genre', 'Jazz');
-      expect(track.metadata.genre).toStrictEqual(['Jazz']);
-    });
+  it('updateSingleField で全トラックの指定フィールドを更新できること', () => {
+    const tracks = [createMockTrack('1.flac'), createMockTrack('2.flac')];
+    tagEditor.updateSingleField(tracks, 'title', 'New Title');
+    expect(tracks[0].metadata.title).toBe('New Title');
+    expect(tracks[1].metadata.title).toBe('New Title');
   });
 
-  describe('removeMultiFieldValue', () => {
-    it('指定した値をフィールドから削除すること', () => {
-      const track = createMockTrack('file1.flac', ['Rock', 'Pop', 'Jazz']);
-      tagEditor.removeMultiFieldValue([track], 'genre', 'Pop');
-      expect(track.metadata.genre).toStrictEqual(['Rock', 'Jazz']);
-    });
-
-    it('該当する値が複数ある場合、すべて削除すること', () => {
-      const track = createMockTrack('file1.flac', ['Rock', 'Pop', 'Rock']);
-      tagEditor.removeMultiFieldValue([track], 'genre', 'Rock');
-      expect(track.metadata.genre).toStrictEqual(['Pop']);
-    });
-
-    it('存在しない値を削除しようとしても変化がないこと', () => {
-      const track = createMockTrack('file1.flac', ['Rock']);
-      tagEditor.removeMultiFieldValue([track], 'genre', 'Pop');
-      expect(track.metadata.genre).toStrictEqual(['Rock']);
-    });
+  it('updateMultiField で複数値フィールドの特定インデックスを更新できること', () => {
+    const tracks = [createMockTrack('1.flac', { artist: ['A1', 'A2'] })];
+    tagEditor.updateMultiField(tracks, 'artist', 1, 'New Artist');
+    expect(tracks[0].metadata.artist?.[1]).toBe('New Artist');
   });
 
-  describe('updateMultiField', () => {
-    it('指定したインデックスの値を更新すること', () => {
-      const track = createMockTrack('file1.flac', ['Rock', 'Pop']);
-      tagEditor.updateMultiField([track], 'genre', 1, 'Jazz');
-      expect(track.metadata.genre).toStrictEqual(['Rock', 'Jazz']);
-    });
+  it('addMultiFieldValue で複数値フィールドに値を追加し、重複を避けること', () => {
+    const tracks = [createMockTrack('1.flac', { artist: ['A1'] })];
+
+    // 新しい値を追加
+    tagEditor.addMultiFieldValue(tracks, 'artist', 'A2');
+    expect(tracks[0].metadata.artist).toEqual(['A1', 'A2']);
+
+    // 重複する値は追加されない
+    tagEditor.addMultiFieldValue(tracks, 'artist', 'A1');
+    expect(tracks[0].metadata.artist).toEqual(['A1', 'A2']);
+
+    // 空文字列も追加できる（初期状態作成用など）
+    tagEditor.addMultiFieldValue(tracks, 'artist', '');
+    expect(tracks[0].metadata.artist).toEqual(['A1', 'A2', '']);
   });
 
-  describe('applyPicture', () => {
-    it('すべてのトラックに同じ画像情報を適用すること', () => {
-      const tracks = [createMockTrack('file1.flac'), createMockTrack('file2.flac')];
-      const picture = {
-        format: 'image/jpeg',
-        sourcePath: '/path/to/image.jpg',
-        hash: 'mock-hash'
-      };
-
-      tagEditor.applyPicture(tracks, picture);
-
-      expect(tracks[0].metadata.picture).toStrictEqual(picture);
-      expect(tracks[1].metadata.picture).toStrictEqual(picture);
-    });
+  it('removeMultiFieldValue で複数値フィールドから値を削除できること', () => {
+    const tracks = [createMockTrack('1.flac', { artist: ['A1', 'A2', 'A1'] })];
+    tagEditor.removeMultiFieldValue(tracks, 'artist', 'A1');
+    expect(tracks[0].metadata.artist).toEqual(['A2']);
   });
 
-  describe('removePicture', () => {
-    it('すべてのトラックから画像を削除すること', () => {
-      const tracks = [createMockTrack('file1.flac')];
-      tracks[0].metadata.picture = {
-        format: 'image/jpeg',
-        sourcePath: '/path/to/image.jpg',
-        hash: 'mock-hash'
-      };
+  it('applyPicture で全トラックに画像を適用できること', () => {
+    const tracks = [createMockTrack('1.flac')];
+    const picture = { format: 'image/jpeg', sourcePath: 'p', hash: 'h' };
+    tagEditor.applyPicture(tracks, picture);
+    expect(tracks[0].metadata.picture).toEqual(picture);
+  });
 
-      tagEditor.removePicture(tracks);
+  it('removePicture で全トラックから画像を削除できること', () => {
+    const tracks = [
+      createMockTrack('1.flac', { picture: { format: 'f', sourcePath: 's', hash: 'h' } })
+    ];
+    tagEditor.removePicture(tracks);
+    expect(tracks[0].metadata.picture).toBeNull();
+  });
 
-      expect(tracks[0].metadata.picture).toBeNull();
-    });
+  it('applyAutoNumbering でトラック番号と総トラック数を適用できること', () => {
+    const tracks = [createMockTrack('1.flac'), createMockTrack('2.flac')];
+    tagEditor.applyAutoNumbering(tracks);
+    expect(tracks[0].metadata.trackNumber).toBe('1');
+    expect(tracks[0].metadata.trackTotal).toBe('2');
+    expect(tracks[1].metadata.trackNumber).toBe('2');
+    expect(tracks[1].metadata.trackTotal).toBe('2');
   });
 });

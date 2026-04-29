@@ -12,13 +12,6 @@ vi.mock('electron-updater', () => ({
   }
 }));
 
-vi.mock('electron', () => ({
-  dialog: {
-    showMessageBox: vi.fn(),
-    showErrorBox: vi.fn()
-  }
-}));
-
 describe('platform/update', () => {
   beforeEach(() => {
     vi.clearAllMocks();

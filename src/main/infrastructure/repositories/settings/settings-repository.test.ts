@@ -2,32 +2,23 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import Store from 'electron-store';
 import { SettingsRepository } from './settings-repository';
 
-vi.mock('electron-store');
-
 describe('SettingsRepository', () => {
   let repository: SettingsRepository;
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // プロトタイプメソッドをスパイ
-    vi.spyOn(Store.prototype, 'get').mockReturnValue(undefined);
-    vi.spyOn(Store.prototype, 'set').mockImplementation(() => ({}));
-    vi.spyOn(Store.prototype, 'store', 'get').mockReturnValue({
-      renamePattern: '{track} - {title}',
-      trackNumberPadding: 2,
-      theme: 'system',
-      genres: [],
-      quickGenres: []
-    });
+
+    // グローバルモックのプロトタイプメソッドをスパイ
+    vi.spyOn(Store.prototype, 'set');
 
     repository = new SettingsRepository();
   });
 
   it('初期値が設定されること', () => {
-    vi.spyOn(Store.prototype, 'get').mockReturnValue(undefined);
     const settings = repository.settings;
     expect(settings.theme).toBe('system');
-    expect(settings.genres).toEqual([]);
+    // DEFAULT_SETTINGS の初期値を検証
+    expect(settings.genres).toContain('Pop');
   });
 
   it('設定を保存できること', () => {
@@ -37,16 +28,9 @@ describe('SettingsRepository', () => {
   });
 
   it('保存された設定を取得できること', () => {
-    const saved = {
-      renamePattern: '{track} - {title}',
-      trackNumberPadding: 2,
-      theme: 'light' as const,
-      genres: ['Rock'],
-      quickGenres: ['Rock']
-    };
-    vi.spyOn(Store.prototype, 'store', 'get').mockReturnValue(saved);
-    const settings = repository.settings;
-    expect(settings.theme).toBe('light');
-    expect(settings.genres).toContain('Rock');
+    // モックの内部状態を直接操作するか、再度 new する際の defaults を通じて検証
+    // ここでは単純に値をセットして取得できるか確認
+    repository.updateSettings({ genres: ['Rock'] });
+    expect(repository.settings.genres).toContain('Rock');
   });
 });

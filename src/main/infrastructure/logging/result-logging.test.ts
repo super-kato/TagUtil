@@ -4,30 +4,6 @@ import { logger } from '@main/infrastructure/logging/logger';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { withResultLogging } from './result-logging';
 
-vi.mock('electron-log/main', () => ({
-  default: {
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    initialize: vi.fn(),
-    errorHandler: {
-      startCatching: vi.fn()
-    },
-    transports: {
-      file: {
-        level: 'debug'
-      }
-    }
-  }
-}));
-
-vi.mock('electron', () => ({
-  app: {
-    isPackaged: false
-  }
-}));
-
 describe('result-logging', () => {
   beforeEach(() => {
     vi.clearAllMocks();

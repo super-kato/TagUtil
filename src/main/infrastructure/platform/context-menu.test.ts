@@ -2,18 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { Menu, shell, type MenuItem, type BrowserWindow, type KeyboardEvent } from 'electron';
 import { showTrackContextMenu } from './context-menu';
 
-vi.mock('electron', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  Menu: {
-    buildFromTemplate: vi.fn().mockReturnValue({
-      popup: vi.fn()
-    })
-  },
-  shell: {
-    showItemInFolder: vi.fn()
-  }
-}));
-
 describe('context-menu service', () => {
   beforeEach(() => {
     vi.clearAllMocks();

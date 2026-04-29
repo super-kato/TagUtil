@@ -1,35 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import log from 'electron-log/main';
 import { logger } from './logger';
-
-vi.mock('electron-log/main', () => ({
-  default: {
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-    initialize: vi.fn(),
-    errorHandler: {
-      startCatching: vi.fn()
-    },
-    transports: {
-      file: {
-        level: 'debug'
-      }
-    }
-  }
-}));
-
-const mockApp = vi.hoisted(() => ({
-  isPackaged: false
-}));
-
-vi.mock('electron', () => ({
-  app: mockApp
-}));
+import { settingsRepository } from '@main/infrastructure/repositories/settings/settings-repository';
 
 describe('Logger', () => {
   beforeEach(() => {
+    // ログレベルを DEBUG に設定して通常テストを行う
+    settingsRepository.updateSettings({ logLevel: 'DEBUG' });
     // EventEmitter のリスナーをクリア
     logger.removeAllListeners();
     // モックをリセット
@@ -121,8 +98,8 @@ describe('Logger', () => {
       expect(handler2).toHaveBeenCalled();
     });
 
-    it('本番環境では DEBUG ログが転送されないこと', () => {
-      mockApp.isPackaged = true;
+    it('INFO 設定時は DEBUG ログが転送されないこと', () => {
+      settingsRepository.updateSettings({ logLevel: 'INFO' });
 
       const handler = vi.fn();
       logger.onLog(handler);
@@ -132,8 +109,6 @@ describe('Logger', () => {
 
       logger.info({ context: 'test', message: 'visible info' });
       expect(handler).toHaveBeenCalled();
-
-      mockApp.isPackaged = false; // 元に戻す
     });
   });
 });
