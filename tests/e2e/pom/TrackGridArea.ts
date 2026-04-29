@@ -21,8 +21,28 @@ export class TrackGridArea {
     await this.rows.nth(index).click();
   }
 
-  async getTrackTitle(index: number): Promise<string> {
-    // 3番目のセル（インジケーター、トラック番号の次）がタイトル
-    return await this.rows.nth(index).locator('td.text-cell').first().innerText();
+  /**
+   * 現在表示されているすべてのトラックのタイトルを取得します。
+   */
+  async getTitles(): Promise<string[]> {
+    return await this.rows.locator('td.text-cell').first().allInnerTexts();
+  }
+
+  /**
+   * 現在表示されているすべてのトラックの「アーティスト」を取得します。
+   */
+  async getArtists(): Promise<string[]> {
+    return await this.rows.locator('td.text-cell').nth(1).allInnerTexts();
+  }
+
+  /**
+   * 行が選択されているか確認します。
+   */
+  async isSelected(index: number): Promise<boolean> {
+    const row = this.rows.nth(index);
+    const ariaSelected = await row.getAttribute('aria-selected');
+    return (
+      ariaSelected === 'true' || (await row.evaluate((el) => el.classList.contains('selected')))
+    );
   }
 }

@@ -15,7 +15,7 @@ export class InspectorArea {
   constructor(page: Page) {
     this.root = page.locator('aside.inspector');
     this.emptyState = this.root.locator('.empty-inspector');
-    
+
     // 単一値フィールド
     this.titleInput = this.root.locator('input#title');
     this.albumInput = this.root.locator('input#album');
