@@ -20,17 +20,16 @@ export class InspectorArea {
     this.emptyState = this.root.locator('.empty-inspector');
 
     // 単一値フィールド
-    this.titleInput = this.root.locator('input#title');
-    this.albumInput = this.root.locator('input#album');
-    this.genreInput = this.root.locator('input#genre');
-    this.yearInput = this.root.locator('input#year');
-    this.trackNumberInput = this.root.locator('input#track');
-    this.discNumberInput = this.root.locator('input#disc');
+    this.titleInput = this.root.getByLabel('Title', { exact: true });
+    this.albumInput = this.root.getByLabel('Album', { exact: true });
+    this.genreInput = this.root.getByLabel('Genre', { exact: true });
+    this.yearInput = this.root.getByLabel('Year', { exact: true });
+    this.trackNumberInput = this.root.getByLabel('Track', { exact: true });
+    this.discNumberInput = this.root.getByLabel('Disc', { exact: true });
 
     // マルチバリューフィールド (MultiValueField.svelte)
-    // ID は label 名に基づいて生成される
-    this.artistInput = this.root.locator('input#multi-field-Artist');
-    this.albumArtistInput = this.root.locator('input#multi-field-Album\\ Artist');
+    this.artistInput = this.root.getByLabel('Artist', { exact: true });
+    this.albumArtistInput = this.root.getByLabel('Album Artist', { exact: true });
   }
 
   async isEditingEnabled(): Promise<boolean> {

@@ -9,7 +9,7 @@ export class TrackGridArea {
   constructor(page: Page) {
     this.root = page.locator('.grid-wrapper');
     this.emptyState = this.root.locator('.empty-state');
-    this.openDirectoryButton = this.emptyState.locator('button[aria-label="Open Directory"]');
+    this.openDirectoryButton = this.emptyState.getByRole('button', { name: 'Open Directory' });
     this.rows = this.root.locator('tr.track-row');
   }
 

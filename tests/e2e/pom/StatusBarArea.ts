@@ -6,12 +6,12 @@ export class StatusBarArea {
 
   constructor(page: Page) {
     this.page = page;
-    this.root = page.locator('footer.status-bar');
+    this.root = page.getByRole('contentinfo');
   }
 
   /** ログの展開/折りたたみボタン（メインバー全体） */
   get mainBar(): Locator {
-    return this.root.locator('.main-bar');
+    return this.root.getByRole('button', { name: /logs/i });
   }
 
   /** ログパネルの開閉を切り替えます */
