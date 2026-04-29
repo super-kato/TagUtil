@@ -11,6 +11,7 @@ const mockDefaultSettings: AppSettings = {
   renamePattern: '{trackNumber} - {title}',
   trackNumberPadding: 2,
   theme: 'system',
+  logLevel: 'INFO',
   genres: ['Rock'],
   quickGenres: ['Rock']
 };
@@ -23,6 +24,7 @@ vi.mock('@renderer/infrastructure/repositories/settings-repository', () => ({
         renamePattern: '{trackNumber} - {title}',
         trackNumberPadding: 2,
         theme: 'system',
+        logLevel: 'INFO',
         genres: ['Rock'],
         quickGenres: ['Rock']
       }

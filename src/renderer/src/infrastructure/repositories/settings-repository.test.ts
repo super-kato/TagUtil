@@ -19,6 +19,7 @@ describe('settings-repository', () => {
         renamePattern: '{title}',
         trackNumberPadding: 3,
         theme: 'dark',
+        logLevel: 'INFO',
         genres: [],
         quickGenres: []
       };

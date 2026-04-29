@@ -7,42 +7,55 @@ import { TrackRecord } from './track-record.svelte';
  * 内部的には TrackRecord インスタンスの参照を SvelteSet で管理します。
  */
 class SelectionState {
-  items = new SvelteSet<TrackRecord>();
+  #items = new SvelteSet<TrackRecord>();
   /** 最後に選択（クリックやキー移動）されたトラックのインデックス */
-  lastSelectedIndex = $state<number | null>(null);
+  #lastSelectedIndex = $state<number | null>(null);
+
+  get items(): ReadonlySet<TrackRecord> {
+    return this.#items;
+  }
+
+  get lastSelectedIndex(): number | null {
+    return this.#lastSelectedIndex;
+  }
 
   /** 特定のトラックが選択されているかどうかを返します */
   has(track: TrackRecord): boolean {
-    return this.items.has(track);
+    return this.#items.has(track);
   }
 
   selectSingle(track: TrackRecord, index: number): void {
-    this.items.clear();
-    this.items.add(track);
-    this.lastSelectedIndex = index;
+    this.#items.clear();
+    this.#items.add(track);
+    this.#lastSelectedIndex = index;
   }
 
   selectRange(tracks: TrackRecord[]): void {
     for (const track of tracks) {
-      this.items.add(track);
+      this.#items.add(track);
     }
   }
 
   selectAll(tracks: TrackRecord[]): void {
     for (const track of tracks) {
-      this.items.add(track);
+      this.#items.add(track);
     }
-    this.lastSelectedIndex = tracks.length > 0 ? tracks.length - 1 : null;
+    this.#lastSelectedIndex = tracks.length > 0 ? tracks.length - 1 : null;
   }
 
   selectNext(tracks: TrackRecord[]): void {
-    const next = this.lastSelectedIndex === null ? 0 : this.lastSelectedIndex + 1;
+    const next = this.#lastSelectedIndex === null ? 0 : this.#lastSelectedIndex + 1;
     this.#selectIndex(next, tracks);
   }
 
   selectPrevious(tracks: TrackRecord[]): void {
-    const prev = this.lastSelectedIndex === null ? tracks.length - 1 : this.lastSelectedIndex - 1;
+    const prev = this.#lastSelectedIndex === null ? tracks.length - 1 : this.#lastSelectedIndex - 1;
     this.#selectIndex(prev, tracks);
+  }
+
+  clear(): void {
+    this.#items.clear();
+    this.#lastSelectedIndex = null;
   }
 
   #selectIndex(index: number, tracks: TrackRecord[]): void {
