@@ -130,10 +130,8 @@ jobs:
         run: |
           echo "### Playwright E2E Results" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- pnpm test:e2e --reporter=list | tee -a $GITHUB_STEP_SUMMARY
+          env -u FORCE_COLOR NO_COLOR=1 xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- pnpm test:e2e --reporter=list | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-        env:
-          FORCE_COLOR: 0
 
       - name: テストレポートとスクリーンショットのアップロード
         if: always()
