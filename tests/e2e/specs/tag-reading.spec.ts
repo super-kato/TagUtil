@@ -48,7 +48,10 @@ test.describe('タグ読み込みテスト', () => {
     await expect(mainPage.inspector.coverPlaceholder).toBeVisible();
     await expect(mainPage.inspector.coverPlaceholderText).toHaveText('No Artwork');
 
-    // (track.flac はカバーアートがなく、タイトルが 'Test Plain Title' であることを確認)
-    await expect(mainPage.inspector.titleInput).toHaveValue('Test Plain Title');
+    // すべてのメタデータが空であることを確認
+    await expect(mainPage.inspector.titleInput).toHaveValue('');
+    await expect(mainPage.inspector.albumInput).toHaveValue('');
+    expect(await mainPage.inspector.getArtists()).toEqual([]);
+    expect(await mainPage.inspector.getGenres()).toEqual([]);
   });
 });
