@@ -12,7 +12,7 @@ export class DropZoneArea {
     private readonly page: Page,
     targetLocator?: Locator
   ) {
-    this.root = targetLocator ?? page.locator('.drop-zone-container').first();
+    this.root = targetLocator ?? page.locator('[data-testid$="-drop-zone"]').first();
   }
 
   /**
