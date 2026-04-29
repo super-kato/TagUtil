@@ -160,7 +160,9 @@
     cursor: default;
     position: relative;
     transition: background-color 0.15s ease;
-    border-bottom: 1px solid var(--bg-header);
+    border-bottom: 1px solid var(--border-primary);
+    height: 3.25rem;
+    align-items: center;
   }
 
   .track-row:hover {
@@ -175,6 +177,7 @@
     width: 4px;
     padding: 0;
     position: relative;
+    height: 100%;
   }
 
   .indicator-cell::after {
@@ -202,11 +205,14 @@
   }
 
   .track-row td {
-    padding: 0.75rem 1rem;
+    padding: 0 1rem;
     color: var(--text-secondary);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    align-items: center;
+    height: 100%;
   }
 
   .track-row.modified td {
