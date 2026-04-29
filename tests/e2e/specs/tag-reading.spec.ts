@@ -47,7 +47,7 @@ test.describe('タグ読み込みテスト', () => {
     await expect(mainPage.inspector.coverPlaceholder).toBeVisible();
     await expect(mainPage.inspector.coverPlaceholderText).toHaveText('No Artwork');
 
-    // (track.flac は以前のテストの影響でタイトルが入っている可能性があるため、1曲目と異なっていることのみを確認)
-    await expect(mainPage.inspector.titleInput).not.toHaveValue('Test Title');
+    // (track.flac はカバーアートがなく、タイトルが 'Test Plain Title' であることを確認)
+    await expect(mainPage.inspector.titleInput).toHaveValue('Test Plain Title');
   });
 });
