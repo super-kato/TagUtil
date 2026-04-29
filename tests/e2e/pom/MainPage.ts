@@ -3,6 +3,7 @@ import { ToolbarArea } from './ToolbarArea';
 import { TrackGridArea } from './TrackGridArea';
 import { InspectorArea } from './InspectorArea';
 import { StatusBarArea } from './StatusBarArea';
+import { DropZoneArea } from './DropZoneArea';
 import { join, basename, extname } from 'path';
 import { mkdirSync } from 'fs';
 
@@ -11,6 +12,7 @@ export class MainPage {
   readonly trackGrid: TrackGridArea;
   readonly inspector: InspectorArea;
   readonly statusBar: StatusBarArea;
+  readonly dropZone: DropZoneArea;
   private readonly screenshotDir: string;
 
   constructor(
@@ -21,6 +23,7 @@ export class MainPage {
     this.trackGrid = new TrackGridArea(page);
     this.inspector = new InspectorArea(page);
     this.statusBar = new StatusBarArea(page);
+    this.dropZone = new DropZoneArea(page);
 
     // スペックファイル名（拡張子なし）をフォルダ名にする
     const specName = basename(testFilePath, extname(testFilePath));
