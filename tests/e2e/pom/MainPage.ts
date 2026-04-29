@@ -1,11 +1,11 @@
 import { type Page } from '@playwright/test';
-import { ToolbarArea } from './ToolbarArea';
-import { TrackGridArea } from './TrackGridArea';
+import { mkdirSync } from 'fs';
+import { basename, extname, join } from 'path';
+import { DropZoneArea } from './DropZoneArea';
 import { InspectorArea } from './InspectorArea';
 import { StatusBarArea } from './StatusBarArea';
-import { DropZoneArea } from './DropZoneArea';
-import { join, basename, extname } from 'path';
-import { mkdirSync } from 'fs';
+import { ToolbarArea } from './ToolbarArea';
+import { TrackGridArea } from './TrackGridArea';
 
 export class MainPage {
   readonly toolbar: ToolbarArea;
@@ -23,7 +23,12 @@ export class MainPage {
     this.trackGrid = new TrackGridArea(page);
     this.inspector = new InspectorArea(page);
     this.statusBar = new StatusBarArea(page);
-    this.dropZone = new DropZoneArea(page);
+    this.dropZone = new DropZoneArea(
+      page,
+      page
+        .locator('.grid-wrapper')
+        .locator('xpath=ancestor::*[contains(@class, "drop-zone-container")][1]')
+    );
 
     // スペックファイル名（拡張子なし）をフォルダ名にする
     const specName = basename(testFilePath, extname(testFilePath));

@@ -1,7 +1,9 @@
 import { type Locator, type Page } from '@playwright/test';
+import { DropZoneArea } from './DropZoneArea';
 
 export class InspectorArea {
   readonly root: Locator;
+  readonly dropZone: DropZoneArea;
   readonly emptyState: Locator;
   readonly titleInput: Locator;
   readonly artistInput: Locator;
@@ -14,6 +16,7 @@ export class InspectorArea {
 
   constructor(page: Page) {
     this.root = page.locator('aside.inspector');
+    this.dropZone = new DropZoneArea(page, this.root.locator('.drop-zone-container').first());
     this.emptyState = this.root.locator('.empty-inspector');
 
     // 単一値フィールド

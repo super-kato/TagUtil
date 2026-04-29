@@ -3,9 +3,16 @@ import { type Locator, type Page } from '@playwright/test';
 export class DropZoneArea {
   readonly root: Locator;
 
-  constructor(private readonly page: Page) {
-    // デフォルトで最初の drop-zone-container を対象とする
-    this.root = page.locator('.drop-zone-container').first();
+  /**
+   * @param page Playwright の Page オブジェクト
+   * @param targetLocator ドロップ対象とする .drop-zone-container の Locator。
+   *                      指定がない場合は最初のものを対象とします。
+   */
+  constructor(
+    private readonly page: Page,
+    targetLocator?: Locator
+  ) {
+    this.root = targetLocator ?? page.locator('.drop-zone-container').first();
   }
 
   /**
@@ -29,9 +36,9 @@ export class DropZoneArea {
 
     await this.page.locator('#e2e-hidden-file-input').setInputFiles(paths);
 
-    await this.page.evaluate(() => {
+    // root (対象の DropZone) に対して evaluate を実行し、正確な要素に Dispatch する
+    await this.root.evaluate((target) => {
       const input = document.getElementById('e2e-hidden-file-input') as HTMLInputElement;
-      const target = document.querySelector('.drop-zone-container');
 
       if (input && input.files && target) {
         const dataTransfer = new DataTransfer();
@@ -78,9 +85,9 @@ export class DropZoneArea {
     try {
       await this.page.locator('#e2e-hidden-folder-input').setInputFiles(folderPath);
 
-      await this.page.evaluate(() => {
+      // root に対して evaluate を実行
+      await this.root.evaluate((target) => {
         const input = document.getElementById('e2e-hidden-folder-input') as HTMLInputElement;
-        const target = document.querySelector('.drop-zone-container');
 
         if (input && input.files && input.files.length > 0 && target) {
           const dataTransfer = new DataTransfer();
