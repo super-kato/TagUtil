@@ -1,19 +1,34 @@
 import { type Locator, type Page } from '@playwright/test';
 
 export class ToolbarArea {
-  readonly root: Locator;
-  readonly openDirectoryButton: Locator;
-  readonly renameFilesButton: Locator;
-  readonly revertChangesButton: Locator;
-  readonly saveChangesButton: Locator;
-  readonly settingsButton: Locator;
+  constructor(private readonly page: Page) {}
 
-  constructor(page: Page) {
-    this.root = page.locator('header.toolbar');
-    this.openDirectoryButton = this.root.locator('button[title="Open Directory"]');
-    this.renameFilesButton = this.root.locator('button[title="Rename Files from Metadata"]');
-    this.revertChangesButton = this.root.locator('button[title="Revert Changes"]');
-    this.saveChangesButton = this.root.locator('button[title="Save Changes"]');
-    this.settingsButton = this.root.locator('button[title="Settings"]');
+  get root(): Locator {
+    return this.page.locator('header.toolbar');
+  }
+
+  /** ディレクトリを開くボタン */
+  get openDirectoryButton(): Locator {
+    return this.root.locator('button[title="Open Directory"]');
+  }
+
+  /** 名前変更を実行するボタン */
+  get renameFilesButton(): Locator {
+    return this.root.locator('button[title="Rename Files from Metadata"]');
+  }
+
+  /** 変更を元に戻すボタン */
+  get revertChangesButton(): Locator {
+    return this.root.locator('button[title="Revert Changes"]');
+  }
+
+  /** 変更を保存するボタン */
+  get saveChangesButton(): Locator {
+    return this.root.locator('button[title="Save Changes"]');
+  }
+
+  /** 設定を開くボタン */
+  get settingsButton(): Locator {
+    return this.root.locator('button[title="Settings"]');
   }
 }

@@ -2,36 +2,54 @@ import { type Locator, type Page } from '@playwright/test';
 
 export class StatusBarArea {
   readonly root: Locator;
-  readonly toggleButton: Locator;
-  readonly logPanel: Locator;
+  readonly page: Page;
 
   constructor(page: Page) {
+    this.page = page;
     this.root = page.locator('footer.status-bar');
-    this.toggleButton = this.root.locator('.main-bar');
-    this.logPanel = this.root.locator('.log-panel');
   }
 
-  async toggleLogs(): Promise<void> {
-    await this.toggleButton.click();
+  /** ログの展開/折りたたみボタン（メインバー全体） */
+  get mainBar(): Locator {
+    return this.root.locator('.main-bar');
   }
 
+  /** ログパネルの開閉を切り替えます */
   async toggleLogPanel(): Promise<void> {
-    await this.toggleLogs();
+    await this.mainBar.click();
+    // スライドCSSアニメーションの完了を待機
+    await this.page.waitForTimeout(500);
   }
 
+  /** ログパネルが展開されているか確認します */
   async isExpanded(): Promise<boolean> {
-    return (await this.root.getAttribute('class'))?.includes('expanded') ?? false;
+    const classAttr = await this.root.getAttribute('class');
+    return classAttr?.includes('expanded') ?? false;
   }
 
+  /** 展開されていなければパネルを開きます */
+  async ensureExpanded(): Promise<void> {
+    if (!(await this.isExpanded())) {
+      await this.toggleLogPanel();
+    }
+  }
+
+  /** 表示されているすべてのログを取得します */
   async getLogs(): Promise<string[]> {
-    const entries = this.logPanel.locator('.log-entry');
+    // 展開されていることを確認
+    await this.ensureExpanded();
+
+    const logEntries = this.root.locator('.log-entry');
+    const count = await logEntries.count();
     const logs: string[] = [];
-    const count = await entries.count();
+
     for (let i = 0; i < count; i++) {
-      const entry = entries.nth(i);
-      const context = await entry.locator('.log-context').innerText();
-      const message = await entry.locator('.log-text').innerText();
-      logs.push(`${context} ${message}`);
+      const entry = logEntries.nth(i);
+      // コンテキストを取得 (大括弧を外す)
+      const context = (await entry.locator('.log-context').innerText()).replace(/[[\]]/g, '');
+      // メッセージを取得
+      const text = await entry.locator('.log-text').innerText();
+      logs.push(`${context}: ${text}`.trim());
     }
     return logs;
   }
