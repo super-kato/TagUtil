@@ -2,12 +2,6 @@ import { dialog } from 'electron';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { pickImageFile, selectDirectory } from './dialog';
 
-vi.mock('electron', () => ({
-  dialog: {
-    showOpenDialog: vi.fn()
-  }
-}));
-
 describe('platform/dialog', () => {
   beforeEach(() => {
     vi.clearAllMocks();

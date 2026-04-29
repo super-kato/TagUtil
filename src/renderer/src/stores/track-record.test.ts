@@ -51,4 +51,21 @@ describe('TrackRecord', () => {
     expect(flacTrack.path).toBe('test.flac');
     expect(flacTrack.metadata.title).toBe('Export Title');
   });
+
+  it('imageUrl が画像情報に基づいて正しく導出されること', () => {
+    const metadataWithPic: FlacMetadata = {
+      ...mockMetadata,
+      picture: {
+        format: 'image/jpeg',
+        sourcePath: '/path/to/track.flac',
+        hash: 'abc'
+      }
+    };
+    const track = new TrackRecord('test.flac', metadataWithPic);
+    expect(track.imageUrl).toBe('blob:mock');
+
+    // 画像を削除
+    track.metadata.picture = null;
+    expect(track.imageUrl).toBeNull();
+  });
 });

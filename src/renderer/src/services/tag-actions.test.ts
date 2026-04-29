@@ -9,7 +9,7 @@ import { tagEditor } from './tag-editor';
 import type { FlacMetadata } from '@domain/flac/models';
 import { logStore } from '@renderer/stores/log-store.svelte';
 import { failure, success } from '@domain/common/result';
-import type { AppError } from '@domain/flac/errors';
+import { appErrors, type AppError } from '@domain/errors/definitions';
 
 vi.mock('@renderer/stores/log-store.svelte', () => ({
   logStore: {
@@ -235,6 +235,40 @@ describe('tagActions', () => {
       await tagActions.pickAndApplyPicture();
 
       expect(logStore.addError).not.toHaveBeenCalled();
+    });
+
+    it('パス指定の画像適用でエラー時に何もしないこと', async () => {
+      vi.mocked(tagRepository.getImageInfo).mockResolvedValue(
+        failure(appErrors.parseFailed({ path: 'p' }))
+      );
+      const applySpy = vi.spyOn(tagEditor, 'applyPicture');
+
+      await tagActions.applyPictureFromPath('p');
+
+      expect(applySpy).not.toHaveBeenCalled();
+    });
+
+    it('パス指定の画像適用で正常に適用されること', async () => {
+      const picture = { format: 'image/jpeg', sourcePath: 'p', hash: 'h' };
+      vi.mocked(tagRepository.getImageInfo).mockResolvedValue(success(picture));
+      const applySpy = vi.spyOn(tagEditor, 'applyPicture');
+
+      await tagActions.applyPictureFromPath('p');
+
+      expect(applySpy).toHaveBeenCalledWith(mockTracks, picture);
+    });
+
+    it('revert で読込エラー時に何もしないこと', async () => {
+      const track = mockTracks[0];
+      track.metadata.title = 'Modified';
+      vi.mocked(tagRepository.readMetadata).mockResolvedValue(
+        failure(appErrors.parseFailed({ path: 'p' }))
+      );
+
+      await tagActions.revertSelected();
+
+      expect(track.metadata.title).toBe('Modified');
+      expect(track.isModified).toBe(true);
     });
   });
 });

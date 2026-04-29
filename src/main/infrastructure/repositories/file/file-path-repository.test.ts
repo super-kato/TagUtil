@@ -1,17 +1,16 @@
 import { app } from 'electron';
 import { join } from 'node:path';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { getAppResourcePath, resolveNewPath } from './file-path-repository';
 
-vi.mock('electron', () => ({
-  app: {
-    getAppPath: vi.fn().mockReturnValue('/app/root')
-  }
-}));
-
 describe('file-path-repository', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   describe('getAppResourcePath', () => {
     it('アプリのルートパスを基準とした絶対パスを返すこと', () => {
+      vi.mocked(app.getAppPath).mockReturnValue('/app/root');
       const result = getAppResourcePath('resources', 'icon.png');
       expect(app.getAppPath).toHaveBeenCalled();
       expect(result).toBe(join('/app/root', 'resources', 'icon.png'));
