@@ -133,12 +133,11 @@ jobs:
           xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- pnpm test:e2e --reporter=list | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
         env:
-          NO_COLOR: 1
           FORCE_COLOR: 0
 
       - name: テストレポートとスクリーンショットのアップロード
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-results
           path: |
