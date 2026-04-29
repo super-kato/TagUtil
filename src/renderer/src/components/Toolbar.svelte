@@ -29,7 +29,7 @@
   const canSave = $derived(!uiState.isLoading && trackStore.tracks.some((t) => t.isModified));
 </script>
 
-<header class="toolbar">
+<header class="toolbar" data-testid="toolbar">
   <div class="brand">
     <Tag
       size={UI_TOKENS.icons.logoSize}
@@ -45,6 +45,7 @@
       onclick={tagActions.openAndScanDirectory}
       disabled={uiState.isLoading}
       title="Open Directory"
+      data-testid="open-directory-button"
     >
       <FolderOpen size={UI_TOKENS.icons.size} />
     </button>
@@ -54,6 +55,7 @@
       onclick={handleRenameClick}
       disabled={!canRename}
       title="Rename Files from Metadata"
+      data-testid="rename-button"
     >
       <FilePen size={UI_TOKENS.icons.size} />
     </button>
@@ -62,6 +64,7 @@
       onclick={() => tagActions.revertSelected()}
       disabled={!canRevert}
       title="Revert Changes"
+      data-testid="revert-button"
     >
       <Undo2 size={UI_TOKENS.icons.size} />
     </button>
@@ -71,6 +74,7 @@
       onclick={() => tagActions.saveAllModified()}
       disabled={!canSave}
       title="Save Changes"
+      data-testid="save-changes-button"
     >
       {#if uiState.isLoading}
         <Disc3 size={UI_TOKENS.icons.size} class="spin" />
@@ -79,7 +83,12 @@
       {/if}
     </button>
     <div class="divider"></div>
-    <button class="btn" onclick={() => uiState.openSettings()} title="Settings">
+    <button
+      class="btn"
+      onclick={() => uiState.openSettings()}
+      title="Settings"
+      data-testid="settings-button"
+    >
       <Settings size={UI_TOKENS.icons.size} />
     </button>
   </div>

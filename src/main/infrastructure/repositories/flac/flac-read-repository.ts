@@ -15,11 +15,13 @@ const LOG_CONTEXT = 'FlacReadRepo';
  */
 export const readRawFlacData = async (filePath: string): Promise<RawFlacData> => {
   const mmData = await musicMetadata.parseFile(filePath);
+  const vorbis = mmData.native.vorbis || [];
 
   logger.debug({ context: LOG_CONTEXT, message: `Parsing completed: ${filePath}` });
+
   return {
     path: filePath,
-    tags: mapLibTagsToRaw(mmData.native.vorbis || []),
+    tags: mapLibTagsToRaw(vorbis),
     pictures: mapLibPicturesToRaw(mmData.common.picture || []),
     audioFormat: {
       sampleRate: mmData.format.sampleRate,
@@ -45,7 +47,13 @@ const mapLibTagsToRaw = (tags: musicMetadata.ITag[]): VorbisTags => {
     if (!normalized[key]) {
       normalized[key] = [];
     }
-    normalized[key].push(String(tag.value));
+
+    // 値が配列の場合は展開し、そうでなければ文字列として追加
+    if (Array.isArray(tag.value)) {
+      normalized[key].push(...tag.value.map((v) => String(v)));
+    } else {
+      normalized[key].push(String(tag.value));
+    }
   }
   return normalized;
 };

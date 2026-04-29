@@ -7,9 +7,10 @@
     children: Snippet;
     overlay: Snippet;
     onDrop: (paths: string[]) => void;
+    testId?: string;
   }
 
-  let { children, overlay, onDrop }: Props = $props();
+  let { children, overlay, onDrop, testId }: Props = $props();
 
   let isDragging = $state(false);
 
@@ -48,6 +49,7 @@
 
 <div
   class="drop-zone-container"
+  data-testid={testId}
   ondragover={handleDragOver}
   ondragleave={handleDragLeave}
   ondrop={handleDrop}

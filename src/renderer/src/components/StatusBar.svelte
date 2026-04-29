@@ -45,7 +45,7 @@
   });
 </script>
 
-<footer class="status-bar" class:expanded={isExpanded}>
+<footer class="status-bar" class:expanded={isExpanded} data-testid="status-bar">
   <div
     class="main-bar"
     onclick={toggleExpand}
@@ -98,10 +98,10 @@
                   </div>
                 </td>
                 <td class="log-col-context">
-                  <span class="log-context">[{log.context}]</span>
+                  <span class="log-context" data-testid="log-context">[{log.context}]</span>
                 </td>
                 <td class="log-col-message">
-                  <span class="log-text">
+                  <span class="log-text" data-testid="log-message">
                     {log.message}
                   </span>
                 </td>

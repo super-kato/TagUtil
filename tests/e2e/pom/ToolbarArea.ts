@@ -3,17 +3,17 @@ import { type Locator, type Page } from '@playwright/test';
 export class ToolbarArea {
   readonly root: Locator;
   readonly openDirectoryButton: Locator;
-  readonly renameFilesButton: Locator;
-  readonly revertChangesButton: Locator;
   readonly saveChangesButton: Locator;
+  readonly renameButton: Locator;
+  readonly revertButton: Locator;
   readonly settingsButton: Locator;
 
-  constructor(page: Page) {
-    this.root = page.locator('header.toolbar');
-    this.openDirectoryButton = this.root.locator('button[title="Open Directory"]');
-    this.renameFilesButton = this.root.locator('button[title="Rename Files from Metadata"]');
-    this.revertChangesButton = this.root.locator('button[title="Revert Changes"]');
-    this.saveChangesButton = this.root.locator('button[title="Save Changes"]');
-    this.settingsButton = this.root.locator('button[title="Settings"]');
+  constructor(private readonly page: Page) {
+    this.root = this.page.getByTestId('toolbar');
+    this.openDirectoryButton = this.root.getByTestId('open-directory-button');
+    this.saveChangesButton = this.root.getByTestId('save-changes-button');
+    this.renameButton = this.root.getByTestId('rename-button');
+    this.revertButton = this.root.getByTestId('revert-button');
+    this.settingsButton = this.root.getByTestId('settings-button');
   }
 }

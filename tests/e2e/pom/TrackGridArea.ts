@@ -4,13 +4,15 @@ export class TrackGridArea {
   readonly root: Locator;
   readonly emptyState: Locator;
   readonly openDirectoryButton: Locator;
-  readonly rows: Locator;
 
-  constructor(page: Page) {
-    this.root = page.locator('.grid-wrapper');
-    this.emptyState = this.root.locator('.empty-state');
-    this.openDirectoryButton = this.emptyState.locator('button[aria-label="Open Directory"]');
-    this.rows = this.root.locator('tr.track-row');
+  constructor(private readonly page: Page) {
+    this.root = page.getByTestId('track-grid');
+    this.emptyState = page.getByTestId('track-grid-empty');
+    this.openDirectoryButton = this.emptyState.getByRole('button', { name: 'Open Directory' });
+  }
+
+  get rows(): Locator {
+    return this.root.locator('tr.track-row');
   }
 
   async getTrackCount(): Promise<number> {
@@ -19,5 +21,19 @@ export class TrackGridArea {
 
   async selectTrack(index: number): Promise<void> {
     await this.rows.nth(index).click();
+  }
+
+  /**
+   * 現在表示されているすべてのトラックのタイトルを取得します。
+   */
+  async getTitles(): Promise<string[]> {
+    return await this.rows.getByTestId('cell-title').allInnerTexts();
+  }
+
+  /**
+   * 現在表示されているすべてのトラックの「アーティスト」を取得します。
+   */
+  async getArtists(): Promise<string[]> {
+    return await this.rows.getByTestId('cell-artist').allInnerTexts();
   }
 }

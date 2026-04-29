@@ -57,9 +57,11 @@
 
     inputElement?.focus();
   };
+
+  const testId = $derived(`${label.toLowerCase().replace(/\s+/g, '-')}-field`);
 </script>
 
-<div class="badge-field field">
+<div class="badge-field field" data-testid={testId}>
   {#if label}
     <label for="badge-input-{label}">{label}</label>
   {/if}
@@ -71,7 +73,7 @@
     role="presentation"
   >
     {#each values as val, i (i)}
-      <span class="badge" class:divergent-badge={!isUniform}>
+      <span class="badge" class:divergent-badge={!isUniform} data-testid="badge-item">
         {val}
         <button
           type="button"
