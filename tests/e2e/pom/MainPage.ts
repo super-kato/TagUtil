@@ -15,7 +15,7 @@ export class MainPage {
   readonly inspector: InspectorArea;
   readonly statusBar: StatusBarArea;
 
-  constructor(private readonly page: Page) {
+  constructor(public readonly page: Page) {
     this.toolbar = new ToolbarArea(page);
     this.trackGrid = new TrackGridArea(page);
     this.inspector = new InspectorArea(page);
@@ -39,5 +39,14 @@ export class MainPage {
 
     const path = join(SCREENSHOT_DIR, `${fileName}.png`);
     await this.page.screenshot({ path });
+  }
+
+  /**
+   * 確認ダイアログの「実行」ボタンをクリックする
+   */
+  async confirmDialog(): Promise<void> {
+    const confirmButton = this.page.locator('button.confirm');
+    await confirmButton.waitFor({ state: 'visible' });
+    await confirmButton.click();
   }
 }

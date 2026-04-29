@@ -20,4 +20,9 @@ export class TrackGridArea {
   async selectTrack(index: number): Promise<void> {
     await this.rows.nth(index).click();
   }
+
+  async getTrackTitle(index: number): Promise<string> {
+    // 3番目のセル（インジケーター、トラック番号の次）がタイトル
+    return await this.rows.nth(index).locator('td.text-cell').first().innerText();
+  }
 }
