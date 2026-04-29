@@ -102,3 +102,43 @@ jobs:
 
       - name: ビルドの実行
         run: pnpm build
+
+  e2e:
+    name: Playwright E2E
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリのチェックアウト
+        uses: actions/checkout@v6
+
+      - name: Node.js のセットアップ
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: pnpm のセットアップ
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+
+      - name: 依存関係のインストール
+        run: pnpm install
+
+      - name: Playwright の依存関係をインストール
+        run: pnpm exec playwright install-deps
+
+      - name: E2E テストの実行
+        run: |
+          echo "### Playwright E2E Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          env -u FORCE_COLOR NO_COLOR=1 xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" -- pnpm test:e2e --reporter=list | tee -a $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: テストレポートとスクリーンショットのアップロード
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-results
+          path: |
+            playwright-report/
+            tests/e2e/screenshots/
+          retention-days: 2
