@@ -16,7 +16,7 @@ export class InspectorArea {
 
   constructor(page: Page) {
     this.root = page.locator('aside.inspector');
-    this.dropZone = new DropZoneArea(page, this.root.locator('.drop-zone-container').first());
+    this.dropZone = new DropZoneArea(page, page.getByTestId('inspector-drop-zone'));
     this.emptyState = this.root.locator('.empty-inspector');
 
     // 単一値フィールド

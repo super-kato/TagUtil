@@ -23,7 +23,7 @@
 </script>
 
 <aside class="inspector no-focus-glow" tabindex="-1">
-  <DropZone onDrop={handleArtworkDrop}>
+  <DropZone testId="inspector-drop-zone" onDrop={handleArtworkDrop}>
     {#snippet overlay()}
       <DropZoneOverlay
         icon={ImageIcon}

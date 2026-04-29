@@ -1,10 +1,9 @@
-import { expect, e2eTest as test } from '../fixtures';
 import { writeFileSync } from 'fs';
 import { join } from 'path';
+import { expect, e2eTest as test } from '../fixtures';
 
 test.describe('ファイル読み込みテスト', () => {
-  test.beforeEach(async ({ electronApp, testDataDir, mainPage }) => {
-    mainPage.page.on('console', (msg) => console.log(`[RENDERER] ${msg.text()}`));
+  test.beforeEach(async ({ electronApp, testDataDir }) => {
     await electronApp.evaluate(async ({ dialog }, dir) => {
       dialog.showOpenDialog = async () => ({
         canceled: false,
@@ -32,7 +31,6 @@ test.describe('ファイル読み込みテスト', () => {
     const flacPath = join(testDataDir, 'track.flac');
     await expect(mainPage.dropZone.root).toBeVisible();
 
-    // POM に隠蔽された D&D ハックを呼び出す
     await mainPage.dropZone.dropFiles(flacPath);
 
     // 検証
@@ -43,7 +41,6 @@ test.describe('ファイル読み込みテスト', () => {
   test('フォルダをドラッグ＆ドロップして読み込めること', async ({ mainPage, testDataDir }) => {
     await expect(mainPage.dropZone.root).toBeVisible();
 
-    // POM に隠蔽されたフォルダ D&D ハックを呼び出す
     await mainPage.dropZone.dropFolder(testDataDir);
 
     // 検証

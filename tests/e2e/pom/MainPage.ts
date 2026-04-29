@@ -23,12 +23,7 @@ export class MainPage {
     this.trackGrid = new TrackGridArea(page);
     this.inspector = new InspectorArea(page);
     this.statusBar = new StatusBarArea(page);
-    this.dropZone = new DropZoneArea(
-      page,
-      page
-        .locator('.grid-wrapper')
-        .locator('xpath=ancestor::*[contains(@class, "drop-zone-container")][1]')
-    );
+    this.dropZone = new DropZoneArea(page, page.getByTestId('track-grid-drop-zone'));
 
     // スペックファイル名（拡張子なし）をフォルダ名にする
     const specName = basename(testFilePath, extname(testFilePath));

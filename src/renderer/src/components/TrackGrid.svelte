@@ -41,7 +41,7 @@
   };
 </script>
 
-<DropZone onDrop={(paths) => tagActions.loadFromPaths(paths)}>
+<DropZone testId="track-grid-drop-zone" onDrop={(paths) => tagActions.loadFromPaths(paths)}>
   {#snippet overlay()}
     <DropZoneOverlay icon={FolderOpen} title="Drop to scan FLAC files" sub="Release to open" />
   {/snippet}
