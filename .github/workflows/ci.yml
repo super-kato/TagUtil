@@ -134,6 +134,7 @@ jobs:
           echo '```' >> $GITHUB_STEP_SUMMARY
         env:
           NO_COLOR: 1
+          FORCE_COLOR: 0
 
       - name: テストレポートとスクリーンショットのアップロード
         if: always()
