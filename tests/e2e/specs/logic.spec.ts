@@ -16,10 +16,7 @@ test.describe('業務ロジックテスト: タグ編集', () => {
     await expect(mainPage.trackGrid.rows).toHaveCount(1, { timeout: 15000 });
   });
 
-  test('FLACファイルのメタデータを編集し、正常に保存できること', async ({
-    mainPage,
-    testDataDir
-  }) => {
+  test('FLACファイルのメタデータを編集し、正常に保存できること', async ({ mainPage }) => {
     // 1. トラックを選択
     await mainPage.trackGrid.selectTrack(0);
     await expect(mainPage.inspector.root).toBeVisible();
@@ -28,14 +25,12 @@ test.describe('業務ロジックテスト: タグ編集', () => {
     const newTitle = `E2E Edit Test ${Date.now()}`;
     await mainPage.inspector.setTitle(newTitle);
     await mainPage.page.keyboard.press('Tab');
-    await mainPage.screenshot('01_メタデータ入力後');
 
     // 3. 保存実行
     const saveBtn = mainPage.toolbar.saveChangesButton;
     await expect(saveBtn).toBeEnabled({ timeout: 5000 });
 
     await mainPage.statusBar.toggleLogPanel();
-    console.log(`--- Clicking Save (Target: ${testDataDir}) ---`);
     await saveBtn.click();
 
     // 保存完了ログを待機
@@ -48,16 +43,12 @@ test.describe('業務ロジックテスト: タグ編集', () => {
 
     // 保存ボタンが非活性（保存完了）になるのを待つ
     await expect(saveBtn).toBeDisabled({ timeout: 10000 });
-    await mainPage.screenshot('02_保存完了');
 
     // 4. 整合性確認 (再選択)
     await mainPage.page.keyboard.press('Escape');
     await mainPage.trackGrid.selectTrack(0);
 
-    const titleValue = await mainPage.inspector.root.locator('input').first().inputValue();
-    expect(titleValue).toBe(newTitle);
-
-    await mainPage.screenshot('03_検証完了');
+    expect(await mainPage.inspector.titleInput.inputValue()).toBe(newTitle);
   });
 
   test('複数のフィールドを同時に編集して保存できること', async ({ mainPage }) => {
@@ -66,9 +57,8 @@ test.describe('業務ロジックテスト: タグ編集', () => {
     const newArtist = `Artist ${Date.now()}`;
     const newAlbum = `Album ${Date.now()}`;
 
-    // インスペクターの各フィールドに入力 (POMを拡張したくなるが、一旦 locator で)
-    await mainPage.inspector.root.locator('input').nth(1).fill(newArtist); // Artist
-    await mainPage.inspector.root.locator('input').nth(2).fill(newAlbum); // Album
+    await mainPage.inspector.setArtist(newArtist);
+    await mainPage.inspector.setAlbum(newAlbum);
     await mainPage.page.keyboard.press('Tab');
 
     await mainPage.toolbar.saveChangesButton.click();
@@ -80,7 +70,8 @@ test.describe('業務ロジックテスト: タグ編集', () => {
     await mainPage.page.keyboard.press('Escape');
     await mainPage.trackGrid.selectTrack(0);
 
-    expect(await mainPage.inspector.root.locator('input').nth(1).inputValue()).toBe(newArtist);
-    expect(await mainPage.inspector.root.locator('input').nth(2).inputValue()).toBe(newAlbum);
+    const metadata = await mainPage.inspector.getMetadata();
+    expect(metadata.artist).toBe(newArtist);
+    expect(metadata.album).toBe(newAlbum);
   });
 });
