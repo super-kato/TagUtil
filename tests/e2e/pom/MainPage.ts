@@ -20,6 +20,9 @@ export class MainPage {
    * @param fileName 拡張子を除いたファイル名
    */
   async screenshot(fileName: string): Promise<void> {
+    // CI環境などでウィンドウサイズが確定する前に撮影しようとするとエラーになるため、サイズが確定するまで待機する
+    await this.page.waitForFunction(() => window.innerWidth > 0);
+
     const path = join(SCREENSHOT_DIR, `${fileName}.png`);
     await this.page.screenshot({ path });
   }
