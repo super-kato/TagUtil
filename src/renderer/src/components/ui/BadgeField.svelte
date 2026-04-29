@@ -57,9 +57,11 @@
 
     inputElement?.focus();
   };
+
+  const testId = $derived(`${label.toLowerCase().replace(/\s+/g, '-')}-field`);
 </script>
 
-<div class="badge-field field" data-testid="{label.toLowerCase().replace(/\s+/g, '-')}-field">
+<div class="badge-field field" data-testid={testId}>
   {#if label}
     <label for="badge-input-{label}">{label}</label>
   {/if}

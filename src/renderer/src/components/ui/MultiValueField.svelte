@@ -28,6 +28,8 @@
     onApplyChange
   }: Props = $props();
 
+  const testId = $derived(`${label.toLowerCase().replace(/\s+/g, '-')}-field`);
+
   const handleUpdate = (index: number, e: Event): void => {
     const input = e.target as HTMLInputElement;
     onUpdate(index, input.value);
@@ -39,7 +41,7 @@
   };
 </script>
 
-<div class="multi-value-field field" data-testid="{label.toLowerCase().replace(/\s+/g, '-')}-field">
+<div class="multi-value-field field" data-testid={testId}>
   <div class="field-header">
     <label for="multi-field-{label}">{label}</label>
     <button
