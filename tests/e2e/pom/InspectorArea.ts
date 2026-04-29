@@ -79,7 +79,9 @@ export class InspectorArea {
       // MultiValueField (input要素) の場合
       const inputs = container.locator('input[type="text"]');
       return inputs.evaluateAll((elems) => elems.map((el) => (el as HTMLInputElement).value));
-    } else if (classList.includes('badge-field')) {
+    }
+
+    if (classList.includes('badge-field')) {
       // BadgeField (badge-item要素) の場合
       // Xボタンなどのテキストを除外するため、badge内のテキストのみを取得
       return container.getByTestId('badge-item').allInnerTexts();
