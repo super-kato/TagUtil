@@ -160,8 +160,8 @@
     cursor: default;
     position: relative;
     transition: background-color 0.15s ease;
-    border-bottom: 1px solid var(--border-primary);
-    height: 3.25rem;
+    border-bottom: 1px solid var(--bg-header);
+    height: 2.8rem;
     align-items: center;
   }
 
@@ -210,8 +210,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    display: flex;
-    align-items: center;
+    line-height: 2.8rem;
     height: 100%;
   }
 
