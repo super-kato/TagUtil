@@ -17,19 +17,23 @@ e2eTest.describe('App Initialization', () => {
     expect(await mainPage.inspector.isEditingEnabled()).toBe(false);
     await expect(mainPage.inspector.emptyState).toBeVisible();
 
-    await mainPage.screenshot('initial-state');
+    await mainPage.screenshot('アプリ起動直後の初期状態');
   });
 
   e2eTest('ステータスバーのログパネルの開閉ができること', async ({ mainPage }) => {
     // 初期状態は開いている (App.svelte 等の実装による)
+    await mainPage.screenshot('ログパネル開閉テスト_初期状態');
+
     // ログパネルの表示をトグルする
     await mainPage.statusBar.toggleLogs();
 
     // パネルが閉じたことを確認
     await expect(mainPage.statusBar.logPanel).toBeHidden();
+    await mainPage.screenshot('ログパネルを閉じた状態');
 
     // 再度トグル
     await mainPage.statusBar.toggleLogs();
     await expect(mainPage.statusBar.logPanel).toBeVisible();
+    await mainPage.screenshot('ログパネルを再度開いた状態');
   });
 });
