@@ -68,17 +68,19 @@ export class DropZoneArea {
   ): Promise<void> {
     const inputId = `e2e-hidden-${options.isFolder ? 'folder' : 'file'}-input`;
 
-    // 1. 非表示の input を DOM に生成
     await this.createHiddenInput(inputId, options.isFolder);
-
-    // 2. Playwright の機能でネイティブパスを含む File をセット
     await this.page.locator(`#${inputId}`).setInputFiles(paths);
+    await this.dispatchDropEvent(inputId);
+  }
 
-    // 3. DropZone 要素に対して dispatchEvent を実行
+  /**
+   * 隠し input 要素の File を DataTransfer に詰め込み、
+   * 対象要素に対してドラッグ＆ドロップイベントを発火させます。
+   */
+  private async dispatchDropEvent(inputId: string): Promise<void> {
     await this.root.evaluate((target, id) => {
       const input = document.getElementById(id) as HTMLInputElement;
 
-      // ガード節
       if (!input || !input.files || input.files.length === 0 || !target) {
         input?.remove();
         return;
