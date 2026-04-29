@@ -17,7 +17,7 @@ describe('fileActions', () => {
     vi.clearAllMocks();
     uiState.stopLoading();
     trackStore.tracks = [];
-    selectionState.items.clear();
+    selectionState.clear();
     vi.spyOn(tagRepository, 'readMetadata');
     vi.spyOn(fileRepository, 'renameFile');
     vi.spyOn(pathAdapter, 'generateNewPath').mockResolvedValue(success('/dir/new.flac'));

@@ -14,8 +14,7 @@ describe('SelectionState', () => {
   ];
 
   beforeEach(() => {
-    selectionState.items.clear();
-    selectionState.lastSelectedIndex = null;
+    selectionState.clear();
   });
 
   it('初期状態では選択がなく、インデックスも null であること', () => {
