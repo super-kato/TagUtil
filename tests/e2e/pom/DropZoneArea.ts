@@ -71,44 +71,32 @@ export class DropZoneArea {
     // 1. 非表示の input を DOM に生成
     await this.createHiddenInput(inputId, options.isFolder);
 
-    try {
-      // 2. Playwright の機能でネイティブパスを含む File をセット
-      await this.page.locator(`#${inputId}`).setInputFiles(paths);
+    // 2. Playwright の機能でネイティブパスを含む File をセット
+    await this.page.locator(`#${inputId}`).setInputFiles(paths);
 
-      // 3. DropZone 要素に対して dispatchEvent を実行
-      await this.root.evaluate((target, id) => {
-        const input = document.getElementById(id) as HTMLInputElement;
+    // 3. DropZone 要素に対して dispatchEvent を実行
+    await this.root.evaluate((target, id) => {
+      const input = document.getElementById(id) as HTMLInputElement;
 
-        // ガード節
-        if (!input || !input.files || input.files.length === 0 || !target) {
-          input?.remove();
-          return;
-        }
-
-        const dataTransfer = new DataTransfer();
-        for (let i = 0; i < input.files.length; i++) {
-          dataTransfer.items.add(input.files[i]);
-        }
-
-        target.dispatchEvent(
-          new DragEvent('dragover', { dataTransfer, bubbles: true, cancelable: true })
-        );
-        target.dispatchEvent(
-          new DragEvent('drop', { dataTransfer, bubbles: true, cancelable: true })
-        );
-
-        input.remove();
-      }, inputId);
-    } catch (e) {
-      if (options.isFolder) {
-        // webkitdirectory が未対応の環境等への安全策
-        console.warn('Directory drop simulation skipped or failed:', e);
-      } else {
-        throw e;
+      // ガード節
+      if (!input || !input.files || input.files.length === 0 || !target) {
+        input?.remove();
+        return;
       }
-    } finally {
-      // 例外時も含め確実にお掃除する
-      await this.page.evaluate((id) => document.getElementById(id)?.remove(), inputId);
-    }
+
+      const dataTransfer = new DataTransfer();
+      for (let i = 0; i < input.files.length; i++) {
+        dataTransfer.items.add(input.files[i]);
+      }
+
+      target.dispatchEvent(
+        new DragEvent('dragover', { dataTransfer, bubbles: true, cancelable: true })
+      );
+      target.dispatchEvent(
+        new DragEvent('drop', { dataTransfer, bubbles: true, cancelable: true })
+      );
+
+      input.remove();
+    }, inputId);
   }
 }
