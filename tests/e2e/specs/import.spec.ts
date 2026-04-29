@@ -20,10 +20,10 @@ test.describe('ファイル読み込みテスト', () => {
     writeFileSync(join(testDataDir, '.hidden-file'), 'hidden');
 
     await mainPage.toolbar.openDirectoryButton.click();
-    await expect(mainPage.trackGrid.rows).toHaveCount(1, { timeout: 15000 });
+    await expect(mainPage.trackGrid.rows).toHaveCount(2, { timeout: 15000 });
 
     const titles = await mainPage.trackGrid.getTitles();
-    expect(titles.length).toBe(1);
+    expect(titles.length).toBe(2);
     await mainPage.screenshot('01_ディレクトリ開封_フィルタリング検証');
   });
 
@@ -44,7 +44,7 @@ test.describe('ファイル読み込みテスト', () => {
     await mainPage.dropZone.dropFolder(testDataDir);
 
     // 検証
-    await expect(mainPage.trackGrid.rows).toHaveCount(1, { timeout: 10000 });
+    await expect(mainPage.trackGrid.rows).toHaveCount(2, { timeout: 10000 });
     await mainPage.screenshot('03_フォルダドロップ成功');
   });
 });

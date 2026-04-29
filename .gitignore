@@ -44,3 +44,5 @@ resources/licenses.json
 /blob-report/
 /playwright/.cache/
 tests/e2e/screenshots/
+
+scratch/

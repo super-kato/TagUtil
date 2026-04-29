@@ -1,8 +1,8 @@
 import { test as base, _electron as electron, type ElectronApplication } from '@playwright/test';
 import electronPath from 'electron';
-import { resolve, join } from 'path';
+import { copyFileSync, mkdirSync, readdirSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
-import { mkdirSync, copyFileSync, rmSync, readdirSync } from 'fs';
+import { join, resolve } from 'path';
 import { MainPage } from './pom/MainPage';
 
 // Fixture の型定義
@@ -58,22 +58,12 @@ export const e2eTest = base.extend<AppFixtures>({
     for (const file of files) {
       const src = join(baseFixturesDir, file);
       const dest = join(tempDir, file);
-      // ディレクトリは無視（今のところファイルのみ想定）
-      try {
-        copyFileSync(src, dest);
-      } catch (e) {
-        console.warn(`Failed to copy fixture ${file}:`, e);
-      }
+      copyFileSync(src, dest);
     }
 
     await use(tempDir);
 
-    // テスト終了後のクリーンアップ
-    try {
-      rmSync(tempDir, { recursive: true, force: true });
-    } catch (e) {
-      console.warn(`Failed to cleanup tempDir ${tempDir}:`, e);
-    }
+    rmSync(tempDir, { recursive: true, force: true });
   }
 });
 

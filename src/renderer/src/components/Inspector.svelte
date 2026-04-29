@@ -22,7 +22,7 @@
   };
 </script>
 
-<aside class="inspector no-focus-glow" tabindex="-1">
+<aside class="inspector no-focus-glow" tabindex="-1" data-testid="inspector">
   <DropZone testId="inspector-drop-zone" onDrop={handleArtworkDrop}>
     {#snippet overlay()}
       <DropZoneOverlay
@@ -43,7 +43,7 @@
           <TechnicalInfo />
         </div>
       {:else}
-        <div class="empty-inspector">
+        <div class="empty-inspector" data-testid="inspector-empty">
           <p>Select tracks to edit metadata</p>
         </div>
       {/if}

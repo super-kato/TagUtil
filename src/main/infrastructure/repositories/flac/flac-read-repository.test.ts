@@ -58,6 +58,31 @@ describe('flac-read-repository', () => {
     });
   });
 
+  it('同一キーの複数エントリーや配列値を正しく読み込めること', async () => {
+    const mockMetadata = {
+      native: {
+        vorbis: [
+          { id: 'ARTIST', value: 'Artist 1' },
+          { id: 'ARTIST', value: 'Artist 2' },
+          { id: 'GENRE', value: ['Rock', 'Pop'] } // 配列で返ってくるケースのシミュレーション
+        ]
+      },
+      common: {},
+      format: {}
+    };
+
+    vi.mocked(musicMetadata.parseFile).mockResolvedValue(
+      Object.assign({} as musicMetadata.IAudioMetadata, mockMetadata)
+    );
+
+    const result = await readRawFlacData('multi.flac');
+
+    expect(result.tags).toEqual({
+      ARTIST: ['Artist 1', 'Artist 2'],
+      GENRE: ['Rock', 'Pop']
+    });
+  });
+
   it('タグや画像がない場合でも正しく動作すること', async () => {
     const mockMetadata = {
       native: {},

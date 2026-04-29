@@ -54,6 +54,7 @@
         src={trackStore.commonImageUrl}
         alt="Cover Art"
         class="cover-art"
+        data-testid="cover-art"
         onerror={() => (imageLoadError = true)}
       />
       <button
@@ -68,11 +69,12 @@
         class="cover-placeholder"
         class:error={imageLoadError}
         class:mixed={trackStore.commonMetadata?.picture.type === 'divergent'}
+        data-testid="cover-placeholder"
       >
         <div class="icon-wrapper">
           <Music size={UI_TOKENS.icons.sizeLarge} strokeWidth={UI_TOKENS.icons.strokeWidth} />
         </div>
-        <span class="text">{getPlaceholderText()}</span>
+        <span class="text" data-testid="cover-placeholder-text">{getPlaceholderText()}</span>
       </div>
     {/if}
 

@@ -13,7 +13,7 @@ test.describe('業務ロジックテスト: タグ編集', () => {
 
     // ディレクトリを開く
     await mainPage.toolbar.openDirectoryButton.click();
-    await expect(mainPage.trackGrid.rows).toHaveCount(1, { timeout: 15000 });
+    await expect(mainPage.trackGrid.rows).toHaveCount(2, { timeout: 15000 });
   });
 
   test('FLACファイルのメタデータを編集し、正常に保存できること', async ({ mainPage }) => {
@@ -30,13 +30,13 @@ test.describe('業務ロジックテスト: タグ編集', () => {
     const saveBtn = mainPage.toolbar.saveChangesButton;
     await expect(saveBtn).toBeEnabled({ timeout: 5000 });
 
-    await mainPage.statusBar.toggleLogPanel();
+    await mainPage.statusBar.ensureExpanded();
     await saveBtn.click();
 
     // 保存完了ログを待機
     await expect(async () => {
       const logs = await mainPage.statusBar.getLogs();
-      if (!logs.some((l) => l.startsWith('tag:write-tag'))) {
+      if (!logs.some((l) => l.context === 'tag:write-tag')) {
         throw new Error('Waiting for write-tag log...');
       }
     }).toPass({ timeout: 30000 });

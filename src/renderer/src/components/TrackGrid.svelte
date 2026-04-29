@@ -45,7 +45,7 @@
   {#snippet overlay()}
     <DropZoneOverlay icon={FolderOpen} title="Drop to scan FLAC files" sub="Release to open" />
   {/snippet}
-  <div class="grid-wrapper no-focus-glow">
+  <div class="grid-wrapper no-focus-glow" data-testid="track-grid">
     {#if trackStore.tracks.length > 0}
       <div class="grid-header">
         <table class="data-grid">
@@ -72,19 +72,22 @@
                 onclick={(e) => handleRowClick(e, i, track)}
                 oncontextmenu={(e) => handleRowContextMenu(e, track)}
                 aria-selected={selectionState.has(track)}
+                data-testid="track-row"
               >
                 <td class="indicator-cell"></td>
-                <td class="track-cell">{track.metadata.trackNumber ?? ''}</td>
-                <td class="text-cell">{track.metadata.title}</td>
-                <td class="text-cell">{track.metadata.artist}</td>
-                <td class="text-cell">{track.metadata.album}</td>
+                <td class="track-cell" data-testid="cell-track"
+                  >{track.metadata.trackNumber ?? ''}</td
+                >
+                <td class="text-cell" data-testid="cell-title">{track.metadata.title}</td>
+                <td class="text-cell" data-testid="cell-artist">{track.metadata.artist}</td>
+                <td class="text-cell" data-testid="cell-album">{track.metadata.album}</td>
               </tr>
             {/each}
           </tbody>
         </table>
       </div>
     {:else}
-      <div class="empty-state">
+      <div class="empty-state" data-testid="track-grid-empty">
         <button
           class="empty-icon glow-pulse"
           onclick={tagActions.openAndScanDirectory}

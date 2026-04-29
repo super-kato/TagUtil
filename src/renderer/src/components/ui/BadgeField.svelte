@@ -59,7 +59,7 @@
   };
 </script>
 
-<div class="badge-field field">
+<div class="badge-field field" data-testid="{label.toLowerCase().replace(/\s+/g, '-')}-field">
   {#if label}
     <label for="badge-input-{label}">{label}</label>
   {/if}
@@ -71,7 +71,7 @@
     role="presentation"
   >
     {#each values as val, i (i)}
-      <span class="badge" class:divergent-badge={!isUniform}>
+      <span class="badge" class:divergent-badge={!isUniform} data-testid="badge-item">
         {val}
         <button
           type="button"
