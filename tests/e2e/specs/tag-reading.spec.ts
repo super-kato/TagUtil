@@ -23,6 +23,13 @@ test.describe('タグ読み込みテスト', () => {
     // Inspector の検証 (各フィールド)
     await expect(mainPage.inspector.titleInput).toHaveValue('Test Title');
     await expect(mainPage.inspector.albumInput).toHaveValue('Test Album');
+    await expect(mainPage.inspector.dateInput).toHaveValue('2024');
+    await expect(mainPage.inspector.trackNumberInput).toHaveValue('1');
+    await expect(mainPage.inspector.trackTotalInput).toHaveValue('10');
+    await expect(mainPage.inspector.discNumberInput).toHaveValue('2');
+    await expect(mainPage.inspector.discTotalInput).toHaveValue('3');
+    await expect(mainPage.inspector.catalogNumberInput).toHaveValue('CAT-001');
+
     expect(await mainPage.inspector.getArtists()).toEqual(['Test Artist 1', 'Test Artist 2']);
     expect(await mainPage.inspector.getAlbumArtists()).toEqual([
       'Test Album Artist 1',
@@ -49,6 +56,13 @@ test.describe('タグ読み込みテスト', () => {
     // すべてのメタデータが空であることを確認
     await expect(mainPage.inspector.titleInput).toHaveValue('');
     await expect(mainPage.inspector.albumInput).toHaveValue('');
+    await expect(mainPage.inspector.dateInput).toHaveValue('');
+    await expect(mainPage.inspector.trackNumberInput).toHaveValue('');
+    await expect(mainPage.inspector.trackTotalInput).toHaveValue('');
+    await expect(mainPage.inspector.discNumberInput).toHaveValue('');
+    await expect(mainPage.inspector.discTotalInput).toHaveValue('');
+    await expect(mainPage.inspector.catalogNumberInput).toHaveValue('');
+
     expect(await mainPage.inspector.getArtists()).toEqual([]);
     expect(await mainPage.inspector.getGenres()).toEqual([]);
   });
