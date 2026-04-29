@@ -34,9 +34,10 @@ export const e2eTest = base.extend<AppFixtures>({
   },
 
   mainPage: [
-    async ({ electronApp }, use) => {
+    async ({ electronApp }, use, testInfo) => {
       const window = await electronApp.firstWindow();
-      await use(new MainPage(window));
+      // テストファイルパスを渡して、スペックごとにフォルダを分けるようにする
+      await use(new MainPage(window, testInfo.file));
     },
     { auto: true }
   ],
