@@ -20,20 +20,17 @@ test.describe('アプリケーション基本動作', () => {
   });
 
   test('ステータスバーのログパネルの開閉ができること', async ({ mainPage }) => {
-    // ログパネルを展開
-    await mainPage.statusBar.ensureExpanded();
+    // 初期状態では展開されている (StatusBar.svelte の初期値)
     await expect(mainPage.statusBar.root).toHaveClass(/expanded/);
-    await mainPage.screenshot('01_ログパネル展開状態');
 
-    // ログパネルを閉じる (toggle)
-    await mainPage.statusBar.toggleLogPanel();
-    // アニメーション待ちを考慮して expect で待機
+    // ログパネルを閉じる
+    await mainPage.statusBar.toggleButton.click();
     await expect(mainPage.statusBar.root).not.toHaveClass(/expanded/);
-    await mainPage.screenshot('02_ログパネルを閉じた状態');
+    await mainPage.screenshot('01_ログパネルを閉じた状態');
 
     // 再度展開
-    await mainPage.statusBar.toggleLogPanel();
+    await mainPage.statusBar.toggleButton.click();
     await expect(mainPage.statusBar.root).toHaveClass(/expanded/);
-    await mainPage.screenshot('03_ログパネルを再度開いた状態');
+    await mainPage.screenshot('02_ログパネルを再度開いた状態');
   });
 });
