@@ -39,6 +39,27 @@ export class DropZoneArea {
   }
 
   /**
+   * DOM にテスト用の非表示 file input を生成します。
+   */
+  private async createHiddenInput(id: string, isFolder: boolean): Promise<void> {
+    await this.page.evaluate(
+      ({ inputId, isDir }) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.id = inputId;
+        input.style.display = 'none';
+        if (isDir) {
+          input.webkitdirectory = true;
+        } else {
+          input.multiple = true;
+        }
+        document.body.appendChild(input);
+      },
+      { inputId: id, isDir: isFolder }
+    );
+  }
+
+  /**
    * 内部で共通利用するドロップシミュレーションロジック
    */
   private async simulateDrop(
@@ -48,21 +69,7 @@ export class DropZoneArea {
     const inputId = `e2e-hidden-${options.isFolder ? 'folder' : 'file'}-input`;
 
     // 1. 非表示の input を DOM に生成
-    await this.page.evaluate(
-      ({ id, isFolder }) => {
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.id = id;
-        input.style.display = 'none';
-        if (isFolder) {
-          input.webkitdirectory = true;
-        } else {
-          input.multiple = true;
-        }
-        document.body.appendChild(input);
-      },
-      { id: inputId, isFolder: options.isFolder }
-    );
+    await this.createHiddenInput(inputId, options.isFolder);
 
     try {
       // 2. Playwright の機能でネイティブパスを含む File をセット
