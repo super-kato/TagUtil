@@ -45,9 +45,30 @@ export class InspectorArea {
   }
 
   /**
+   * アーティストの値を取得します。
+   */
+  async getArtists(): Promise<string[]> {
+    return this.getMultiFieldValues('Artist');
+  }
+
+  /**
+   * アルバムアーティストの値を取得します。
+   */
+  async getAlbumArtists(): Promise<string[]> {
+    return this.getMultiFieldValues('Album Artist');
+  }
+
+  /**
+   * ジャンルの値を取得します。
+   */
+  async getGenres(): Promise<string[]> {
+    return this.getMultiFieldValues('Genre');
+  }
+
+  /**
    * 指定したラベルを持つ MultiValueField または BadgeField のすべての入力値を取得します。
    */
-  async getMultiFieldValues(label: string): Promise<string[]> {
+  private async getMultiFieldValues(label: string): Promise<string[]> {
     const testIdBase = label.toLowerCase().replace(/\s+/g, '-');
     const container = this.root.getByTestId(`${testIdBase}-field`);
     await container.waitFor({ state: 'visible', timeout: 10000 });

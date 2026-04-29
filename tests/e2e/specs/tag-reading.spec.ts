@@ -32,12 +32,13 @@ test.describe('タグ読み込みテスト', () => {
     await expect(mainPage.inspector.titleInput).toHaveValue('Test Title');
     await expect(mainPage.inspector.albumInput).toHaveValue('Test Album');
 
-    // Inspector の検証 (複数値フィールド)
-    const artistValues = await mainPage.inspector.getMultiFieldValues('Artist');
-    expect(artistValues).toEqual(['Test Artist 1', 'Test Artist 2']);
-
-    const genreValues = await mainPage.inspector.getMultiFieldValues('Genre');
-    expect(genreValues).toEqual(['Rock', 'Pop']);
+    // インスペクターの検証 (MultiValueField / BadgeField)
+    expect(await mainPage.inspector.getArtists()).toEqual(['Test Artist 1', 'Test Artist 2']);
+    expect(await mainPage.inspector.getAlbumArtists()).toEqual([
+      'Test Album Artist 1',
+      'Test Album Artist 2'
+    ]);
+    expect(await mainPage.inspector.getGenres()).toEqual(['Rock', 'Pop']);
 
     // --- track.flac (index 1) の検証 ---
     await mainPage.trackGrid.selectTrack(1);
