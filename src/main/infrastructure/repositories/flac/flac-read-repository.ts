@@ -48,12 +48,6 @@ const mapLibTagsToRaw = (tags: musicMetadata.ITag[]): VorbisTags => {
       normalized[key] = [];
     }
 
-    // デバッグ用: 値の中にカンマが含まれているか、あるいは配列として来ているかチェック
-    if (key === 'ARTIST' && typeof tag.value === 'string' && tag.value.includes(',')) {
-      // もしここを通るなら、music-metadata が既に結合した状態で値を返している
-      console.error(`!!!! DETECTED JOINED TAG: ${key} = ${tag.value}`);
-    }
-
     // 値が配列の場合は展開し、そうでなければ文字列として追加
     if (Array.isArray(tag.value)) {
       normalized[key].push(...tag.value.map((v) => String(v)));
