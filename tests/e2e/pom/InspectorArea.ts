@@ -44,21 +44,6 @@ export class InspectorArea {
     this.albumArtistInput = this.root.getByLabel('Album Artist', { exact: true });
   }
 
-  async isEditingEnabled(): Promise<boolean> {
-    return await this.emptyState.isHidden();
-  }
-
-  /**
-   * 主要なメタデータを一括で取得します。
-   */
-  async getMetadata(): Promise<{ title: string; artist: string; album: string }> {
-    return {
-      title: await this.titleInput.inputValue(),
-      artist: await this.artistInput.inputValue(),
-      album: await this.albumInput.inputValue()
-    };
-  }
-
   /**
    * 指定したラベルを持つ MultiValueField または BadgeField のすべての入力値を取得します。
    */
@@ -80,26 +65,5 @@ export class InspectorArea {
     }
 
     return [];
-  }
-
-  /**
-   * タイトルを設定します。
-   */
-  async setTitle(value: string): Promise<void> {
-    await this.titleInput.fill(value);
-  }
-
-  /**
-   * アーティストを設定します。
-   */
-  async setArtist(value: string): Promise<void> {
-    await this.artistInput.fill(value);
-  }
-
-  /**
-   * アルバムを設定します。
-   */
-  async setAlbum(value: string): Promise<void> {
-    await this.albumInput.fill(value);
   }
 }
