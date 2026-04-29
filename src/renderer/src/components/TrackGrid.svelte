@@ -2,6 +2,7 @@
   import { UI_TOKENS } from '@renderer/constants/design-system';
 
   import { FolderOpen, Music } from '@lucide/svelte';
+  import { tooltip } from '@renderer/actions/tooltip';
   import DropZone from '@renderer/components/ui/DropZone.svelte';
   import DropZoneOverlay from '@renderer/components/ui/DropZoneOverlay.svelte';
   import { contextMenuAdapter } from '@renderer/infrastructure/adapters/context-menu-adapter';
@@ -75,12 +76,22 @@
                 data-testid="track-row"
               >
                 <td class="indicator-cell"></td>
-                <td class="track-cell" data-testid="cell-track"
-                  >{track.metadata.trackNumber ?? ''}</td
+                <td class="track-cell" data-testid="cell-track">
+                  {track.metadata.trackNumber ?? ''}
+                </td>
+                <td class="text-cell" data-testid="cell-title" use:tooltip={track.metadata.title}>
+                  {track.metadata.title}
+                </td>
+                <td
+                  class="text-cell"
+                  data-testid="cell-artist"
+                  use:tooltip={track.metadata.artist?.join(', ')}
                 >
-                <td class="text-cell" data-testid="cell-title">{track.metadata.title}</td>
-                <td class="text-cell" data-testid="cell-artist">{track.metadata.artist}</td>
-                <td class="text-cell" data-testid="cell-album">{track.metadata.album}</td>
+                  {track.metadata.artist}
+                </td>
+                <td class="text-cell" data-testid="cell-album" use:tooltip={track.metadata.album}>
+                  {track.metadata.album}
+                </td>
               </tr>
             {/each}
           </tbody>
@@ -141,8 +152,8 @@
   .header-row,
   .track-row {
     display: grid;
-    /* カラム構成: インジケーター(6px), トラック番号(3.5rem), タイトル(3fr), アーティスト(2fr), アルバム(2fr) */
-    grid-template-columns: 6px 3.5rem 3fr 2fr 2fr;
+    /* カラム構成: インジケーター(6px), トラック番号(3.5rem), タイトル(3fr), アーティスト(1.5fr), アルバム(2fr) */
+    grid-template-columns: 6px 3.5rem 3fr 1.5fr 2fr;
     width: 100%;
   }
 
