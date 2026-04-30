@@ -1,7 +1,7 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
 
-  import { FolderOpen, Music, Disc3 } from '@lucide/svelte';
+  import { FolderOpen, Hash, Music } from '@lucide/svelte';
   import { tooltip } from '@renderer/actions/tooltip';
   import DropZone from '@renderer/components/ui/DropZone.svelte';
   import DropZoneOverlay from '@renderer/components/ui/DropZoneOverlay.svelte';
@@ -81,7 +81,7 @@
                     <span class="cell-content">{track.metadata.trackNumber}</span>
                   {:else}
                     <div class="track-placeholder">
-                      <Disc3
+                      <Hash
                         size={UI_TOKENS.icons.sizeSmall}
                         strokeWidth={UI_TOKENS.icons.strokeBold}
                       />
@@ -255,8 +255,6 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    opacity: 0.3;
-    color: var(--text-dim);
   }
 
   .empty-state {
