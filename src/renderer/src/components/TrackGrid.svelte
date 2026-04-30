@@ -1,7 +1,7 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
 
-  import { FolderOpen, Music } from '@lucide/svelte';
+  import { FolderOpen, Music, Disc3 } from '@lucide/svelte';
   import { tooltip } from '@renderer/actions/tooltip';
   import DropZone from '@renderer/components/ui/DropZone.svelte';
   import DropZoneOverlay from '@renderer/components/ui/DropZoneOverlay.svelte';
@@ -77,20 +77,29 @@
               >
                 <td class="indicator-cell"></td>
                 <td class="track-cell" data-testid="cell-track">
-                  {track.metadata.trackNumber ?? ''}
+                  {#if track.metadata.trackNumber}
+                    <span class="cell-content">{track.metadata.trackNumber}</span>
+                  {:else}
+                    <div class="track-placeholder">
+                      <Disc3
+                        size={UI_TOKENS.icons.sizeSmall}
+                        strokeWidth={UI_TOKENS.icons.strokeBold}
+                      />
+                    </div>
+                  {/if}
                 </td>
                 <td class="text-cell" data-testid="cell-title" use:tooltip={track.metadata.title}>
-                  {track.metadata.title}
+                  <span class="cell-content">{track.metadata.title}</span>
                 </td>
                 <td
                   class="text-cell"
                   data-testid="cell-artist"
                   use:tooltip={track.metadata.artist?.join(', ')}
                 >
-                  {track.metadata.artist}
+                  <span class="cell-content">{track.metadata.artist}</span>
                 </td>
                 <td class="text-cell" data-testid="cell-album" use:tooltip={track.metadata.album}>
-                  {track.metadata.album}
+                  <span class="cell-content">{track.metadata.album}</span>
                 </td>
               </tr>
             {/each}
@@ -218,11 +227,17 @@
   .track-row td {
     padding: 0 1rem;
     color: var(--text-secondary);
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-width: 0;
+  }
+
+  .cell-content {
     overflow: hidden;
     text-overflow: ellipsis;
-    line-height: 2.8rem;
-    height: 100%;
+    white-space: nowrap;
+    width: 100%;
   }
 
   .track-row.modified td {
@@ -234,6 +249,14 @@
     color: var(--text-muted) !important;
     font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
     font-size: 0.8rem;
+  }
+
+  .track-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    opacity: 0.3;
+    color: var(--text-dim);
   }
 
   .empty-state {
