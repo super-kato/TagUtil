@@ -1,7 +1,8 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
 
-  import { FolderOpen, Music } from '@lucide/svelte';
+  import { FolderOpen, Hash, Music } from '@lucide/svelte';
+  import { tooltip } from '@renderer/actions/tooltip';
   import DropZone from '@renderer/components/ui/DropZone.svelte';
   import DropZoneOverlay from '@renderer/components/ui/DropZoneOverlay.svelte';
   import { contextMenuAdapter } from '@renderer/infrastructure/adapters/context-menu-adapter';
@@ -75,12 +76,31 @@
                 data-testid="track-row"
               >
                 <td class="indicator-cell"></td>
-                <td class="track-cell" data-testid="cell-track"
-                  >{track.metadata.trackNumber ?? ''}</td
+                <td class="track-cell" data-testid="cell-track">
+                  {#if track.metadata.trackNumber}
+                    <span class="cell-content">{track.metadata.trackNumber}</span>
+                  {:else}
+                    <div class="track-placeholder">
+                      <Hash
+                        size={UI_TOKENS.icons.sizeSmall}
+                        strokeWidth={UI_TOKENS.icons.strokeBold}
+                      />
+                    </div>
+                  {/if}
+                </td>
+                <td class="text-cell" data-testid="cell-title" use:tooltip={track.metadata.title}>
+                  <span class="cell-content">{track.metadata.title}</span>
+                </td>
+                <td
+                  class="text-cell"
+                  data-testid="cell-artist"
+                  use:tooltip={track.metadata.artist?.join(', ')}
                 >
-                <td class="text-cell" data-testid="cell-title">{track.metadata.title}</td>
-                <td class="text-cell" data-testid="cell-artist">{track.metadata.artist}</td>
-                <td class="text-cell" data-testid="cell-album">{track.metadata.album}</td>
+                  <span class="cell-content">{track.metadata.artist}</span>
+                </td>
+                <td class="text-cell" data-testid="cell-album" use:tooltip={track.metadata.album}>
+                  <span class="cell-content">{track.metadata.album}</span>
+                </td>
               </tr>
             {/each}
           </tbody>
@@ -141,8 +161,8 @@
   .header-row,
   .track-row {
     display: grid;
-    /* カラム構成: インジケーター(6px), トラック番号(3.5rem), タイトル(3fr), アーティスト(2fr), アルバム(2fr) */
-    grid-template-columns: 6px 3.5rem 3fr 2fr 2fr;
+    /* カラム構成: インジケーター(6px), トラック番号(3.5rem), タイトル(3fr), アーティスト(1.5fr), アルバム(2fr) */
+    grid-template-columns: 6px 3.5rem 3fr 1.5fr 2fr;
     width: 100%;
   }
 
@@ -161,6 +181,8 @@
     position: relative;
     transition: background-color 0.15s ease;
     border-bottom: 1px solid var(--bg-header);
+    height: 2.8rem;
+    align-items: center;
   }
 
   .track-row:hover {
@@ -175,6 +197,7 @@
     width: 4px;
     padding: 0;
     position: relative;
+    height: 100%;
   }
 
   .indicator-cell::after {
@@ -202,11 +225,19 @@
   }
 
   .track-row td {
-    padding: 0.75rem 1rem;
+    padding: 0 1rem;
     color: var(--text-secondary);
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    min-width: 0;
+  }
+
+  .cell-content {
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
   }
 
   .track-row.modified td {
@@ -218,6 +249,12 @@
     color: var(--text-muted) !important;
     font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
     font-size: 0.8rem;
+  }
+
+  .track-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
   }
 
   .empty-state {
