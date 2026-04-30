@@ -24,6 +24,13 @@ export class TrackGridArea {
   }
 
   /**
+   * すべてのトラックを選択します。
+   */
+  async selectAll(): Promise<void> {
+    await this.page.keyboard.press('Control+A');
+  }
+
+  /**
    * 現在表示されているすべてのトラックのタイトルを取得します。
    */
   async getTitles(): Promise<string[]> {
