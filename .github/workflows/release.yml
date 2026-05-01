@@ -166,7 +166,7 @@ jobs:
       - name: アーティファクトのダウンロード
         uses: actions/download-artifact@v8
         with:
-          pattern: release-artifacts-*
+          pattern: release-artifacts-mac
           path: dist
           merge-multiple: true
 
