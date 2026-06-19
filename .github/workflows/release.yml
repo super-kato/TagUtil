@@ -17,7 +17,7 @@ jobs:
       tag: ${{ steps.get_version.outputs.tag }}
     steps:
       - name: リポジトリのチェックアウト
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: バージョン取得
         id: get_version
@@ -48,7 +48,7 @@ jobs:
       contents: read
     steps:
       - name: リポジトリのチェックアウト
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Node.js のセットアップ
         uses: actions/setup-node@v6
@@ -91,7 +91,7 @@ jobs:
       contents: read
     steps:
       - name: リポジトリのチェックアウト
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Node.js のセットアップ
         uses: actions/setup-node@v6
@@ -126,7 +126,7 @@ jobs:
       contents: read
     steps:
       - name: リポジトリのチェックアウト
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Node.js のセットアップ
         uses: actions/setup-node@v6
@@ -161,7 +161,7 @@ jobs:
       contents: write
     steps:
       - name: リポジトリのチェックアウト
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: アーティファクトのダウンロード
         uses: actions/download-artifact@v8
