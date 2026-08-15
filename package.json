@@ -54,7 +54,7 @@
     "fast-equals": "^6.0.2",
     "flac-tagger": "^2.0.0",
     "music-metadata": "^11.14.0",
-    "p-limit": "^7.3.0",
+    "p-limit": "^7.3.1",
     "svelte": "^5.56.6"
   },
   "devDependencies": {
