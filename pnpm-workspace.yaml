@@ -2,3 +2,5 @@ allowBuilds:
   electron: true
   electron-winstaller: false
   esbuild: false
+
+minimumReleaseAge: 0
