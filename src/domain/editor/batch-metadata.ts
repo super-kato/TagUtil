@@ -5,8 +5,7 @@ import type { ElementType } from '@shared/types';
 import { isDeepEqual } from '@shared/utils/equality';
 
 export type FieldState<T> =
-  | { type: 'uniform'; value: T }
-  | { type: 'divergent'; values?: ElementType<T>[] };
+  { type: 'uniform'; value: T } | { type: 'divergent'; values?: ElementType<T>[] };
 
 /**
  * 単一値（文字列）として管理されるキーの一覧
