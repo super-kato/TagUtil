@@ -51,6 +51,10 @@ export class KeyboardHandler {
    * キーボードイベントを処理します。
    */
   async handle(e: KeyboardEvent): Promise<void> {
+    if (!e || typeof e.key !== 'string') {
+      return;
+    }
+
     const action = this.actions.find((a) => this.matches(e, a.combo));
     if (!action) {
       return;
@@ -76,7 +80,7 @@ export class KeyboardHandler {
    * イベントが組み合わせにマッチするかどうかを判定します。
    */
   private matches(e: KeyboardEvent, combo: KeyCombo): boolean {
-    const keyMatch = e.key.toLowerCase() === combo.key.toLowerCase();
+    const keyMatch = e.key?.toLowerCase() === combo.key.toLowerCase();
     const shiftMatch = !!e.shiftKey === !!combo.shift;
     const altMatch = !!e.altKey === !!combo.alt;
 

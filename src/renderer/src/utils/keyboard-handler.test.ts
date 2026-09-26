@@ -108,4 +108,80 @@ describe('KeyboardHandler', () => {
     await handler.handle(new KeyboardEvent('keydown', { key: 'a' }));
     expect(callback).not.toHaveBeenCalled();
   });
+
+  describe('Null/Undefined に対する安全性', () => {
+    it('event.key が undefined の場合でも例外を投げずに正常終了すること', async () => {
+      const callback = vi.fn();
+      const handler = new KeyboardHandler(false, [
+        {
+          combo: { key: 'Enter' },
+          handler: callback
+        }
+      ]);
+
+      const event = { key: undefined } as unknown as KeyboardEvent;
+      await expect(handler.handle(event)).resolves.not.toThrow();
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    it('event.key が空文字列の場合でも例外を投げずに正常終了すること', async () => {
+      const callback = vi.fn();
+      const handler = new KeyboardHandler(false, [
+        {
+          combo: { key: 'Enter' },
+          handler: callback
+        }
+      ]);
+
+      const event = new KeyboardEvent('keydown', { key: '' });
+      await expect(handler.handle(event)).resolves.not.toThrow();
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    it('event 自体が null または undefined の場合でも例外を投げずに正常終了すること', async () => {
+      const callback = vi.fn();
+      const handler = new KeyboardHandler(false, [
+        {
+          combo: { key: 'Enter' },
+          handler: callback
+        }
+      ]);
+
+      await expect(handler.handle(undefined as unknown as KeyboardEvent)).resolves.not.toThrow();
+      await expect(handler.handle(null as unknown as KeyboardEvent)).resolves.not.toThrow();
+      expect(callback).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('IME入力中（isComposing）の判定', () => {
+    it('ignoreComposition が true の場合、isComposing が true のイベントはスキップされること', async () => {
+      const callback = vi.fn();
+      const handler = new KeyboardHandler(false, [
+        {
+          combo: { key: 'Enter' },
+          handler: callback,
+          ignoreComposition: true
+        }
+      ]);
+
+      const event = new KeyboardEvent('keydown', { key: 'Enter', isComposing: true });
+      await handler.handle(event);
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    it('ignoreComposition が true でも、isComposing が false のイベントは実行されること', async () => {
+      const callback = vi.fn();
+      const handler = new KeyboardHandler(false, [
+        {
+          combo: { key: 'Enter' },
+          handler: callback,
+          ignoreComposition: true
+        }
+      ]);
+
+      const event = new KeyboardEvent('keydown', { key: 'Enter', isComposing: false });
+      await handler.handle(event);
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+  });
 });
