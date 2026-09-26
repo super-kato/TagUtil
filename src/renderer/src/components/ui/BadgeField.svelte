@@ -44,9 +44,9 @@
   };
 
   const handler = new KeyboardHandler(IS_MAC, [
-    { combo: { key: 'Enter' }, handler: handleAdd, preventDefault: true },
-    { combo: { key: ',' }, handler: handleAdd, preventDefault: true },
-    { combo: { key: 'Backspace' }, handler: handleBackspace }
+    { combo: { key: 'Enter' }, handler: handleAdd, preventDefault: true, ignoreComposition: true },
+    { combo: { key: ',' }, handler: handleAdd, preventDefault: true, ignoreComposition: true },
+    { combo: { key: 'Backspace' }, handler: handleBackspace, ignoreComposition: true }
   ]);
 
   const handleClickContainer = (e: MouseEvent): void => {
@@ -58,7 +58,9 @@
     inputElement?.focus();
   };
 
-  const testId = $derived(`${label.toLowerCase().replace(/\s+/g, '-')}-field`);
+  const testId = $derived(
+    label ? `${label.toLowerCase().replace(/\s+/g, '-')}-field` : 'badge-field'
+  );
 </script>
 
 <div class="badge-field field" data-testid={testId}>
