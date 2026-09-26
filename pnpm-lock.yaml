@@ -12,8 +12,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(electron@44.4.3(supports-color@7.2.0))
       '@lucide/svelte':
-        specifier: ^1.46.0
-        version: 1.46.0(svelte@5.57.0(@typescript-eslint/types@8.58.0))
+        specifier: ^1.47.0
+        version: 1.47.0(svelte@5.57.0(@typescript-eslint/types@8.58.0))
       electron-log:
         specifier: ^5.4.4
         version: 5.4.4
@@ -751,8 +751,8 @@ packages:
   '@keyv/serialize@1.1.1':
     resolution: {integrity: sha512-dXn3FZhPv0US+7dtJsIi2R+c7qWYiReoEh5zUntWCf4oSpMNib8FDhSoed6m3QyZdx5hK7iLFkYk3rNxwt8vTA==}
 
-  '@lucide/svelte@1.46.0':
-    resolution: {integrity: sha512-Ru8jDjoCVLJ7J7pPRUdY+odSBV2BI6rj68JTmT+ENq/ZwYOPGPAiKVvKz+XLyAoK4HAwlRTzZHpsMvrHfsetqg==}
+  '@lucide/svelte@1.47.0':
+    resolution: {integrity: sha512-tpuE7JIK9FzYDWsJx6PxHj9ROyCpnDxZfvHu5q5yHGKS2CFNjzSyf1o9/Ypu2A27GLvkPGqZcIMrF6idM+eQZQ==}
     peerDependencies:
       svelte: ^5
 
@@ -3822,7 +3822,7 @@ snapshots:
 
   '@keyv/serialize@1.1.1': {}
 
-  '@lucide/svelte@1.46.0(svelte@5.57.0(@typescript-eslint/types@8.58.0))':
+  '@lucide/svelte@1.47.0(svelte@5.57.0(@typescript-eslint/types@8.58.0))':
     dependencies:
       svelte: 5.57.0(@typescript-eslint/types@8.58.0)
 
