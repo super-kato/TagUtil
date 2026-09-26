@@ -1,6 +1,6 @@
 {
   "name": "tag-util",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "description": "Functional FLAC metadata editor with Svelte 5 TagState",
   "type": "module",
   "main": "./out/main/index.js",
@@ -68,7 +68,7 @@
     "@vitest/coverage-v8": "^4.1.11",
     "dotenv-cli": "^11.0.0",
     "electron": "^44.4.3",
-    "electron-builder": "^26.15.3",
+    "electron-builder": "^26.16.1",
     "electron-vite": "^5.0.0",
     "eslint": "^10.11.0",
     "eslint-plugin-svelte": "^3.23.0",
