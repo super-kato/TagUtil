@@ -27,8 +27,8 @@ importers:
         specifier: ^6.2.1
         version: 6.2.1
       flac-tagger:
-        specifier: ^2.0.0
-        version: 2.0.0
+        specifier: ^2.1.0
+        version: 2.1.0
       music-metadata:
         specifier: ^12.2.3
         version: 12.2.3(supports-color@7.2.0)
@@ -1774,8 +1774,8 @@ packages:
     resolution: {integrity: sha512-78/PXT1wlLLDgTzDs7sjq9hzz0vXD+zn+7wypEe4fXQxCmdmqfGsEPQxmiCSQI3ajFV91bVSsvNtrJRiW6nGng==}
     engines: {node: '>=10'}
 
-  flac-tagger@2.0.0:
-    resolution: {integrity: sha512-PVVCfEf6ZXjEi9/ktlZWyUgQQ1Adwov4FY+HbX3XLSdrN+VVq/iiFyKBXMeO2j1hfdyD2iwCzwzd7kg1NPawLA==}
+  flac-tagger@2.1.0:
+    resolution: {integrity: sha512-W0TqWXELyyIrWHCuWusWZhtDwLYf9RCpw72BLKf6Yxo5Myq2M7mKdrb+SEHEB8iHKENfJ4R0jKr/xOljMS8OuQ==}
 
   flat-cache@6.1.23:
     resolution: {integrity: sha512-f++BY9pTk+983xK1FLzlLpmM0i0z+jHmx3QESGkURMXujQZz1k5wzwX6hjnQ8goaD0B+sYnDK1yZ6MTyZfUaqA==}
@@ -5014,7 +5014,7 @@ snapshots:
       locate-path: 6.0.0
       path-exists: 4.0.0
 
-  flac-tagger@2.0.0:
+  flac-tagger@2.1.0:
     dependencies:
       imageinfo: 1.0.4
 
