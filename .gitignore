@@ -26,9 +26,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# ESLint
-.eslintcache
-
 # TypeScript Build Info
 *.tsbuildinfo
 
