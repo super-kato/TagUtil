@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { tagRepository } from './tag-repository';
 import { success, failure } from '@domain/common/result';
 import type { FlacTrack } from '@domain/flac/models';
-import type { AppError } from '@domain/flac/errors';
+import type { AppError } from '@domain/errors/definitions';
 
 describe('tag-repository', () => {
   beforeEach(() => {

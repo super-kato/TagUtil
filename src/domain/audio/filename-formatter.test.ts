@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formatFilename } from './filename-formatter';
-import { AudioTrack } from './models';
+import type { AudioTrack } from './models';
 
 describe('AudioFilenameFormatter', () => {
   const mockTrack: AudioTrack = {

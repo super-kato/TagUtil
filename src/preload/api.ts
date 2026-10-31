@@ -4,7 +4,7 @@ import type { FlacTrack } from '@domain/flac/models';
 import type { IpcApi } from '@shared/ipc';
 import { IPC_CHANNELS } from '@shared/ipc';
 import type { AppSettings } from '@shared/settings';
-import { ipcRenderer, IpcRendererEvent, webUtils } from 'electron';
+import { ipcRenderer, type IpcRendererEvent, webUtils } from 'electron';
 
 /**
  * Rendererプロセスに露出させるカスタムAPIの定義。

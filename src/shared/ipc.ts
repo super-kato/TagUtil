@@ -57,13 +57,13 @@ export interface IpcApi {
   readMetadata(path: string): Promise<AppResult<FlacTrack>>;
   writeMetadata(track: FlacTrack): Promise<AppResult<string>>;
 
-  selectDirectory(): Promise<string | undefined>;
+  selectDirectory(): Promise<string | null>;
   scanDirectory(targetPaths: string[]): Promise<AppResult<ScanResult>>;
   pickImage(): Promise<AppResult<Picture | null>>;
   getImageInfo(path: string): Promise<AppResult<Picture>>;
 
   renameFile(oldPath: string, newPath: string): Promise<AppResult<void>>;
-  generateNewPath(track: FlacTrack): Promise<string>;
+  generateNewPath(track: FlacTrack): Promise<AppResult<string>>;
   getPathForFile(file: File): string;
   getPlatform(): Promise<Platform>;
   getSettings(): Promise<AppResult<AppSettings>>;

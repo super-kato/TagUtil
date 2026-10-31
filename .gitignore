@@ -26,11 +26,11 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
-# ESLint
-.eslintcache
-
 # TypeScript Build Info
 *.tsbuildinfo
+
+# svelte-check (--tsgo) のキャッシュ
+.svelte-check/
 
 samples/
 
@@ -46,3 +46,5 @@ resources/licenses.json
 tests/e2e/screenshots/
 
 scratch/
+# Dev Containers の lockfile は使わない (依存の更新は Renovate で行う)
+.devcontainer/devcontainer-lock.json

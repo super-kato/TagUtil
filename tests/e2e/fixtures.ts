@@ -16,8 +16,8 @@ type AppFixtures = {
  * カスタム fixture を追加した E2E テスト用オブジェクト
  */
 export const e2eTest = base.extend<AppFixtures>({
-  // Playwrightのフィクスチャ定義で空のパターンが必要なため、ESLintの警告を抑制
-  // eslint-disable-next-line no-empty-pattern
+  // Playwrightのフィクスチャ定義で空のパターンが必要なため、oxlintの警告を抑制
+  // oxlint-disable-next-line no-empty-pattern
   electronApp: async ({}, use) => {
     const app = await electron.launch({
       args: [resolve('out/main/index.js')],
@@ -46,7 +46,7 @@ export const e2eTest = base.extend<AppFixtures>({
    * テストごとに独立した一時ディレクトリを作成し、フィクスチャをコピーして提供します。
    * テスト終了後に自動的に削除されます。
    */
-  // eslint-disable-next-line no-empty-pattern
+  // oxlint-disable-next-line no-empty-pattern
   testDataDir: async ({}, use) => {
     const baseFixturesDir = resolve(process.cwd(), 'tests/e2e/fixtures');
     const tempDir = join(tmpdir(), `tagutil-e2e-${Math.random().toString(36).slice(2)}`);
