@@ -11,6 +11,12 @@ updates:
     open-pull-requests-limit: 10
     labels:
       - 'dependencies'
+    ignore:
+      # svelte-check が TypeScript の JS API (6 系まで) を使うため、typescript は 6 系に固定する。
+      # TypeScript 7 は @typescript/native (npm:typescript@7) として別途導入している。
+      - dependency-name: 'typescript'
+        update-types:
+          - 'version-update:semver-major'
     groups:
       minor-and-patch:
         patterns:

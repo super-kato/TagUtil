@@ -29,6 +29,9 @@ yarn-error.log*
 # TypeScript Build Info
 *.tsbuildinfo
 
+# svelte-check (--tsgo) のキャッシュ
+.svelte-check/
+
 samples/
 
 .todo.md
