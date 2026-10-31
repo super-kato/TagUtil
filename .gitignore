@@ -46,3 +46,5 @@ resources/licenses.json
 tests/e2e/screenshots/
 
 scratch/
+# Dev Containers の lockfile は使わない (依存の更新は Renovate で行う)
+.devcontainer/devcontainer-lock.json

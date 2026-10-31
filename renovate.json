@@ -1,0 +1,44 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "timezone": "Asia/Tokyo",
+  "schedule": ["* 10-12 * * 6"],
+  "minimumReleaseAge": "1 day",
+  "labels": ["dependencies"],
+  "reviewers": ["super-kato"],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": ["* 10-12 * * 6"]
+  },
+  "osvVulnerabilityAlerts": true,
+  "packageRules": [
+    {
+      "description": "npm の minor / patch はまとめて1つの PR にする",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "minor-and-patch"
+    },
+    {
+      "description": "npm の major はまとめて1つの PR にする",
+      "matchManagers": ["npm"],
+      "matchUpdateTypes": ["major"],
+      "groupName": "major"
+    },
+    {
+      "description": "GitHub Actions はまとめて1つの PR にする",
+      "matchManagers": ["github-actions"],
+      "groupName": "github-actions"
+    },
+    {
+      "description": "Dev Container (devcontainer.json の features と Dockerfile) はまとめて1つの PR にする",
+      "matchFileNames": [".devcontainer/**"],
+      "groupName": "devcontainers"
+    },
+    {
+      "description": "svelte-check が TypeScript の JS API (6 系まで) を使うため、typescript は 6 系に据え置く。TypeScript 7 は @typescript/native (npm:typescript@7) として別途導入している",
+      "matchPackageNames": ["typescript"],
+      "matchUpdateTypes": ["major"],
+      "enabled": false
+    }
+  ]
+}
