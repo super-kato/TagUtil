@@ -29,7 +29,7 @@
     "format:check": "oxfmt --check",
     "lint": "oxlint",
     "typecheck:node": "node node_modules/@typescript/native/bin/tsc --noEmit -p tsconfig.node.json",
-    "svelte-check": "svelte-check --tsconfig ./tsconfig.json --tsgo",
+    "svelte-check": "svelte-check --tsconfig ./tsconfig.web.json --tsgo-experimental-api",
     "typecheck": "pnpm svelte-check && pnpm typecheck:node",
     "start": "electron-vite preview",
     "dev": "pnpm generate-licenses && electron-vite dev",

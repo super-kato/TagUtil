@@ -10,7 +10,7 @@ describe('TrackStore', () => {
   beforeEach(() => {
     vi.spyOn(imageUtils, 'createImageUrl').mockImplementation((pic) => (pic ? 'blob:mock' : null));
     trackStore.tracks = [];
-    selectionState.items.clear();
+    selectionState.clear();
   });
 
   it('初期状態では tracks が空であること', () => {
@@ -28,7 +28,7 @@ describe('TrackStore', () => {
     selectionState.selectSingle(t1, 0);
     expect(trackStore.selectedTracks).toStrictEqual([t1]);
 
-    selectionState.items.add(t2); // もしくは selectRange([t1, t2])
+    selectionState.selectRange([t2]);
     expect(trackStore.selectedTracks).toStrictEqual([t1, t2]);
   });
 

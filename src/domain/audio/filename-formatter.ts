@@ -1,5 +1,5 @@
 import { failure, success } from '@domain/common/result';
-import { ValuesOf } from '@shared/types';
+import type { ValuesOf } from '@shared/types';
 import { sanitize } from '@shared/utils/filename';
 import { TAG_PLACEHOLDERS } from './constants';
 import { appErrors } from '@domain/errors/definitions';

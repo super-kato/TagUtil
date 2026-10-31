@@ -1,4 +1,4 @@
-import { AudioMetadata } from './models';
+import type { AudioMetadata } from './models';
 
 /**
  * タグの定義情報を表すインターフェース。

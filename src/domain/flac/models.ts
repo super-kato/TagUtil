@@ -1,4 +1,4 @@
-import { AudioMetadata, AudioTrack, Picture } from '@domain/audio/models';
+import type { AudioMetadata, AudioTrack, Picture } from '@domain/audio/models';
 
 export type { Picture };
 

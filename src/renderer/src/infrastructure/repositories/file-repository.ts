@@ -1,4 +1,4 @@
-import type { AppResult } from '@domain/flac/types';
+import type { AppResult } from '@domain/types';
 
 /**
  * 物理的なファイル操作（リネームなど）を担当するリポジトリ。

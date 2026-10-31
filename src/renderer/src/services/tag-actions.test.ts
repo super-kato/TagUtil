@@ -38,8 +38,8 @@ describe('tagActions', () => {
     vi.clearAllMocks();
     // ストアの実体を使用し、状態をセットアップ
     trackStore.tracks = [...mockTracks];
-    selectionState.items.clear();
-    mockTracks.forEach((t) => selectionState.items.add(t));
+    selectionState.clear();
+    selectionState.selectRange(mockTracks);
 
     // デフォルトの成功レスポンスをセット
     vi.mocked(tagRepository.readMetadata).mockResolvedValue(success({ path: 'p', metadata: {} }));

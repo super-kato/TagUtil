@@ -1,10 +1,10 @@
 <script lang="ts">
   import { UI_TOKENS } from '@renderer/constants/design-system';
-  import { type IconProps } from '@lucide/svelte';
+  import type { LucideProps } from '@lucide/svelte';
   import type { Component } from 'svelte';
 
   interface Props {
-    icon: Component<IconProps>;
+    icon: Component<LucideProps>;
     title: string;
     sub?: string;
   }
