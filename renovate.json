@@ -2,13 +2,13 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "timezone": "Asia/Tokyo",
-  "schedule": ["* 10-12 * * 6"],
+  "schedule": ["* * * * 6"],
   "minimumReleaseAge": "1 day",
   "labels": ["dependencies"],
   "reviewers": ["super-kato"],
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["* 10-12 * * 6"]
+    "schedule": ["* * * * 6"]
   },
   "osvVulnerabilityAlerts": true,
   "packageRules": [
