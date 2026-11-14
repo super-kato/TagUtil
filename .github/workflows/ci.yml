@@ -18,7 +18,7 @@ jobs:
           node-version: 24
 
       - name: pnpm のセットアップ
-        uses: pnpm/action-setup@v6.1.0
+        uses: pnpm/action-setup@v6.1.1
 
       - name: 依存関係のインストール
         run: pnpm install
@@ -39,7 +39,7 @@ jobs:
           node-version: 24
 
       - name: pnpm のセットアップ
-        uses: pnpm/action-setup@v6.1.0
+        uses: pnpm/action-setup@v6.1.1
 
       - name: 依存関係のインストール
         run: pnpm install
@@ -60,7 +60,7 @@ jobs:
           node-version: 24
 
       - name: pnpm のセットアップ
-        uses: pnpm/action-setup@v6.1.0
+        uses: pnpm/action-setup@v6.1.1
 
       - name: 依存関係のインストール
         run: pnpm install
@@ -87,7 +87,7 @@ jobs:
           node-version: 24
 
       - name: pnpm のセットアップ
-        uses: pnpm/action-setup@v6.1.0
+        uses: pnpm/action-setup@v6.1.1
 
       - name: 依存関係のインストール
         run: pnpm install
@@ -108,7 +108,7 @@ jobs:
           node-version: 24
 
       - name: pnpm のセットアップ
-        uses: pnpm/action-setup@v6.1.0
+        uses: pnpm/action-setup@v6.1.1
 
       - name: 依存関係のインストール
         run: pnpm install
