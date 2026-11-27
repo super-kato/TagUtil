@@ -54,7 +54,7 @@
     "electron-updater": "^6.8.11",
     "fast-equals": "^6.2.1",
     "flac-tagger": "^2.1.0",
-    "music-metadata": "^12.2.3",
+    "music-metadata": "^13.0.0",
     "p-limit": "^7.3.3",
     "svelte": "^5.57.2"
   },
